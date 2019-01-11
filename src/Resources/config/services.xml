@@ -5,6 +5,11 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="crosier_source.crosier_lib_base_bundle_twig.route_exists_extension" class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
+            <tag name="twig.extension" />
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension" alias="crosier_source.crosier_lib_base_bundle_twig.route_exists_extension">
 
+        </service>
     </services>
 </container>

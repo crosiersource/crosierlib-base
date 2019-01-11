@@ -1,0 +1,18 @@
+<div id="divFlashMessages">
+{% for flashMessage in app.flashes('success') %}
+<div class="FLASHMESSAGE FLASHMESSAGE_SUCCESS" style="display:none">{{ flashMessage|raw }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('info') %}
+<div class="FLASHMESSAGE FLASHMESSAGE_INFO" style="display:none">{{ flashMessage }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('error') %}
+<div class="FLASHMESSAGE FLASHMESSAGE_ERROR" style="display:none">{{ flashMessage }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('warn') %}
+<div class="FLASHMESSAGE FLASHMESSAGE_WARNING" style="display:none">{{ flashMessage }}</div>
+{% endfor %}
+
+</div>
