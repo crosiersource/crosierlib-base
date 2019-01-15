@@ -36,7 +36,7 @@ class EntityId
     private $userInsertedId;
 
     /**
-     * @ORM\Column(name="user_inserted_id", type="bigint", nullable=false)
+     * @ORM\Column(name="user_updated_id", type="bigint", nullable=false)
      */
     private $userUpdatedId;
 

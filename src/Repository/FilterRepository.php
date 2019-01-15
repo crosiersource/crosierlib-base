@@ -3,8 +3,8 @@
 namespace CrosierSource\CrosierLibBaseBundle\Repository;
 
 
-use App\Utils\Repository\WhereBuilder;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibUtilsBundle\RepositoryUtils\WhereBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;

@@ -14,19 +14,7 @@ class RouteExistsExtension extends AbstractExtension
      */
     private $container;
 
-    /**
-     * @return ContainerInterface
-     */
-    public function getContainer(): ContainerInterface
-    {
-        return $this->container;
-    }
-
-    /**
-     * @required
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container): void
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -42,6 +30,7 @@ class RouteExistsExtension extends AbstractExtension
 
     function routeExists($name)
     {
+
         $router = $this->container->get('router');
         return (null === $router->getRouteCollection()->get($name)) ? false : true;
     }
