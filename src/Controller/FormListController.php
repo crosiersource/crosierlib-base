@@ -3,11 +3,8 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 
-use App\Business\Config\StoredViewInfoBusiness;
-use App\Business\Security\SecurityBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
-use App\Utils\ExceptionUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,31 +56,15 @@ abstract class FormListController extends AbstractController
     }
 
     /**
-     * @required
-     * @param StoredViewInfoBusiness $storedViewInfoBusiness
+     * Deve ser implementada pelo filho retornando o serviço autowired.
      */
-    public function setStoredViewInfoBusiness(StoredViewInfoBusiness $storedViewInfoBusiness)
-    {
-        $this->storedViewInfoBusiness = $storedViewInfoBusiness;
-    }
+    public abstract function getStoredViewInfoBusiness();
+
 
     /**
-     *
-     * @required
-     * @param SecurityBusiness $securityBusiness
+     * Deve ser implementada pelo filho retornando o serviço autowired.
      */
-    public function setSecurityBusiness(SecurityBusiness $securityBusiness)
-    {
-        $this->securityBusiness = $securityBusiness;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSecurityBusiness()
-    {
-        return $this->securityBusiness;
-    }
+    public abstract function getSecurityBusiness();
 
     /**
      * Monta o formulário, faz as validações, manda salvar, trata erros, etc.
