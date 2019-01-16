@@ -2,12 +2,10 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity;
 
-use App\Entity\Config\Estabelecimento;
-use App\Entity\Security\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class EntityId
+abstract class EntityId
 {
 
     /**
@@ -39,6 +37,11 @@ class EntityId
      * @ORM\Column(name="user_updated_id", type="bigint", nullable=false)
      */
     private $userUpdatedId;
+
+
+    public abstract function getId();
+
+    public abstract function setId($id);
 
     /**
      * @return mixed
@@ -129,11 +132,6 @@ class EntityId
         $this->userUpdatedId = $userUpdatedId;
         return $this;
     }
-
-
-
-
-
 
 
 }

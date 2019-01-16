@@ -3,46 +3,39 @@
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 
 
-use App\Business\Base\EntityIdBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
-use App\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
- * Class EntityHandler
- *
  * Classe abstrata responsável pela lógica ao salvar ou deletar entidades na base de dados.
+ *
  * FIXME: se algum dia o PHP suportar herança para tipagem de parâmetros em métodos, adicionar os tipos nos before's e after's aqui.
+ *
  * @package App\EntityHandler
  * @author Carlos Eduardo Pauluk
  */
-abstract class EntityHandler
+abstract class EntityHandler implements EntityHandlerInterface
 {
-    protected $entityManager;
-
-    private $security;
 
     /**
-     * EntityHandler constructor.
-     * @param RegistryInterface $doctrine
-     * @param Security $security
+     * @var RegistryInterface
      */
-    public function __construct(RegistryInterface $doctrine, Security $security)
+    private $doctrine;
+
+    public function __construct(RegistryInterface $doctrine)
     {
-        $this->entityManager = $doctrine->getManager();
-        $this->security = $security;
+        $this->doctrine = $doctrine;
     }
 
     /**
-     * A ser sobreescrito.
      *
      * @return mixed
      */
     abstract public function getEntityClass();
 
     /**
-     * A ser sobreescrito.
+     * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
@@ -60,30 +53,34 @@ abstract class EntityHandler
      */
     public function save(EntityId $entityId, $flush = true)
     {
-        $this->beforeSave($entityId);
-        if ($entityId->getId()) {
-            $entityId = $this->getEntityManager()->merge($entityId);
-        } else {
-            $this->getEntityManager()->persist($entityId);
+        try {
+            $this->beforeSave($entityId);
+            if ($entityId->getId()) {
+                $entityId = $this->doctrine->getEntityManager()->merge($entityId);
+            } else {
+                $this->doctrine->getEntityManager()->persist($entityId);
+            }
+            if ($flush) {
+                $this->doctrine->getEntityManager()->flush();
+            }
+            $this->afterSave($entityId);
+        } catch (\Exception $e) {
+            throw new ViewException('Erro ao salvar', 0, $e);
         }
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-        $this->afterPersist($entityId);
         return $entityId;
     }
 
     /**
-     * A ser sobreescrito.
+     * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
-    public function afterPersist($entityId)
+    public function afterSave($entityId)
     {
     }
 
     /**
-     * A ser sobreescrito.
+     * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
@@ -95,17 +92,22 @@ abstract class EntityHandler
      * Executa o DELETE e o flush.
      *
      * @param $entityId
+     * @throws ViewException
      */
     public function delete($entityId)
     {
-        $this->beforeDelete($entityId);
-        $this->entityManager->remove($entityId);
-        $this->entityManager->flush();
-        $this->afterDelete($entityId);
+        try {
+            $this->beforeDelete($entityId);
+            $this->doctrine->getEntityManager()->remove($entityId);
+            $this->doctrine->getEntityManager()->flush();
+            $this->afterDelete($entityId);
+        } catch (\Exception $e) {
+            throw new ViewException('Erro ao deletar.', 0, $e);
+        }
     }
 
     /**
-     * A ser sobreescrito.
+     * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
@@ -114,7 +116,7 @@ abstract class EntityHandler
     }
 
     /**
-     * A ser sobreescrito.
+     * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
@@ -127,34 +129,21 @@ abstract class EntityHandler
      *
      * @param $e
      * @return EntityId|object
+     * @throws ViewException
      */
-    public function doClone($e) {
+    public function doClone($e)
+    {
+        /** @var EntityId $newE */
         $newE = clone $e;
         $newE->setId(null);
         $newE->setInserted(null);
         $newE->setUpdated(null);
-        $newE->setUserInserted(null);
-        $newE->setUserUpdated(null);
+        $newE->setUserInsertedId(null);
+        $newE->setUserUpdatedId(null);
         $this->beforeClone($newE);
-        $newE = $this->save($newE);
-        $this->getEntityManager()->flush($newE);
+        $this->save($newE);
         return $newE;
     }
 
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectManager
-     */
-    public function getEntityManager(): \Doctrine\Common\Persistence\ObjectManager
-    {
-        return $this->entityManager;
-    }
-
-    /**
-     * @param \Doctrine\ORM\EntityManager $entityManager
-     */
-    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager): void
-    {
-        $this->entityManager = $entityManager;
-    }
 
 }

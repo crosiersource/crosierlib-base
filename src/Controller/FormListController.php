@@ -5,6 +5,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
+use CrosierSource\CrosierLibBaseBundle\ExceptionUtils\ExceptionUtils;
+use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +24,15 @@ use Symfony\Component\Serializer\Serializer;
 abstract class FormListController extends AbstractController
 {
 
-    private $storedViewInfoBusiness;
-
-    private $securityBusiness;
-
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
 
     abstract public function getEntityHandler(): ?EntityHandler;
@@ -40,6 +47,7 @@ abstract class FormListController extends AbstractController
     abstract public function getFormRoute();
 
     abstract public function getFormView();
+
 
     /**
      * Utilizado para setar na <title>.
@@ -56,17 +64,6 @@ abstract class FormListController extends AbstractController
     }
 
     /**
-     * Deve ser implementada pelo filho retornando o serviço autowired.
-     */
-    public abstract function getStoredViewInfoBusiness();
-
-
-    /**
-     * Deve ser implementada pelo filho retornando o serviço autowired.
-     */
-    public abstract function getSecurityBusiness();
-
-    /**
      * Monta o formulário, faz as validações, manda salvar, trata erros, etc.
      *
      * @param Request $request
@@ -77,7 +74,7 @@ abstract class FormListController extends AbstractController
      */
     public function doForm(Request $request, EntityId $entityId = null, $parameters = [])
     {
-        $this->securityBusiness->checkAccess($this->getFormRoute());
+        $this->checkAccess($this->getFormRoute());
 
         if (!$entityId) {
             $entityName = $this->getEntityHandler()->getEntityClass();
@@ -162,6 +159,7 @@ abstract class FormListController extends AbstractController
 
     /**
      * Utilizado para setar na <title>.
+     * @throws \Exception
      */
     public function getListPageTitle()
     {
@@ -173,6 +171,18 @@ abstract class FormListController extends AbstractController
         }
     }
 
+
+    /**
+     * Verifica junto a CrosierSecurityAPI se o usuário logado tem acesso a rota requisitada.
+     *
+     * @param string $route
+     * @return mixed
+     */
+    public function checkAccess(string $route)
+    {
+        return;
+    }
+
     /**
      * @param Request $request
      * @param array $parameters
@@ -181,7 +191,7 @@ abstract class FormListController extends AbstractController
      */
     public function doList(Request $request, $parameters = array())
     {
-        $this->securityBusiness->checkAccess($this->getListRoute());
+        $this->checkAccess($this->getListRoute());
 
         $params = $request->query->all();
         if (!array_key_exists('filter', $params)) {
@@ -189,11 +199,11 @@ abstract class FormListController extends AbstractController
             $params['filter'] = null;
 
             if (isset($params['r']) and $params['r']) {
-                $this->storedViewInfoBusiness->clear($this->getListRoute());
+                StoredViewInfoUtils::clear($this->getListRoute());
             } else {
-                $storedViewInfo = $this->storedViewInfoBusiness->retrieve($this->getListRoute());
+                $storedViewInfo = StoredViewInfoUtils::retrieve($this->getListRoute());
                 if (false and $storedViewInfo) { //FIXME: problema no caso do grupoItemList. Não estava aceitando nova url com novo pai.
-                    $blob = stream_get_contents($storedViewInfo->getViewInfo());
+                    $blob = stream_get_contents($storedViewInfo['viewInfo']);
                     $unserialized = unserialize($blob);
                     $formPesquisar = isset($unserialized['formPesquisar']) ? $unserialized['formPesquisar'] : null;
                     if ($formPesquisar and $formPesquisar != $params) {
@@ -226,8 +236,9 @@ abstract class FormListController extends AbstractController
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null)
     {
-        $this->securityBusiness->checkAccess($this->getListRoute());
+        $this->checkAccess($this->getListRoute());
 
+        /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
 
         $rParams = $request->request->all();
@@ -287,7 +298,7 @@ abstract class FormListController extends AbstractController
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();
             $viewInfo['formPesquisar'] = $formPesquisar;
-            $this->storedViewInfoBusiness->store($this->getListRoute(), $viewInfo);
+            StoredViewInfoUtils::store($this->getListRoute(), $viewInfo);
         }
 
         return new Response($json);
@@ -313,23 +324,6 @@ abstract class FormListController extends AbstractController
         }
 
         return $this->redirectToRoute($this->getListRoute());
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
-     * @required
-     * @param mixed $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
     }
 
 

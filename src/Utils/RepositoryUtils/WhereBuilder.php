@@ -2,7 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\RepositoryUtils;
 
-use App\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Doctrine\ORM\QueryBuilder;
 
 class WhereBuilder

@@ -3,8 +3,8 @@
 namespace CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener;
 
 
-use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use App\Entity\Security\User;
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use ReflectionClass;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -27,45 +27,13 @@ class EntityIdListener
 
     private $params;
 
-    /**
-     * @required
-     * @param RegistryInterface $doctrine
-     */
-    public function setDoctrine(RegistryInterface $doctrine)
+    public function __construct(RegistryInterface $doctrine, Security $security, ParameterBagInterface $params)
     {
         $this->doctrine = $doctrine;
-    }
-
-    public function getDoctrine(): RegistryInterface
-    {
-        return $this->doctrine;
-    }
-
-    /**
-     * @required
-     * @param Security $security
-     */
-    public function setSecurity(Security $security)
-    {
         $this->security = $security;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getParams(): ParameterBagInterface
-    {
-        return $this->params;
-    }
-
-    /**
-     * @required
-     * @param mixed $params
-     */
-    public function setParams(ParameterBagInterface $params): void
-    {
         $this->params = $params;
     }
+
 
     public function prePersist(LifecycleEventArgs $args)
     {
@@ -74,11 +42,11 @@ class EntityIdListener
         $this->handleUppercaseFields($entityId);
         $entityId->setInserted(new \DateTime('now'));
         if ($this->security->getUser()) {
-            $entityId->setEstabelecimento($this->getDoctrine()->getEntityManager()->merge($this->security->getUser()->getEstabelecimento()));
-            $entityId->setUserInserted($this->getDoctrine()->getEntityManager()->merge($this->security->getUser()));
+            $entityId->setEstabelecimento($this->doctrine->getEntityManager()->merge($this->security->getUser()->getEstabelecimento()));
+            $entityId->setUserInserted($this->doctrine->getEntityManager()->merge($this->security->getUser()));
         } else {
             // FIXME: corrigir isto
-            $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+            $user = $this->doctrine->getRepository(User::class)->find(1);
             $entityId->setEstabelecimento($user->getEstabelecimento());
             $entityId->setUserInserted($user);
         }
@@ -93,7 +61,7 @@ class EntityIdListener
         $this->handleUppercaseFields($entityId);
         $entityId->setUpdated(new \DateTime());
         if ($this->security->getUser()) {
-            $entityId->setUserUpdated($this->getDoctrine()->getEntityManager()->merge($this->security->getUser()));
+            $entityId->setUserUpdated($this->doctrine->getEntityManager()->merge($this->security->getUser()));
         }
     }
 

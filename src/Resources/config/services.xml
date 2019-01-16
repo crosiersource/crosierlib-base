@@ -5,6 +5,13 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler" class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine" />
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler" alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler" />
+
+
         <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension" class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
             <argument type="service" id="service_container" />
             <tag name="twig.extension" />
@@ -26,6 +33,15 @@
 
         <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository" class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository" />
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository" alias="crosier_source.crosier_lib_base_bundle.repository.config.app_repository" />
+
+
+        <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener" class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.helper" />
+            <argument type="service" id="parameter_bag" />
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener" alias="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener" />
+
 
     </services>
 </container>

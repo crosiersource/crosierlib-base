@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends '@CrosierLibBase/base.html.twig' %}
 
 
 {% block body %}
@@ -10,12 +10,13 @@
 
 
 
-        {{ include('header.html.twig') }}
+        {{ include('@CrosierLibBase/header.html.twig') }}
 
         <div class="app-body blur-on-pace">
 
+            {#
             {{ render(controller('App\\Controller\\Config\\EntMenuController::getMainMenu')) }}
-
+#}
 
             <main class="main">
 
@@ -38,7 +39,7 @@
 
         {{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
 
-        {{ include('footer.html.twig') }}
+        {{ include('@CrosierLibBase/footer.html.twig') }}
 
 
     </body>
