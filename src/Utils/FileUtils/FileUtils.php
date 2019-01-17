@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\FileUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\FileUtils;
 
 class FileUtils
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\SecurityUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\SecurityUtils;
 
 class SecurityUtils
 {

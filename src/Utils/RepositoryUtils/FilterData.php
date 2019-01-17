@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\RepositoryUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
 class FilterData
 {

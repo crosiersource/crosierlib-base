@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\DateTimeUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 
 
 

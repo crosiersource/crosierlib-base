@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\StringUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\StringUtils;
 
 use NumberFormatter;
 use Transliterator;

@@ -6,41 +6,41 @@
 
     <services>
 
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler" class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine" />
+        <!-- EntityHandler -->
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"
+                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler" alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler" />
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
+                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
 
-
-        <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension" class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
-            <argument type="service" id="service_container" />
-            <tag name="twig.extension" />
+        <!-- RouteExistsExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension" alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"></service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
 
-
-        <service id="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business" class="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness">
-
+        <!-- EntityIdListener -->
+        <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"
+                 class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness" alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business" />
+        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener"
+                 alias="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"/>
 
-        <service id="crosier_source.crosier_lib_base_bundle.business.security.security_business" class="CrosierSource\CrosierLibBaseBundle\Business\Security\SecurityBusiness">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="security.authorization_checker" />
+        <!-- UppercaseFieldsJsonBuilderCommand -->
+        <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
+                 class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
+            <argument type="service" id="doctrine"/>
+            <tag name="console.command" />
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Security\SecurityBusiness" alias="crosier_source.crosier_lib_base_bundle.business.security.security_business" />
-
-
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository" class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository" />
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository" alias="crosier_source.crosier_lib_base_bundle.repository.config.app_repository" />
-
-
-        <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener" class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="security.helper" />
-            <argument type="service" id="parameter_bag" />
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener" alias="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener" />
+        <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
+                 alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
 
 
     </services>

@@ -4,7 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use CrosierSource\CrosierLibUtilsBundle\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;

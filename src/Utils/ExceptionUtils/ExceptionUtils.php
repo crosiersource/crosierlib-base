@@ -1,5 +1,6 @@
 <?php
-namespace CrosierSource\CrosierLibBaseBundle\ExceptionUtils;
+
+namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 
 /**
  * Class ExceptionUtils.

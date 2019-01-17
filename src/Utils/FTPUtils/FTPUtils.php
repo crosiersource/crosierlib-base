@@ -1,6 +1,6 @@
 <?php
 
-namespace CrosierSource\CrosierLibBaseBundle\FTPUtils;
+namespace CrosierSource\CrosierLibBaseBundle\Utils\FTPUtils;
 
 class FTPUtils
 {
