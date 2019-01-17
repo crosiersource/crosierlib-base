@@ -42,6 +42,16 @@
         <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
                  alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
 
+        <!-- UserRepository -->
+        <service id="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository">
+            <argument type="service" id="doctrine"/>
+            <tag name="doctrine.repository_service" />
+
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
+                 alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository" />
+
 
     </services>
 </container>

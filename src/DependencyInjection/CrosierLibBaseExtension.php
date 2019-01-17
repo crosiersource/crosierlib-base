@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\DependencyInjection;
 
+use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
 use CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,6 +25,10 @@ class CrosierLibBaseExtension extends Extension
 
         $container->registerForAutoconfiguration(RouteExistsExtension::class)
             ->addTag('twig.extension');
+
+
+        $container->registerForAutoconfiguration(UserRepository::class)
+            ->addTag('doctrine.repository_service');
     }
 
 
