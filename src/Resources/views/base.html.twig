@@ -38,6 +38,7 @@
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('build/bse_layout.css') }}">
+        <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/css/crosier.css">
     {% endblock %}
 
     {% block up_scripts %}
@@ -50,6 +51,10 @@
 <body>
 {% block body %}
 {% endblock %}
+
+{{ include('@CrosierLibBase/Util/flashes.html.twig') }}
+
+{{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
 </body>
 
 

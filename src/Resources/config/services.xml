@@ -23,6 +23,15 @@
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
 
+        <!-- GetEnvExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
+
         <!-- EntityIdListener -->
         <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"
                  class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">

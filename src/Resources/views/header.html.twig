@@ -3,8 +3,7 @@
 
     <nav class="navbar navbar-expand-sm navbar-dark fixed-top" style="background-color: #0f2944">
         <a class="navbar-brand" href="#">
-            <img src="{{ asset('build/static/images/CROSIER_fundoazul_400px.jpg') }}"
-                 style="width: 200px" alt="CROSIER"/>
+            <img src="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/CROSIER_fundoazul_400px.jpg" style="width: 200px" alt="CROSIER">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
