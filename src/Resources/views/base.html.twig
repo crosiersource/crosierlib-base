@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}"/>
 
 
-    <script src="{{ asset('build/static/pace.min.js') }}"></script>
+    <script src="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace.min.js"></script>
     <script>
         window.onbeforeunload = function(e) {
             document.getElementById('preloader').style.display = '';
@@ -32,12 +32,12 @@
             }
         });
     </script>
-    <link href="{{ asset('build/static/pace-theme-loading-bar.css') }}" rel="stylesheet"/>
+    <link href="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace-theme-loading-bar.css" rel="stylesheet"/>
 
     <title>{{ page_title is defined ? page_title ~ ' - Crosier v.0.0.1' : 'Crosier v.0.0.1' }} </title>
 
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('build/bse_layout.css') }}">
+        <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/bse_layout.css">
         <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/css/crosier.css">
     {% endblock %}
 
@@ -61,8 +61,8 @@
 <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
-<script src="{{ asset('build/manifest.js') }}"></script>
-<script src="{{ asset('build/bse_layout.js') }}"></script>
+<script src="{{ asset('build/runtime.js') }}"></script>
+<script src="{{ getEnv('CROSIERCORE_URL') }}/build/bse_layout.js"></script>
 
 {% block down_scripts %}
 {% endblock %}
