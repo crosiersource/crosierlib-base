@@ -32,6 +32,6 @@ class MainMenuAPIClient
             ]
         ]);
 
-        return $response->getBody();
+        return $response->getBody()->getContents();
     }
 }
