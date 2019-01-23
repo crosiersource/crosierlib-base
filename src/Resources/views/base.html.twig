@@ -37,7 +37,8 @@
     <title>{{ page_title is defined ? page_title ~ ' - Crosier v.0.0.1' : 'Crosier v.0.0.1' }} </title>
 
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/bse_layout.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/crosier/layout.css">
         <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/css/crosier.css">
     {% endblock %}
 
@@ -62,7 +63,7 @@
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
 <script src="{{ asset('build/runtime.js') }}"></script>
-<script src="{{ getEnv('CROSIERCORE_URL') }}/build/bse_layout.js"></script>
+<script src="{{ getEnv('CROSIERCORE_URL') }}/build/crosier/layout.js"></script>
 
 {% block down_scripts %}
 {% endblock %}
