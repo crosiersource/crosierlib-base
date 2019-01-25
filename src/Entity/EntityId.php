@@ -2,136 +2,68 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
-abstract class EntityId
+interface EntityId
 {
 
-    /**
-     *
-     * @ORM\Column(name="inserted", type="datetime", nullable=false)
-     * @Assert\Type("\DateTime")
-     */
-    private $inserted;
+    public function getId(): ?int;
 
-    /**
-     *
-     * @ORM\Column(name="updated", type="datetime", nullable=false)
-     * @Assert\Type("\DateTime")
-     */
-    private $updated;
-
-    /**
-     *
-     * @ORM\Column(name="estabelecimento_id", type="bigint", nullable=false)
-     */
-    private $estabelecimentoId;
-
-    /**
-     * @ORM\Column(name="user_inserted_id", type="bigint", nullable=false)
-     */
-    private $userInsertedId;
-
-    /**
-     * @ORM\Column(name="user_updated_id", type="bigint", nullable=false)
-     */
-    private $userUpdatedId;
-
-
-    public abstract function getId();
-
-    public abstract function setId($id);
+    public function setId($id): EntityId;
 
     /**
      * @return mixed
      */
-    public function getInserted()
-    {
-        return $this->inserted;
-    }
+    public function getInserted();
 
     /**
      * @param mixed $inserted
      * @return EntityId
      */
-    public function setInserted($inserted): self
-    {
-        $this->inserted = $inserted;
-        return $this;
-    }
+    public function setInserted($inserted): EntityId;
 
     /**
      * @return mixed
      */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
+    public function getUpdated();
 
     /**
      * @param mixed $updated
      * @return EntityId
      */
-    public function setUpdated($updated): self
-    {
-        $this->updated = $updated;
-        return $this;
-    }
+    public function setUpdated($updated): EntityId;
 
     /**
      * @return mixed
      */
-    public function getEstabelecimentoId()
-    {
-        return $this->estabelecimentoId;
-    }
+    public function getEstabelecimentoId();
 
     /**
      * @param mixed $estabelecimentoId
      * @return EntityId
      */
-    public function setEstabelecimentoId($estabelecimentoId): self
-    {
-        $this->estabelecimentoId = $estabelecimentoId;
-        return $this;
-    }
+    public function setEstabelecimentoId($estabelecimentoId): EntityId;
 
     /**
      * @return mixed
      */
-    public function getUserInsertedId()
-    {
-        return $this->userInsertedId;
-    }
+    public function getUserInsertedId();
 
     /**
      * @param mixed $userInsertedId
      * @return EntityId
      */
-    public function setUserInsertedId($userInsertedId): self
-    {
-        $this->userInsertedId = $userInsertedId;
-        return $this;
-    }
+    public function setUserInsertedId($userInsertedId): EntityId;
 
     /**
      * @return mixed
      */
-    public function getUserUpdatedId()
-    {
-        return $this->userUpdatedId;
-    }
+    public function getUserUpdatedId();
 
     /**
      * @param mixed $userUpdatedId
      * @return EntityId
      */
-    public function setUserUpdatedId($userUpdatedId)
-    {
-        $this->userUpdatedId = $userUpdatedId;
-        return $this;
-    }
+    public function setUserUpdatedId($userUpdatedId): EntityId;
 
 
 }

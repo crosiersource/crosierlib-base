@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Entity\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,16 +16,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity()
  * @ORM\Table(name="sec_user")
  */
-class User extends EntityId implements UserInterface, \Serializable
+class User implements EntityId, UserInterface, \Serializable
 {
 
-    /**
-     *
-     * @ORM\Column(type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    use EntityIdTrait;
+
 
     /**
      * @NotUppercase()
@@ -91,16 +87,6 @@ class User extends EntityId implements UserInterface, \Serializable
     public function __construct()
     {
         $this->roles = new ArrayCollection();
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getUsername()

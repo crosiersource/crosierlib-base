@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,16 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository")
  * @ORM\Table(name="sec_role")
  */
-class Role extends EntityId
+class Role implements EntityId
 {
 
-    /**
-     *
-     * @ORM\Column(type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    use EntityIdTrait;
 
     /**
      *
@@ -33,16 +28,6 @@ class Role extends EntityId
      * @ORM\Column(name="descricao", type="string", length=90)
      */
     private $descricao;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     public function getRole()
     {
