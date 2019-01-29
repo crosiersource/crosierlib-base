@@ -1,13 +1,11 @@
 <?php
 
-
-namespace CrosierSource\CrosierLibBaseBundle\APIClient\Config;
-
+namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 use GuzzleHttp\Client;
 
-class MainMenuAPIClient
+class PessoaAPIClient
 {
 
     /**
@@ -20,16 +18,19 @@ class MainMenuAPIClient
         $this->crosierAPIClient = $crosierAPIClient;
     }
 
-    public function buildMainMenu(int $app_id)
+    public function getPessoaById(int $id)
     {
         $base_uri = getenv('CROSIERCORE_URL');
         $client = new Client(['base_uri' => $base_uri]);
 
-        $uri = $base_uri . '/cfg/mainMenu/build/' . $app_id;
+        $uri = $base_uri . '/pessoa/findById/' . $id;
         $response = $client->post($uri, [
             'headers' => $this->crosierAPIClient->getAuthHeader()
         ]);
 
-        return $response->getBody()->getContents();
+        $contents = $response->getBody()->getContents();
+        $json = json_decode($contents);
+        return $json;
     }
+
 }

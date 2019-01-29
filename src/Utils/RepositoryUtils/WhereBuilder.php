@@ -114,7 +114,7 @@ class WhereBuilder
                     case 'LIKE':
                     case 'LIKE_ONLY':
                         $orX->add($qb->expr()
-                            ->like($field, $fieldP));
+                            ->like($qb->expr()->lower($field), $fieldP));
                         break;
                     case 'NOT_LIKE':
                         $orX->add($qb->expr()
@@ -165,7 +165,7 @@ class WhereBuilder
                             $qb->setParameter($fieldP . '_f', $filter->val['f']);
                         break;
                     case 'LIKE':
-                        $qb->setParameter($fieldP, '%' . $filter->val . '%');
+                        $qb->setParameter($fieldP,  '%' . strtolower($filter->val) . '%');
                         break;
                     case 'LIKE_ONLY':
                         $qb->setParameter($fieldP, $filter->val);

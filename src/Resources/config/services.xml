@@ -62,14 +62,30 @@
                  alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository" />
 
 
+        <!-- CrosierAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
+            <argument type="service" id="security.helper"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
+
         <!-- MainMenuAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"
                  class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient">
-            <argument type="service" id="security.helper"/>
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"/>
 
+
+        <!-- PessoaAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient">
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"/>
 
 
     </services>

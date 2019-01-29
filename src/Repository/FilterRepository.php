@@ -82,6 +82,7 @@ abstract class FilterRepository extends ServiceEntityRepository
      *
      * @param $filters
      * @return mixed
+     * @throws ViewException
      */
     public function doCountByFilters($filters)
     {
@@ -104,6 +105,7 @@ abstract class FilterRepository extends ServiceEntityRepository
      * @param int $start
      * @param int $limit
      * @return mixed
+     * @throws ViewException
      */
     public function findByFilters($filters, $orders = null, $start = 0, $limit = 10)
     {
