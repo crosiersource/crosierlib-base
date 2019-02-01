@@ -21,7 +21,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     /**
      * @var RegistryInterface
      */
-    private $doctrine;
+    protected $doctrine;
 
     public function __construct(RegistryInterface $doctrine)
     {

@@ -26,7 +26,11 @@ class DateTimeUtils
             $dt->setTime(12, 0, 0, 0);
             return $dt;
         } else if (strlen($dateStr) == 10) { // dd/mm/YYYY
-            $dt = \DateTime::createFromFormat('d/m/Y', $dateStr);
+            if (preg_match('/\d{4}-\d{2}-\d{2}/',$dateStr)) {
+                $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
+            } else {
+                $dt = \DateTime::createFromFormat('d-m-Y', $dateStr);
+            }
             $dt->setTime(12, 0, 0, 0);
             return $dt;
         } else if (strlen($dateStr) == 16) { // dd/mm/YYYY 12:34

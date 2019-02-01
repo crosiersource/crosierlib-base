@@ -5,8 +5,8 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
-use CrosierSource\CrosierLibBaseBundle\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +81,8 @@ abstract class FormListController extends AbstractController
             $entityId = new $entityName();
         }
 
+        $this->handleReferer($request);
+
         $form = $this->createForm($this->getTypeClass(), $entityId);
 
         $form->handleRequest($request);
@@ -91,7 +93,15 @@ abstract class FormListController extends AbstractController
                     $entity = $form->getData();
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
+
+                    if ($request->getSession()->has('reftobacks') and
+                        $request->getSession()->get('reftobacks')[$this->getFormRoute()]) {
+                        $request->getSession()->get('reftobacks')[$this->getFormRoute()] = null;
+                        $this->redirect($request->getSession()->get('reftobacks')[$this->getFormRoute()]);
+                    } else {
+                        return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
+                    }
+
                 } catch (\Exception $e) {
                     $msg = ExceptionUtils::treatException($e);
                     $this->addFlash('error', $msg);
@@ -109,6 +119,7 @@ abstract class FormListController extends AbstractController
         $parameters['form'] = $form->createView();
         $parameters['page_title'] = $this->getFormPageTitle();
         $parameters['e'] = $entityId;
+
         return $this->render($this->getFormView(), $parameters);
     }
 
@@ -180,6 +191,7 @@ abstract class FormListController extends AbstractController
      */
     public function checkAccess(string $route)
     {
+        // FIXME: implementar.
         return;
     }
 
@@ -232,7 +244,9 @@ abstract class FormListController extends AbstractController
 
     /**
      * @param Request $request
+     * @param null $defaultFilters
      * @return Response
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null)
     {
@@ -325,6 +339,20 @@ abstract class FormListController extends AbstractController
 
         return $this->redirectToRoute($this->getListRoute());
     }
+
+    /**
+     * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar após um save no form.
+     * @param Request $request
+     */
+    public function handleReferer(Request $request)
+    {
+        if ($request->get('reftoback')) {
+            $to[$this->getFormRoute()] = $request->server->get('HTTP_REFERER');
+            $request->getSession()->set('refstoback', $to);
+        }
+
+    }
+
 
 
 }

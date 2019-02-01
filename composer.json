@@ -20,5 +20,8 @@
         "psr-4": {
             "CrosierSource\\CrosierLibBaseBundle\\": "src/"
         }
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.2"
     }
 }
