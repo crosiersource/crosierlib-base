@@ -72,20 +72,27 @@
 
         <!-- MainMenuAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient">
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient"
+                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"/>
 
-
         <!-- PessoaAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient">
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
+                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"/>
+
+        <!-- DiaUtilAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient"
+                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"/>
 
 
     </services>

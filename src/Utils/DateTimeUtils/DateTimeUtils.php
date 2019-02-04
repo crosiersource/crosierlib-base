@@ -21,6 +21,10 @@ class DateTimeUtils
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
             $dt->setTime(12, 0, 0, 0);
             return $dt;
+        } else if (strlen($dateStr) == 7) { // YYYY-mm (mesAno)
+            $dt = \DateTime::createFromFormat('Y-m-d', $dateStr . '-01');
+            $dt->setTime(12, 0, 0, 0);
+            return $dt;
         } else if (strlen($dateStr) == 8) { // dd/mm/yy
             $dt = \DateTime::createFromFormat('d/m/y', $dateStr);
             $dt->setTime(12, 0, 0, 0);

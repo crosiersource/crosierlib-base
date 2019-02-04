@@ -22,4 +22,21 @@ class DiaUtilAPIClient extends CrosierAPIClient
         return $this->get('/api/bse/diaUtil/incPeriodo/', $params);
     }
 
+    public function findProximoDiaUtilFinanceiro(\DateTime $dt) {
+        $params = [
+            'dt' => $dt->format('Y-m-d'),
+        ];
+        $r = $this->get('/api/bse/diaUtil/findProximoDiaUtilFinanceiro/', $params);
+        $dt = json_decode($r);
+        return $dt;
+    }
+
+    public function findDiasUteisFinanceirosByMesAno(\DateTime $mesano) {
+        $params = [
+            'mesano' => $mesano->format('Y-m'),
+        ];
+        $r = json_decode($this->get('/api/bse/diaUtil/findDiasUteisFinanceirosByMesAno/', $params));
+        return $r;
+    }
+
 }
