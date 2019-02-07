@@ -66,6 +66,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"
                  class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
             <argument type="service" id="security.helper"/>
+            <argument type="service" id="monolog.logger"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
@@ -84,7 +85,7 @@
                  parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"/>
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client" />
 
         <!-- DiaUtilAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"

@@ -12,7 +12,7 @@ class MainMenuAPIClient extends CrosierAPIClient
 
     public function buildMainMenu(int $app_id)
     {
-        $uri = '/cfg/mainMenu/build/' . $app_id;
+        $uri = '/api/cfg/mainMenu/build/' . $app_id;
         return $this->post($uri);
     }
 }

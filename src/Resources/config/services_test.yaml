@@ -1,0 +1,4 @@
+services:
+  test_alias.AppBundle\Service\MyService:
+    alias: 'AppBundle\Service\MyService'
+    public: true # require on SF4, where everything is private by default

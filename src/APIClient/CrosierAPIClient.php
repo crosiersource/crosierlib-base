@@ -4,10 +4,16 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient;
 
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Security\Core\Security;
+use Psr\Log\LoggerInterface;
 
+/**
+ * Class CrosierAPIClient.
+ * @package CrosierSource\CrosierLibBaseBundle\APIClient
+ */
 class CrosierAPIClient
 {
 
@@ -16,11 +22,18 @@ class CrosierAPIClient
      */
     private $security;
 
-    public function __construct(Security $security)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(Security $security, LoggerInterface $logger)
     {
         $this->security = $security;
+        $this->logger = $logger;
     }
 
+    /**
+     * @return mixed
+     */
     public function getAuthHeader()
     {
         /** @var User $user */
@@ -29,34 +42,58 @@ class CrosierAPIClient
         return $authHeader;
     }
 
-
+    /**
+     * Executa um request utilizando o Guzzle.
+     *
+     * @param $uri
+     * @param $method
+     * @param null $params
+     * @return string
+     * @throws ViewException
+     */
     public function doRequest($uri, $method, $params = null)
     {
-        $base_uri = getenv('CROSIERCORE_URL');
-        $client = new Client(['base_uri' => $base_uri]);
 
-        $uri = $base_uri . $uri;
-
-        $request = new Request(
-            $method,
-            $uri,
-            $this->getAuthHeader(),
-            $params
-        );
-        $response = $client->send($request, ['timeout' => 2]);
-
-
-        return $response->getBody()->getContents();
+        try {
+            $base_uri = getenv('CROSIERCORE_URL');
+            $client = new Client(['base_uri' => $base_uri]);
+            $uri = $base_uri . $uri;
+            $response = $client->request($method, $uri,
+                [
+                    'headers' => array_merge($this->getAuthHeader(), ['XDEBUG_SESSION' => 'blabla']),
+                    'json' => $params
+                ]
+            );
+            return $response->getBody()->getContents();
+        } catch (GuzzleException $e) {
+            throw new ViewException('CrosierAPIClient:doRequest error');
+        }
     }
 
-    public function get($uri, $params = null)
-    {
-        return $this->doRequest($uri, 'get', $params);
-    }
 
+    /**
+     * @param $uri
+     * @param null $params
+     * @return string
+     * @throws ViewException
+     */
     public function post($uri, $params = null)
     {
         return $this->doRequest($uri, 'post', $params);
+    }
+
+    /**
+     * @param $r
+     * @throws ViewException
+     */
+    public function handleErrorResponse($r)
+    {
+        $this->logger->error(print_r($r, true));
+        if (isset($r['status']) and $r['status'] === 400) {
+            throw new ViewException($r['status'] . ' - ' . $r['title']);
+        } else {
+            throw new ViewException('API error');
+        }
     }
 
 }

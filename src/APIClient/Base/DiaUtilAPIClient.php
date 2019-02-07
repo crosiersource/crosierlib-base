@@ -4,7 +4,14 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 
+/**
+ * Cliente para consumir os serviços REST da DiaUtilAPI.
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\APIClient\Base
+ * @author Carlos Eduardo Pauluk
+ */
 class DiaUtilAPIClient extends CrosierAPIClient
 {
 
@@ -22,16 +29,38 @@ class DiaUtilAPIClient extends CrosierAPIClient
         return $this->get('/api/bse/diaUtil/incPeriodo/', $params);
     }
 
-    public function findProximoDiaUtilFinanceiro(\DateTime $dt) {
+    /**
+     * @param \DateTime $dt
+     * @param bool $prox
+     * @param bool $financeiro
+     * @param bool $comercial
+     * @return \DateTime|mixed
+     * @throws ViewException
+     */
+    public function findDiaUtil(\DateTime $dt, bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null)
+    {
         $params = [
-            'dt' => $dt->format('Y-m-d'),
+            [
+                'dt' => $dt->format('Y-m-d'),
+                'prox' => $prox,
+                'financeiro' => $financeiro,
+                'comercial' => $comercial,
+            ]
         ];
-        $r = $this->get('/api/bse/diaUtil/findProximoDiaUtilFinanceiro/', $params);
-        $dt = json_decode($r);
-        return $dt;
+        $r = json_decode($this->post('/api/bse/diaUtil/findDiaUtil/', $params), true);
+
+        if (!isset($r['diaUtil'])) {
+            $this->handleErrorResponse($r);
+        }
+        return $r['diaUtil'];
     }
 
-    public function findDiasUteisFinanceirosByMesAno(\DateTime $mesano) {
+    /**
+     * @param \DateTime $mesano
+     * @return mixed
+     */
+    public function findDiasUteisFinanceirosByMesAno(\DateTime $mesano)
+    {
         $params = [
             'mesano' => $mesano->format('Y-m'),
         ];

@@ -6,7 +6,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use PHPUnit\Framework\TestCase;
 
 
-class DiaUtilAPIClientTest extends TestCase
+class DateTimeUtilsTest extends TestCase
 {
 
     public function testPeriodos()
