@@ -37,7 +37,7 @@ class DiaUtilAPIClient extends CrosierAPIClient
      * @return \DateTime|mixed
      * @throws ViewException
      */
-    public function findDiaUtil(\DateTime $dt, bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null)
+    public function findDiaUtil(\DateTime $dt, bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
     {
         $params = [
             [
@@ -52,7 +52,8 @@ class DiaUtilAPIClient extends CrosierAPIClient
         if (!isset($r['diaUtil'])) {
             $this->handleErrorResponse($r);
         }
-        return $r['diaUtil'];
+        $diaUtil = $r['diaUtil'];
+        return \DateTime::createFromFormat('Y-m-d H:i:s.u', $diaUtil['date']);
     }
 
     /**

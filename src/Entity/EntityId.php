@@ -8,62 +8,62 @@ interface EntityId
 
     public function getId(): ?int;
 
-    public function setId($id): EntityId;
+    public function setId(?int $id): EntityId;
 
     /**
      * @return mixed
      */
-    public function getInserted();
+    public function getInserted(): ?\DateTime;
 
     /**
-     * @param mixed $inserted
+     * @param \DateTime|null $inserted
      * @return EntityId
      */
-    public function setInserted($inserted): EntityId;
+    public function setInserted(?\DateTime $inserted): EntityId;
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getUpdated(): ?\DateTime;
+
+    /**
+     * @param \DateTime $updated
+     * @return EntityId
+     */
+    public function setUpdated(\DateTime $updated): EntityId;
+
+    /**
+     * @return int|null
+     */
+    public function getEstabelecimentoId(): ?int;
+
+    /**
+     * @param int|null $estabelecimentoId
+     * @return EntityId
+     */
+    public function setEstabelecimentoId(?int $estabelecimentoId): EntityId;
 
     /**
      * @return mixed
      */
-    public function getUpdated();
+    public function getUserInsertedId(): ?int;
 
     /**
-     * @param mixed $updated
+     * @param $userInsertedId
      * @return EntityId
      */
-    public function setUpdated($updated): EntityId;
+    public function setUserInsertedId(?int $userInsertedId): EntityId;
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getEstabelecimentoId();
+    public function getUserUpdatedId(): ?int;
 
     /**
-     * @param mixed $estabelecimentoId
+     * @param int|null $userUpdatedId
      * @return EntityId
      */
-    public function setEstabelecimentoId($estabelecimentoId): EntityId;
-
-    /**
-     * @return mixed
-     */
-    public function getUserInsertedId();
-
-    /**
-     * @param mixed $userInsertedId
-     * @return EntityId
-     */
-    public function setUserInsertedId($userInsertedId): EntityId;
-
-    /**
-     * @return mixed
-     */
-    public function getUserUpdatedId();
-
-    /**
-     * @param mixed $userUpdatedId
-     * @return EntityId
-     */
-    public function setUserUpdatedId($userUpdatedId): EntityId;
+    public function setUserUpdatedId(?int $userUpdatedId): EntityId;
 
 
 }

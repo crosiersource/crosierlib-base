@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
@@ -102,6 +103,8 @@ abstract class FormListController extends AbstractController
                         return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
                     }
 
+                } catch (ViewException $e) {
+                    $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
                     $msg = ExceptionUtils::treatException($e);
                     $this->addFlash('error', $msg);

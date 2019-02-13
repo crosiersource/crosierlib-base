@@ -17,29 +17,29 @@ class DateTimeUtils
 
     public static function parseDateStr($dateStr)
     {
-        if (strlen($dateStr) == 5) { // dd/mm
+        if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
             $dt->setTime(12, 0, 0, 0);
             return $dt;
-        } else if (strlen($dateStr) == 7) { // YYYY-mm (mesAno)
+        } else if (strlen($dateStr) === 7) { // YYYY-mm (mesAno)
             $dt = \DateTime::createFromFormat('Y-m-d', $dateStr . '-01');
             $dt->setTime(12, 0, 0, 0);
             return $dt;
-        } else if (strlen($dateStr) == 8) { // dd/mm/yy
+        } else if (strlen($dateStr) === 8) { // dd/mm/yy
             $dt = \DateTime::createFromFormat('d/m/y', $dateStr);
             $dt->setTime(12, 0, 0, 0);
             return $dt;
-        } else if (strlen($dateStr) == 10) { // dd/mm/YYYY
+        } else if (strlen($dateStr) === 10) { // dd/mm/YYYY
             if (preg_match('/\d{4}-\d{2}-\d{2}/',$dateStr)) {
                 $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
             } else {
-                $dt = \DateTime::createFromFormat('d-m-Y', $dateStr);
+                $dt = \DateTime::createFromFormat('d/m/Y', $dateStr);
             }
             $dt->setTime(12, 0, 0, 0);
             return $dt;
-        } else if (strlen($dateStr) == 16) { // dd/mm/YYYY 12:34
+        } else if (strlen($dateStr) === 16) { // dd/mm/YYYY 12:34
             return \DateTime::createFromFormat('d/m/Y H:i', $dateStr);
-        } else if (strlen($dateStr) == 19) { // dd/mm/YYYY 12:34:00
+        } else if (strlen($dateStr) === 19) { // dd/mm/YYYY 12:34:00
             return \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
         } else {
             throw new ViewException('Impossível parse na data [' . $dateStr . ']');

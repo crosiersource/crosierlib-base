@@ -4,8 +4,12 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use ReflectionClass;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Classe abstrata responsável pela lógica ao salvar ou deletar entidades na base de dados.
@@ -23,9 +27,21 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     protected $doctrine;
 
-    public function __construct(RegistryInterface $doctrine)
+    /**
+     * @var Security
+     */
+    protected $security;
+
+    /**
+     * @var ParameterBagInterface
+     */
+    protected $parameterBag;
+
+    public function __construct(RegistryInterface $doctrine, Security $security, ParameterBagInterface $parameterBag)
     {
         $this->doctrine = $doctrine;
+        $this->security = $security;
+        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -35,12 +51,50 @@ abstract class EntityHandler implements EntityHandlerInterface
     abstract public function getEntityClass();
 
     /**
+     * Para ser sobreescrito.
+     *
+     * @param $entityId
+     * @return mixed|void
+     */
+    public function beforeSave($entityId)
+    {
+
+    }
+
+    /**
      * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
      */
-    public function beforeSave($entityId)
+    public function handleSavingEntityId(/** @var EntityId $entityId */
+        $entityId)
     {
+        $this->handleUppercaseFields($entityId);
+
+        if (!$entityId->getId()) {
+            $entityId->setInserted(new \DateTime('now'));
+        }
+        $entityId->setUpdated(new \DateTime('now'));
+
+        if ($this->security->getUser()) {
+            /** @var User $user */
+            $user = $this->security->getUser();
+            $entityId->setEstabelecimentoId($user->getEstabelecimentoId());
+            $entityId->setUserUpdatedId($user->getId());
+            if (!$entityId->getId()) {
+                $entityId->setUserInsertedId($user->getId());
+            }
+        } else {
+            if (!$entityId->getEstabelecimentoId()) {
+                $entityId->setEstabelecimentoId(0);
+            }
+            if (!$entityId->getUserInsertedId()) {
+                $entityId->setUserInsertedId(0);
+            }
+            if (!$entityId->getUserUpdatedId()) {
+                $entityId->setUserUpdatedId(0);
+            }
+        }
     }
 
     /**
@@ -54,6 +108,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function save(EntityId $entityId, $flush = true)
     {
         try {
+            $this->handleSavingEntityId($entityId);
             $this->beforeSave($entityId);
             if ($entityId->getId()) {
                 $entityId = $this->doctrine->getEntityManager()->merge($entityId);
@@ -143,6 +198,21 @@ abstract class EntityHandler implements EntityHandlerInterface
         $this->beforeClone($newE);
         $this->save($newE);
         return $newE;
+    }
+
+
+    private function handleUppercaseFields($entityId): void
+    {
+        $uppercaseFieldsJson = file_get_contents($this->parameterBag->get('kernel.project_dir') . '/src/Entity/uppercaseFields.json');
+        $uppercaseFields = json_decode($uppercaseFieldsJson);
+        $class = str_replace('\\', '_', get_class($entityId));
+        $reflectionClass = new ReflectionClass(get_class($entityId));
+        $campos = isset($uppercaseFields->$class) ? $uppercaseFields->$class : array();
+        foreach ($campos as $field) {
+            $property = $reflectionClass->getProperty($field);
+            $property->setAccessible(true);
+            $property->setValue($entityId, mb_strtoupper($property->getValue($entityId)));
+        }
     }
 
 

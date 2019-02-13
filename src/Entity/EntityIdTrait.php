@@ -59,7 +59,7 @@ trait EntityIdTrait
      * @param mixed $id
      * @return self
      */
-    public function setId($id): EntityId
+    public function setId(?int $id): EntityId
     {
         $this->id = $id;
         return $this;
@@ -69,7 +69,7 @@ trait EntityIdTrait
     /**
      * @return mixed
      */
-    public function getInserted()
+    public function getInserted(): ?\DateTime
     {
         return $this->inserted;
     }
@@ -78,7 +78,7 @@ trait EntityIdTrait
      * @param mixed $inserted
      * @return EntityId
      */
-    public function setInserted($inserted): EntityId
+    public function setInserted(?\DateTime $inserted): EntityId
     {
         $this->inserted = $inserted;
         return $this;
@@ -87,7 +87,7 @@ trait EntityIdTrait
     /**
      * @return mixed
      */
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
@@ -96,7 +96,7 @@ trait EntityIdTrait
      * @param mixed $updated
      * @return EntityId
      */
-    public function setUpdated($updated): EntityId
+    public function setUpdated(?\DateTime $updated): EntityId
     {
         $this->updated = $updated;
         return $this;
@@ -105,7 +105,7 @@ trait EntityIdTrait
     /**
      * @return mixed
      */
-    public function getEstabelecimentoId()
+    public function getEstabelecimentoId(): ?int
     {
         return $this->estabelecimentoId;
     }
@@ -114,7 +114,7 @@ trait EntityIdTrait
      * @param mixed $estabelecimentoId
      * @return EntityId
      */
-    public function setEstabelecimentoId($estabelecimentoId): EntityId
+    public function setEstabelecimentoId(?int $estabelecimentoId): EntityId
     {
         $this->estabelecimentoId = $estabelecimentoId;
         return $this;
@@ -123,7 +123,7 @@ trait EntityIdTrait
     /**
      * @return mixed
      */
-    public function getUserInsertedId()
+    public function getUserInsertedId(): ?int
     {
         return $this->userInsertedId;
     }
@@ -132,7 +132,7 @@ trait EntityIdTrait
      * @param mixed $userInsertedId
      * @return EntityId
      */
-    public function setUserInsertedId($userInsertedId): EntityId
+    public function setUserInsertedId(?int $userInsertedId): EntityId
     {
         $this->userInsertedId = $userInsertedId;
         return $this;
@@ -141,7 +141,7 @@ trait EntityIdTrait
     /**
      * @return mixed
      */
-    public function getUserUpdatedId()
+    public function getUserUpdatedId(): ?int
     {
         return $this->userUpdatedId;
     }
@@ -150,7 +150,7 @@ trait EntityIdTrait
      * @param mixed $userUpdatedId
      * @return EntityId
      */
-    public function setUserUpdatedId($userUpdatedId): EntityId
+    public function setUserUpdatedId(?int $userUpdatedId): EntityId
     {
         $this->userUpdatedId = $userUpdatedId;
         return $this;
