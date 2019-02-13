@@ -16,7 +16,6 @@ class GetEnvExtension extends AbstractExtension
         );
     }
 
-
     function getEnv($var)
     {
         return getenv($var);

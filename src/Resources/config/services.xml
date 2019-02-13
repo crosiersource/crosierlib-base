@@ -32,6 +32,14 @@
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
 
+        <!-- CrosierCoreAssetExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension">
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>
+
         <!-- EntityIdListener -->
         <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"
                  class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">
