@@ -53,7 +53,6 @@ class CrosierAPIClient
      */
     public function doRequest($uri, $method, $params = null)
     {
-
         try {
             $base_uri = getenv('CROSIERCORE_URL');
             $client = new Client(['base_uri' => $base_uri]);

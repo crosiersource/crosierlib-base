@@ -95,13 +95,7 @@ abstract class FormListController extends AbstractController
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
 
-                    if ($request->getSession()->has('reftobacks') and
-                        $request->getSession()->get('reftobacks')[$this->getFormRoute()]) {
-                        $request->getSession()->get('reftobacks')[$this->getFormRoute()] = null;
-                        $this->redirect($request->getSession()->get('reftobacks')[$this->getFormRoute()]);
-                    } else {
-                        return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
-                    }
+                    return $this->redirectTo($request, $entity);
 
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
@@ -124,6 +118,31 @@ abstract class FormListController extends AbstractController
         $parameters['e'] = $entityId;
 
         return $this->render($this->getFormView(), $parameters);
+    }
+
+    /**
+     * Verifica para onde deve ser redirecionado após o save.
+     *
+     * @param Request $request
+     * @param EntityId $entityId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function redirectTo(Request $request, EntityId $entityId): ?\Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        if ($request->getSession()->has('refstoback') and
+            $request->getSession()->get('refstoback')[$this->getFormRoute()]) {
+
+            $tos = $request->getSession()->get('refstoback');
+            $url = $tos[$this->getFormRoute()];
+            // limpo apenas o que já será utilizado no redirect
+            $tos[$this->getFormRoute()] = null;
+            $request->getSession()->set('refstoback', $tos);
+
+            return $this->redirect($url);
+
+        } else {
+            return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
+        }
     }
 
     abstract public function getFilterDatas($params);
@@ -274,9 +293,9 @@ abstract class FormListController extends AbstractController
 
             $orders = array();
             foreach ($rParams['order'] as $pOrder) {
-                $order['column'] = $rParams['columns'][$pOrder['column']]['name'];
-                $order['dir'] = $pOrder['dir'];
-                $orders[] = $order;
+                $column = $rParams['columns'][$pOrder['column']]['name'];
+                $dir = $pOrder['dir'];
+                $orders[] = [$column => $dir];
             }
             $draw = (int)$rParams['draw'];
             parse_str($rParams['formPesquisar'], $formPesquisar);
@@ -350,12 +369,18 @@ abstract class FormListController extends AbstractController
     public function handleReferer(Request $request)
     {
         if ($request->get('reftoback')) {
-            $to[$this->getFormRoute()] = $request->server->get('HTTP_REFERER');
-            $request->getSession()->set('refstoback', $to);
+            $to = $request->getSession()->get('refstoback');
+            // Se já estiver setado, então não reseta (para não acontecer se setar para a própria formRoute no submit do form).
+            if (!$to || !isset($to[$this->getFormRoute()]) || !$to[$this->getFormRoute()]) {
+                // se já tiver na sessão, adiciona dentro do existente.
+                if ($request->getSession()->has('refstoback')) {
+                    $to = $request->getSession()->get('refstoback');
+                }
+                $to[$this->getFormRoute()] = $request->server->get('HTTP_REFERER');
+                $request->getSession()->set('refstoback', $to);
+            }
         }
-
     }
-
 
 
 }

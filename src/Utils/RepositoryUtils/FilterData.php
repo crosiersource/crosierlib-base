@@ -13,7 +13,7 @@ class FilterData
 
     public $fieldType;
 
-    public function __construct($field, $compar, $val, $fieldType = null)
+    public function __construct($field, $compar, $val = null, $fieldType = null)
     {
         $this->field = $field;
         $this->compar = $compar;

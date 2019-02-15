@@ -173,6 +173,9 @@ class WhereBuilder
                     case 'EQ_BOOL':
                         $qb->setParameter($fieldP, $filter->val === 'true' ? true : false);
                         break;
+                    case 'IS_NULL':
+                    case 'IS_NOT_NULL':
+                        break;
                     default:
                         $qb->setParameter($fieldP, $filter->val);
                         break;
@@ -248,6 +251,9 @@ class WhereBuilder
      */
     private static function checkHasVal(FilterData $filter)
     {
+        if ($filter->compar === 'IS_NULL' || $filter->compar === 'IS_NOT_NULL') {
+            return true;
+        }
         if (is_array($filter->val)) {
             foreach ($filter->val as $val) {
                 if ($val) {
@@ -279,12 +285,12 @@ class WhereBuilder
                 if (strpos($field, '.') === FALSE) {
                     $field = 'e.' . $field;
                 }
-                $ordersBy[] = ['column' => $field, 'dir' => $o[1]];
+                $ordersBy = [$field => $o[1]];
             } else {
                 if (strpos($orderStr, '.') === FALSE) {
                     $orderStr = 'e.' . $orderStr;
                 }
-                $ordersBy[] = ['column' => $orderStr, 'dir' => 'asc'];
+                $ordersBy = [$orderStr => 'asc'];
             }
         }
         return $ordersBy;

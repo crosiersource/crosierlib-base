@@ -77,7 +77,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
             $eMeta = $this->getDoctrine()->getEntityManager()->getMetadataFactory()->getMetadataFor($classMeta->getName());
             $output->writeln('Pesquisando ' . $classMeta->getName());
             foreach ($eMeta->getFieldNames() as $field) {
-                $notUppercaseAnnotation = $annotationReader->getPropertyAnnotation(new \ReflectionProperty($classMeta->getName(), $field), 'App\Doctrine\Annotations\NotUppercase');
+                $notUppercaseAnnotation = $annotationReader->getPropertyAnnotation(new \ReflectionProperty($classMeta->getName(), $field), 'CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase');
                 if ($notUppercaseAnnotation) {
                     continue;
                 }

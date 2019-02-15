@@ -72,9 +72,7 @@ abstract class FilterRepository extends ServiceEntityRepository
      */
     public function getDefaultOrders()
     {
-        return array(
-            ['column' => 'e.updated', 'dir' => 'desc']
-        );
+        return ['e.updated' => 'desc'];
     }
 
     /**
@@ -118,8 +116,8 @@ abstract class FilterRepository extends ServiceEntityRepository
             $orders = $this->getDefaultOrders();
         }
         if (is_array($orders)) {
-            foreach ($orders as $order) {
-                $qb->addOrderBy($order['column'], isset($order['dir']) ? $order['dir'] : 'asc');
+            foreach ($orders as $col => $dir) {
+                $qb->addOrderBy($col, $dir);
             }
         } else if (is_string($orders)) {
             $qb->addOrderBy($orders, 'asc');
