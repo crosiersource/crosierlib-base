@@ -7,8 +7,8 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Symfony\Component\Security\Core\Security;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CrosierAPIClient.
@@ -65,10 +65,9 @@ class CrosierAPIClient
             );
             return $response->getBody()->getContents();
         } catch (GuzzleException $e) {
-            throw new ViewException('CrosierAPIClient:doRequest error');
+            throw new ViewException('CrosierAPIClient:doRequest error', 0, $e);
         }
     }
-
 
     /**
      * @param $uri
@@ -79,6 +78,17 @@ class CrosierAPIClient
     public function post($uri, $params = null)
     {
         return $this->doRequest($uri, 'post', $params);
+    }
+
+    /**
+     * @param $uri
+     * @param null $params
+     * @return string
+     * @throws ViewException
+     */
+    public function get($uri, $params = null)
+    {
+        return $this->doRequest($uri, 'get', $params);
     }
 
     /**

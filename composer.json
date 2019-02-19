@@ -31,6 +31,6 @@
         "symfony/security-bundle": "4.2.*",
         "twig/extensions": "^1.5",
         "twig/twig": "^2.6",
-        "symfony/orm-pack": "*"
+        "symfony/orm-pack": "1.*"
     }
 }
