@@ -50,7 +50,7 @@ abstract class FilterRepository extends ServiceEntityRepository
      *
      * @param QueryBuilder $qb
      */
-    public function handleFrombyFilters(QueryBuilder &$qb)
+    public function handleFrombyFilters(QueryBuilder $qb)
     {
         $qb->from($this->getEntityClass(), 'e');
     }
