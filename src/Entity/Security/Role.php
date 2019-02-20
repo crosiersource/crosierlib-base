@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entidade 'Role'.
  *
- * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository")
+ * @ORM\Entity(repositoryClass="\CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository")
  * @ORM\Table(name="sec_role")
  */
 class Role implements EntityId

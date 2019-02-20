@@ -11,7 +11,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * RepositoryUtils para a entidade Carteira.
  *
  * @author Carlos Eduardo Pauluk
  *

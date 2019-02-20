@@ -45,6 +45,14 @@ abstract class EntityHandler implements EntityHandlerInterface
     }
 
     /**
+     * @return RegistryInterface
+     */
+    public function getDoctrine(): RegistryInterface
+    {
+        return $this->doctrine;
+    }
+
+    /**
      *
      * @return mixed
      */

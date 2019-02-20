@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Interface CrosierDefaultController.
  *
- * Todos os CrosierApps devem ter um DefaultController implementando esta interface.
+ * CONVENÇÃO: Todos os CrosierApps devem ter um DefaultController implementando esta interface.
  *
  * @package CrosierSource\CrosierLibBaseBundle\Controller
  * @author Carlos Eduardo Pauluk

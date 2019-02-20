@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * RepositoryUtils para a entidade Role.

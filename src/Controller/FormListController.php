@@ -51,6 +51,49 @@ abstract class FormListController extends AbstractController
 
 
     /**
+     * Sobreescreve o parent::render com atributos padrão para CRUD.
+     *
+     * @param string $view
+     * @param array $parameters
+     * @param Response|null $response
+     * @return Response
+     * @throws \Exception
+     */
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    {
+        $crudParams = [];
+        $crudParams['formPageTitle'] = $this->getFormPageTitle();
+        $crudParams['listPageTitle'] = $this->getListPageTitle();
+        $crudParams['formRoute'] = $this->getFormRoute();
+        $crudParams['listRoute'] = $this->getListRoute();
+        $crudParams['listId'] = $this->getListId();
+
+        $crudParams['listRouteAjax'] = $this->getListRouteAjax();
+
+        $parameters = array_merge($crudParams, $parameters);
+
+        return parent::render($view, $parameters, $response);
+    }
+
+    /**
+     * Utilizado como id to <table>
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getListId()
+    {
+        // Por padrão...
+        // Se necessário, sobreescreva!
+        try {
+            return strtolower((new \ReflectionClass($this->getEntityHandler()->getEntityClass()))->getShortName()) . 'List';
+        } catch (\ReflectionException $e) {
+            throw new \Exception($e);
+        }
+    }
+
+
+    /**
      * Utilizado para setar na <title>.
      * @throws \Exception
      */
@@ -190,6 +233,18 @@ abstract class FormListController extends AbstractController
      */
     abstract public function getListRoute();
 
+
+    /**
+     * Caso exista, deve ser informado pela subclasse.
+     *
+     * @return mixed
+     */
+    public function getListRouteAjax()
+    {
+
+    }
+
+
     /**
      * Utilizado para setar na <title>.
      * @throws \Exception
@@ -295,7 +350,7 @@ abstract class FormListController extends AbstractController
             foreach ($rParams['order'] as $pOrder) {
                 $column = $rParams['columns'][$pOrder['column']]['name'];
                 $dir = $pOrder['dir'];
-                $orders[] = [$column => $dir];
+                $orders[$column] = $dir;
             }
             $draw = (int)$rParams['draw'];
             parse_str($rParams['formPesquisar'], $formPesquisar);
