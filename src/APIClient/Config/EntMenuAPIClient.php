@@ -1,0 +1,24 @@
+<?php
+
+
+namespace CrosierSource\CrosierLibBaseBundle\APIClient\Config;
+
+
+use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
+
+/**
+ * Class EntMenuAPIClient
+ * @package CrosierSource\CrosierLibBaseBundle\APIClient\Config
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class EntMenuAPIClient extends CrosierAPIClient
+{
+
+    public function buildMenu(string $programUUID)
+    {
+        $uri = '/api/cfg/entMenu/buildMenu/' . $programUUID;
+        $json = $this->post($uri);
+        return json_decode($json, true);
+    }
+}

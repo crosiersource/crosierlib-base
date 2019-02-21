@@ -3,8 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Repository\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 
 /**
  * Repository para a entidade User.
@@ -12,10 +11,11 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @author Carlos Eduardo Pauluk
  *
  */
-class UserRepository extends ServiceEntityRepository
+class UserRepository extends FilterRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    public static function getEntityClass()
     {
-        parent::__construct($registry, User::class);
+        return User::class;
     }
 }

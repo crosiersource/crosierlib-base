@@ -10,7 +10,6 @@ use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -21,8 +20,9 @@ use Symfony\Component\Serializer\Serializer;
  * Classe pai para CRUDs padrão.
  *
  * @package App\Controller
+ * @author Carlos Eduardo Pauluk
  */
-abstract class FormListController extends AbstractController
+abstract class FormListController extends BaseController
 {
 
     /**
@@ -30,81 +30,35 @@ abstract class FormListController extends AbstractController
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    /** @var EntityHandler */
+    protected $entityHandler;
+
+    protected $crudParams =
+        [
+            'typeClass' => '',
+            'formView' => '',
+            'formRoute' => '',
+            'formPageTitle' => '',
+            'listView' => '',
+            'listRoute' => '',
+            'listRouteAjax' => '',
+            'listPageTitle' => '',
+            'listId',
+            'deleteRoute' => '',
+        ];
+
+    /**
+     * @required
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
 
-
-    abstract public function getEntityHandler(): ?EntityHandler;
-
-    /**
-     * Necessário para poder passar para o createForm.
-     *
-     * @return mixed
-     */
-    abstract public function getTypeClass();
-
-    abstract public function getFormRoute();
-
-    abstract public function getFormView();
-
-
-    /**
-     * Sobreescreve o parent::render com atributos padrão para CRUD.
-     *
-     * @param string $view
-     * @param array $parameters
-     * @param Response|null $response
-     * @return Response
-     * @throws \Exception
-     */
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    public function getEntityHandler(): EntityHandler
     {
-        $crudParams = [];
-        $crudParams['formPageTitle'] = $this->getFormPageTitle();
-        $crudParams['listPageTitle'] = $this->getListPageTitle();
-        $crudParams['formRoute'] = $this->getFormRoute();
-        $crudParams['listRoute'] = $this->getListRoute();
-        $crudParams['listId'] = $this->getListId();
-
-        $crudParams['listRouteAjax'] = $this->getListRouteAjax();
-
-        $parameters = array_merge($crudParams, $parameters);
-
-        return parent::render($view, $parameters, $response);
-    }
-
-    /**
-     * Utilizado como id to <table>
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public function getListId()
-    {
-        // Por padrão...
-        // Se necessário, sobreescreva!
-        try {
-            return strtolower((new \ReflectionClass($this->getEntityHandler()->getEntityClass()))->getShortName()) . 'List';
-        } catch (\ReflectionException $e) {
-            throw new \Exception($e);
-        }
-    }
-
-
-    /**
-     * Utilizado para setar na <title>.
-     * @throws \Exception
-     */
-    public function getFormPageTitle()
-    {
-        // Por padrão, retorno o nome da entidade. Se preciso, sobreescrever.
-        try {
-            return (new \ReflectionClass($this->getEntityHandler()->getEntityClass()))->getShortName();
-        } catch (\ReflectionException $e) {
-            throw new \Exception($e);
-        }
+        return $this->entityHandler;
     }
 
     /**
@@ -116,9 +70,9 @@ abstract class FormListController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function doForm(Request $request, EntityId $entityId = null, $parameters = [])
+    public function doForm(Request $request, EntityId $entityId = null, $parameters = []): Response
     {
-        $this->checkAccess($this->getFormRoute());
+        $this->checkAccess($this->crudParams['formRoute']);
 
         if (!$entityId) {
             $entityName = $this->getEntityHandler()->getEntityClass();
@@ -127,7 +81,7 @@ abstract class FormListController extends AbstractController
 
         $this->handleReferer($request);
 
-        $form = $this->createForm($this->getTypeClass(), $entityId);
+        $form = $this->createForm($this->crudParams['typeClass'], $entityId);
 
         $form->handleRequest($request);
 
@@ -137,9 +91,7 @@ abstract class FormListController extends AbstractController
                     $entity = $form->getData();
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-
-                    return $this->redirectTo($request, $entity);
-
+                    return $this->redirectTo($request, $entity, $parameters);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -157,10 +109,10 @@ abstract class FormListController extends AbstractController
 
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
-        $parameters['page_title'] = $this->getFormPageTitle();
+        $parameters['page_title'] = $this->crudParams['formPageTitle'];
         $parameters['e'] = $entityId;
 
-        return $this->render($this->getFormView(), $parameters);
+        return $this->render($this->crudParams['formView'], $parameters);
     }
 
     /**
@@ -170,106 +122,65 @@ abstract class FormListController extends AbstractController
      * @param EntityId $entityId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function redirectTo(Request $request, EntityId $entityId): ?\Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirectTo(Request $request, EntityId $entityId, array $parameters = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($request->getSession()->has('refstoback') and
-            $request->getSession()->get('refstoback')[$this->getFormRoute()]) {
+            $request->getSession()->get('refstoback')[$this->crudParams['formRoute']]) {
 
             $tos = $request->getSession()->get('refstoback');
-            $url = $tos[$this->getFormRoute()];
+            $url = $tos[$this->crudParams['formRoute']];
             // limpo apenas o que já será utilizado no redirect
-            $tos[$this->getFormRoute()] = null;
+            $tos[$this->crudParams['formRoute']] = null;
             $request->getSession()->set('refstoback', $tos);
 
             return $this->redirect($url);
 
         } else {
-            return $this->redirectToRoute($this->getFormRoute(), array('id' => $entityId->getId()));
+            return $this->redirectToRoute($this->crudParams['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
         }
     }
 
-    abstract public function getFilterDatas($params);
+    /**
+     * Se existir filtro na tela, sobreescrever.
+     *
+     * @param array $params
+     * @return array|null
+     */
+    public function getFilterDatas(array $params): ?array
+    {
+
+    }
 
     /**
+     * Filtra os filterDatas por somente aqueles que contenham valores.
+     *
      * @param $params
      * @return array
      */
-    public function doGetFilterDatas($params)
+    public function doGetFilterDatas($params): array
     {
         $filterDatas = $this->getFilterDatas($params);
-        $clearedFilterDatas = array();
-        if ($filterDatas and count($filterDatas) > 0) {
+        $filterDatasComValores = [];
+        if ($filterDatas && count($filterDatas) > 0) {
             foreach ($filterDatas as $filterData) {
-                $notEmpty = false;
-                if (is_array($filterData->val)) {
-                    foreach ($filterData->val as $val) {
-                        if ($val) {
-                            $notEmpty = true;
-                            break;
-                        }
-                    }
-                } else if ($filterData->val) {
-                    $notEmpty = true;
-                }
-                if ($notEmpty) {
-                    $clearedFilterDatas[] = $filterData;
+                if ($filterData->val) {
+                    $filterDatasComValores[] = $filterData;
                 }
             }
         }
-        return $clearedFilterDatas;
+        return $filterDatasComValores;
     }
-
-    /**
-     * Deve ser informado pela subclasse para poder renderizar a view da list.
-     *
-     * @return mixed
-     */
-    abstract public function getListView();
-
-    /**
-     * Deve ser informado pela subclasse. É utilizado pela 'storedViewInfoBusiness', para 'redirectToRoute' e no 'checkAccess'.
-     *
-     * @return mixed
-     */
-    abstract public function getListRoute();
-
-
-    /**
-     * Caso exista, deve ser informado pela subclasse.
-     *
-     * @return mixed
-     */
-    public function getListRouteAjax()
-    {
-
-    }
-
-
-    /**
-     * Utilizado para setar na <title>.
-     * @throws \Exception
-     */
-    public function getListPageTitle()
-    {
-        // Por padrão, retorno o nome da entidade no plural. Se preciso, sobreescrever.
-        try {
-            return (new \ReflectionClass($this->getEntityHandler()->getEntityClass()))->getShortName() . "s";
-        } catch (\ReflectionException $e) {
-            throw new \Exception($e);
-        }
-    }
-
 
     /**
      * Verifica junto a CrosierSecurityAPI se o usuário logado tem acesso a rota requisitada.
      *
      * @param string $route
-     * @return mixed
+     * @return bool
      */
-    public function checkAccess(string $route)
+    public function checkAccess(string $route): bool
     {
         // FIXME: implementar.
-        return;
+        return true;
     }
 
     /**
@@ -278,9 +189,9 @@ abstract class FormListController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function doList(Request $request, $parameters = array())
+    public function doList(Request $request, $parameters = array()): Response
     {
-        $this->checkAccess($this->getListRoute());
+        $this->checkAccess($this->crudParams['listRoute']);
 
         $params = $request->query->all();
         if (!array_key_exists('filter', $params)) {
@@ -288,35 +199,25 @@ abstract class FormListController extends AbstractController
             $params['filter'] = null;
 
             if (isset($params['r']) and $params['r']) {
-                StoredViewInfoUtils::clear($this->getListRoute());
+                StoredViewInfoUtils::clear($this->crudParams['listRoute']);
             } else {
-                $storedViewInfo = StoredViewInfoUtils::retrieve($this->getListRoute());
+                $storedViewInfo = StoredViewInfoUtils::retrieve($this->crudParams['listRoute']);
                 if (false and $storedViewInfo) { //FIXME: problema no caso do grupoItemList. Não estava aceitando nova url com novo pai.
                     $blob = stream_get_contents($storedViewInfo['viewInfo']);
                     $unserialized = unserialize($blob);
                     $formPesquisar = isset($unserialized['formPesquisar']) ? $unserialized['formPesquisar'] : null;
                     if ($formPesquisar and $formPesquisar != $params) {
-                        return $this->redirectToRoute($this->getListRoute(), $formPesquisar);
+                        return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
                     }
                 }
             }
         }
 
-        $params['page_title'] = $this->getListPageTitle();
+        $params['page_title'] = $this->crudParams['listPageTitle'];
 
         $params = array_merge($params, $parameters);
 
-        return $this->render($this->getListView(), $params);
-    }
-
-    /**
-     * Necessário informar quais atributos da entidades deverão ser retornados no Json.
-     *
-     * @return mixed
-     */
-    public function getNormalizeAttributes()
-    {
-        return null;
+        return $this->render($this->crudParams['listView'], $params);
     }
 
     /**
@@ -325,9 +226,9 @@ abstract class FormListController extends AbstractController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function doDatatablesJsList(Request $request, $defaultFilters = null)
+    public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
-        $this->checkAccess($this->getListRoute());
+        $this->checkAccess($this->crudParams['listRoute']);
 
         /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
@@ -373,7 +274,8 @@ abstract class FormListController extends AbstractController
         $normalizer = new ObjectNormalizer();
         $encoder = new JsonEncoder();
         $serializer = new Serializer(array($normalizer), array($encoder));
-        $data = $serializer->normalize($dados, 'json', $this->getNormalizeAttributes());
+
+        $data = $serializer->normalize($dados, 'json', ['attributes' => $this->crudParams['normalizedAttrib']]);
 
         $recordsTotal = $repo->count(array());
 
@@ -389,7 +291,7 @@ abstract class FormListController extends AbstractController
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();
             $viewInfo['formPesquisar'] = $formPesquisar;
-            StoredViewInfoUtils::store($this->getListRoute(), $viewInfo);
+            StoredViewInfoUtils::store($this->crudParams['listRoute'], $viewInfo);
         }
 
         return new Response($json);
@@ -400,9 +302,9 @@ abstract class FormListController extends AbstractController
      * @param EntityId $entityId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function doDelete(Request $request, EntityId $entityId)
+    public function doDelete(Request $request, EntityId $entityId): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-//        $this->checkAccess();
+        $this->checkAccess($this->crudParams['deleteRoute']);
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -413,28 +315,47 @@ abstract class FormListController extends AbstractController
                 $this->addFlash('error', 'Erro ao deletar registro.');
             }
         }
+        if ($request->server->get('HTTP_REFERER')) {
+            return $this->redirect($request->server->get('HTTP_REFERER'));
+        } else {
 
-        return $this->redirectToRoute($this->getListRoute());
+            return $this->redirectToRoute($this->crudParams['listRoute']);
+        }
     }
 
     /**
      * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar após um save no form.
      * @param Request $request
      */
-    public function handleReferer(Request $request)
+    public function handleReferer(Request $request): void
     {
         if ($request->get('reftoback')) {
             $to = $request->getSession()->get('refstoback');
             // Se já estiver setado, então não reseta (para não acontecer se setar para a própria formRoute no submit do form).
-            if (!$to || !isset($to[$this->getFormRoute()]) || !$to[$this->getFormRoute()]) {
+            if (!$to || !isset($to[$this->crudParams['formRoute']]) || !$to[$this->crudParams['formRoute']]) {
                 // se já tiver na sessão, adiciona dentro do existente.
                 if ($request->getSession()->has('refstoback')) {
                     $to = $request->getSession()->get('refstoback');
                 }
-                $to[$this->getFormRoute()] = $request->server->get('HTTP_REFERER');
+                $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
                 $request->getSession()->set('refstoback', $to);
             }
         }
+    }
+
+    /**
+     * Sobreescreve o parent::render com atributos padrão para CRUD.
+     *
+     * @param string $view
+     * @param array $parameters
+     * @param Response|null $response
+     * @return Response
+     * @throws \Exception
+     */
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    {
+        $parameters = array_merge($this->crudParams, $parameters);
+        return parent::render($view, $parameters, $response);
     }
 
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: carlos
- * Date: 25/01/19
- * Time: 11:17
- */
 
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 

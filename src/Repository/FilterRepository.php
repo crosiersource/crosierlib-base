@@ -5,7 +5,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -15,14 +17,16 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @author Carlos Eduardo Pauluk
  *
  */
-abstract class FilterRepository extends ServiceEntityRepository
+abstract class FilterRepository extends EntityRepository
 {
 
     private $logger;
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(EntityManagerInterface $registry)
     {
-        parent::__construct($registry, $this->getEntityClass());
+        $entityClass = $this::getEntityClass();
+        $classMetadata = $registry->getClassMetadata($entityClass);
+        parent::__construct($registry, $classMetadata);
     }
 
     /**
@@ -42,7 +46,7 @@ abstract class FilterRepository extends ServiceEntityRepository
         $this->logger = $logger;
     }
 
-    abstract public function getEntityClass();
+    // abstract public function getEntityClass();
 
     /**
      * Monta o "FROM" da query.
@@ -81,7 +85,7 @@ abstract class FilterRepository extends ServiceEntityRepository
      * @return mixed
      * @throws ViewException
      */
-    public function doCountByFilters($filters)
+    public function doCountByFilters(?array $filters = null)
     {
         $em = $this->getEntityManager();
         $qb = $em->createQueryBuilder();

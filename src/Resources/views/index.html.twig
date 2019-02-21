@@ -3,14 +3,15 @@
 
 {% block body %}
 
-    <div class="blur-on-pace">
 
-        <div id="preloader"
-             style="display: none; position: fixed; left: 0; top: 0; z-index: 1999; width: 100%; height: 100%; overflow: visible; background:rgba(255,255,255,0.5);"></div>
+    <div id="preloader"
+         style="display: none; position: fixed; left: 0; top: 0; z-index: 1999; width: 100%; height: 100%; overflow: visible; background:rgba(255,255,255,0.5);"></div>
+
+
 
         {{ include('@CrosierLibBase/header.html.twig') }}
 
-        <div class="app-body">
+        <div class="app-body blur-on-pace">
 
             {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
@@ -24,11 +25,15 @@
 
 
         </div>
-
         {{ include('@CrosierLibBase/footer.html.twig') }}
 
 
-    </div>
+
+
+
+
+
+
 
 
 

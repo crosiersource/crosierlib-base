@@ -55,33 +55,38 @@
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
                  class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
             <argument type="service" id="doctrine"/>
-            <tag name="console.command" />
+            <tag name="console.command"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
                  alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
 
 
+        <!-- FilterRepository -->
+        <service id="crosier_source.crosier_lib_base_bundle.repository.filter_repository"
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository"
+                 alias="crosier_source.crosier_lib_base_bundle.repository.filter_repository"/>
 
         <!-- UserRepository -->
         <service id="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository">
-            <argument type="service" id="doctrine"/>
-            <tag name="doctrine.repository_service" />
-
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
+                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <tag name="doctrine.repository_service"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository" />
+                 alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"/>
 
         <!-- RoleRepository -->
         <service id="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"
                  class="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                    >
-            <argument type="service" id="doctrine"/>
-            <tag name="doctrine.repository_service" />
-
+                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <tag name="doctrine.repository_service"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository" />
+                 alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"/>
 
 
         <!-- CrosierAPIClient -->
@@ -93,7 +98,6 @@
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
 
-
         <!-- SecurityAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"
                  class="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
@@ -102,14 +106,13 @@
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
 
-
-        <!-- MainMenuAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient"
+        <!-- EntMenuAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.config.ent_menu_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\EntMenuAPIClient"
                  parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Config\MainMenuAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.config.main_menu_api_client"/>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Config\EntMenuAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.config.ent_menu_api_client"/>
 
         <!-- PessoaAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"
@@ -117,7 +120,7 @@
                  parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client" />
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"/>
 
         <!-- DiaUtilAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"
@@ -132,11 +135,28 @@
         <service id="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"
                  class="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber">
             <argument type="service" id="monolog.logger"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
-            <tag name="kernel.event_listener" event="kernel.request" />
+            <argument type="service"
+                      id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
+            <tag name="kernel.event_listener" event="kernel.request"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber"
                  alias="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"/>
+
+
+        <!-- BaseController -->
+        <service id="crosier_source.crosier_lib_base_bundle.controller.base_controller"
+                 class="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Controller\BaseController"
+                 alias="crosier_source.crosier_lib_base_bundle.controller.base_controller"/>
+
+        <!-- FormListController -->
+        <service id="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"
+                 class="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
+                 parent="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
+                 alias="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"/>
 
 
     </services>
