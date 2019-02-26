@@ -65,6 +65,7 @@ class CrosierAPIClient
             );
             return $response->getBody()->getContents();
         } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage());
             throw new ViewException('CrosierAPIClient:doRequest error', 0, $e);
         }
     }

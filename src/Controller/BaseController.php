@@ -47,10 +47,12 @@ class BaseController extends AbstractController
 
         if ($session->has('programs_menus')) {
             $programsMenus = $session->get('programs_menus');
-            $entMenuId = $programsMenus[$programUUID];
+            if (isset($programsMenus[$programUUID])) {
+                $entMenuId = $programsMenus[$programUUID];
+            }
         } else {
-            $entMenu = $this->getDoctrine()->getRepository(EntMenu::class)->getEntMenuByProgramUUID($programUUID);
-            $entMenuId = $entMenu->getId();
+            $entMenu = $this->entMenuAPIClient->getEntMenuByProgramUUID($programUUID);
+            $entMenuId = $entMenu['id'];
             $programsMenus[$programUUID] = $entMenuId;
             $session->set('programs_menus', $programsMenus);
         }
