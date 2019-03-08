@@ -50,7 +50,9 @@ class BaseController extends AbstractController
             if (isset($programsMenus[$programUUID])) {
                 $entMenuId = $programsMenus[$programUUID];
             }
-        } else {
+        }
+
+        if (!$entMenuId) {
             $entMenu = $this->entMenuAPIClient->getEntMenuByProgramUUID($programUUID);
             if ($entMenu) {
                 $entMenuId = $entMenu['id'];

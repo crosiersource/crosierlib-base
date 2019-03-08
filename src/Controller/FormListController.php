@@ -111,6 +111,9 @@ abstract class FormListController extends BaseController
         $parameters['form'] = $form->createView();
         $parameters['page_title'] = $this->crudParams['formPageTitle'];
         $parameters['e'] = $entityId;
+        if (isset($this->crudParams['form_PROGRAM_UUID'])) {
+            $params['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
+        }
 
         return $this->render($this->crudParams['formView'], $parameters);
     }
@@ -214,7 +217,9 @@ abstract class FormListController extends BaseController
         }
 
         $params['page_title'] = $this->crudParams['listPageTitle'];
-
+        if (isset($this->crudParams['list_PROGRAM_UUID'])) {
+            $params['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
+        }
         $params = array_merge($params, $parameters);
 
         return $this->render($this->crudParams['listView'], $params);
