@@ -264,6 +264,8 @@ abstract class FormListController extends BaseController
         $countByFilter = $repo->doCountByFilters($filterDatas);
         $dados = $repo->findByFilters($filterDatas, $orders, $start, $limit);
 
+        $this->handleDadosList($dados);
+
         // Para que possa acessar todas os atributos de dentro do getDatatablesColumns() no DatatablesJs
         $dadosE = [];
         foreach ($dados as $dado) {
@@ -295,6 +297,15 @@ abstract class FormListController extends BaseController
         }
 
         return new Response($json);
+    }
+
+    /**
+     * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados retornados da pesquisa.
+     *
+     * @param array $dados
+     */
+    public function handleDadosList(array &$dados) {
+
     }
 
     /**

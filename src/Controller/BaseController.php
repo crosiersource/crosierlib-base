@@ -38,7 +38,7 @@ class BaseController extends AbstractController
         $session = new Session();
         if (!isset($parameters['PROGRAM_UUID'])) {
             // Por padrão, exibe o menu principal do Crosier.
-            $parameters['PROGRAM_UUID'] = '72a9aa1dc9024905b60ea8009a9bf50e';
+            $parameters['PROGRAM_UUID'] = '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
         }
         $programUUID = $parameters['PROGRAM_UUID'];
         $menu = null;
@@ -52,9 +52,11 @@ class BaseController extends AbstractController
             }
         } else {
             $entMenu = $this->entMenuAPIClient->getEntMenuByProgramUUID($programUUID);
-            $entMenuId = $entMenu['id'];
-            $programsMenus[$programUUID] = $entMenuId;
-            $session->set('programs_menus', $programsMenus);
+            if ($entMenu) {
+                $entMenuId = $entMenu['id'];
+                $programsMenus[$programUUID] = $entMenuId;
+                $session->set('programs_menus', $programsMenus);
+            }
         }
 
         if ($entMenuId && $session->has('crosier_menus')) {
