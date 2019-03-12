@@ -5,9 +5,13 @@
             {% for ent in menu %}
 
                 {% if ent.tipo == 'ENT' %}
-                    <li class="nav-item">
+                    <li class="nav-item" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
                         <a class="nav-link" href="{{ ent.program.url is defined ? ent.program.url : '' }}">
                             <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
+                {% elseif ent.tipo == 'hr' %}
+                    <li class="nav-item" style="height: 10px; background-color: white">
+                    <hr/>
+                    </li>
                 {% else %}
                     <li class="nav-item nav-dropdown">
                         <a class="nav-link nav-dropdown-toggle" href="#">

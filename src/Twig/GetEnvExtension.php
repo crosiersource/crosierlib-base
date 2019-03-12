@@ -18,6 +18,6 @@ class GetEnvExtension extends AbstractExtension
 
     function getEnv($var)
     {
-        return getenv($var);
+        return trim(getenv(trim($var)));
     }
 }
