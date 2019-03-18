@@ -44,7 +44,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
             $this->logger->info($base_uri);
             $client = new Client([
                 'base_uri' => $base_uri,
-                'timeout'  => 2.0,
+                'timeout'  => 10.0,
             ]);
             $uri = $base_uri . '/getCrosierAssetUrl?asset=' . urlencode($asset);
             $this->logger->debug('request uri="' . $uri . '"');
