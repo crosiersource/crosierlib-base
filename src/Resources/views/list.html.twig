@@ -54,7 +54,21 @@
 
                         <div class="card">
                             <div class="card-body">
-                                {{ campos_pesquisar }}
+
+                                <div class="form-group">
+
+                                    {% block campos_pesquisar %}
+
+                                    <label for="p_filter_str"></label>
+                                    <input type="text"
+                                           class="form-control" id="filter[str]"
+                                           name="filter[str]"
+                                           value="{{ filter.str|default('') }}">
+
+                                    {% endblock %}
+
+                                </div>
+
                             </div>
                         </div>
 

@@ -14,7 +14,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 class RoleRepository extends FilterRepository
 {
 
-    public static function getEntityClass()
+    public function getEntityClass(): string
     {
         return Role::class;
     }

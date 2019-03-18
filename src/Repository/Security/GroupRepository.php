@@ -14,7 +14,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 class GroupRepository extends FilterRepository
 {
 
-    public function getEntityClass()
+    public function getEntityClass(): string
     {
         return Group::class;
     }

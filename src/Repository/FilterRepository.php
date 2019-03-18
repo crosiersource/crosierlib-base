@@ -5,12 +5,10 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  *
@@ -30,6 +28,11 @@ abstract class FilterRepository extends EntityRepository
     }
 
     /**
+     * @return string
+     */
+    abstract public function getEntityClass(): string;
+
+    /**
      * @return mixed
      */
     public function getLogger(): ?LoggerInterface
@@ -45,8 +48,6 @@ abstract class FilterRepository extends EntityRepository
     {
         $this->logger = $logger;
     }
-
-    // abstract public function getEntityClass();
 
     /**
      * Monta o "FROM" da query.

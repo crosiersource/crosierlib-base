@@ -14,7 +14,7 @@ use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 class UserRepository extends FilterRepository
 {
 
-    public static function getEntityClass()
+    public function getEntityClass(): string
     {
         return User::class;
     }
