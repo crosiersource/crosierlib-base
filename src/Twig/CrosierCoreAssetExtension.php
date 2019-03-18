@@ -41,6 +41,10 @@ class CrosierCoreAssetExtension extends AbstractExtension
             $this->logger->debug(str_repeat('.',100));
             $this->logger->debug('getCrosierAsset(' . $asset . ')');
             $base_uri = trim(getenv('CROSIERCORE_URL'));
+            if (!$base_uri) {
+                throw new \Exception('CROSIERCORE_URL não definido');
+            }
+
             $this->logger->info($base_uri);
             $client = new Client([
                 'base_uri' => $base_uri,
@@ -56,7 +60,8 @@ class CrosierCoreAssetExtension extends AbstractExtension
             $this->logger->debug('url="' . $decoded['url'] . '"');
             return $base_uri . $decoded['url'];
             return null;
-        } catch (GuzzleException $e) {
+        } catch (\Exception $e) {
+            $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
             $this->logger->error($e->getMessage());
             return 'NOTFOUND/' . $asset;
             // throw new ViewException('CrosierCoreAssetExtension:getCrosierAsset error');
