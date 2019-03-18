@@ -4,9 +4,6 @@ namespace CrosierSource\CrosierLibBaseBundle\Twig;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -32,15 +29,14 @@ class CrosierCoreAssetExtension extends AbstractExtension
     /**
      * @param $asset
      * @return string
-     * @throws ViewException
      */
     function getCrosierAsset($asset)
     {
         try {
             $asset = trim($asset);
-            $this->logger->debug(str_repeat('.',100));
+            $this->logger->debug(str_repeat('.', 100));
             $this->logger->debug('getCrosierAsset(' . $asset . ')');
-            $base_uri = trim(getenv('CROSIERCORE_URL'));
+            $base_uri = trim($_SERVER['CROSIERCORE_URL']);
             if (!$base_uri) {
                 throw new \Exception('CROSIERCORE_URL não definido');
             }
@@ -48,7 +44,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
             $this->logger->info($base_uri);
             $client = new Client([
                 'base_uri' => $base_uri,
-                'timeout'  => 10.0,
+                'timeout' => 10.0,
             ]);
             $uri = $base_uri . '/getCrosierAssetUrl?asset=' . urlencode($asset);
             $this->logger->debug('request uri="' . $uri . '"');
