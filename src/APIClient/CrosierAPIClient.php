@@ -55,6 +55,9 @@ class CrosierAPIClient
     {
         try {
             $base_uri = getenv('CROSIERCORE_URL');
+            if (!$base_uri) {
+                throw new \Exception('CROSIERCORE_URL não definida');
+            }
             $client = new Client(['base_uri' => $base_uri]);
             $uri = $base_uri . $uri;
             $response = $client->request($method, $uri,
@@ -64,7 +67,7 @@ class CrosierAPIClient
                 ]
             );
             return $response->getBody()->getContents();
-        } catch (GuzzleException $e) {
+        } catch (\Exception $e) {
             $this->logger->error('URI: ' . $uri);
             $this->logger->error($e->getMessage());
             // throw new ViewException('CrosierAPIClient:doRequest error', 0, $e);

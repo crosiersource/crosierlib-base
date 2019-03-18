@@ -112,7 +112,7 @@ abstract class FormListController extends BaseController
         $parameters['page_title'] = $this->crudParams['formPageTitle'];
         $parameters['e'] = $entityId;
         if (isset($this->crudParams['form_PROGRAM_UUID'])) {
-            $params['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
+            $parameters['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
         }
 
         return $this->render($this->crudParams['formView'], $parameters);

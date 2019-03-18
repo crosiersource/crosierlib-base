@@ -13,7 +13,7 @@
                     <hr/>
                     </li>
                 {% else %}
-                    <li class="nav-item nav-dropdown">
+                    <li class="nav-item nav-dropdown" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
                         <a class="nav-link nav-dropdown-toggle" href="#">
                             <i class="nav-icon {{ ent.icon }}"></i>
                             {{ ent.label }}
