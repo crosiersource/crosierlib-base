@@ -282,7 +282,16 @@ abstract class FormListController extends BaseController
         $encoder = new JsonEncoder();
         $serializer = new Serializer(array($normalizer), array($encoder));
 
-        $data = $serializer->normalize($dados, 'json', ['attributes' => $this->crudParams['normalizedAttrib']]);
+        $context = [];
+        // se foi passado uma lista de atributos da entidade, utiliza
+        if (isset($this->crudParams['normalizedAttrib'])) {
+            $context['attributes'] = $this->crudParams['normalizedAttrib'];
+        } else {
+            // caso contrário, tenta serializar pelos grupos setados no @Groups
+            $context['groups'] = ['entityId', 'entity'];
+
+        }
+        $data = $serializer->normalize($dados, 'json', $context);
 
         $recordsTotal = $repo->count(array());
 
