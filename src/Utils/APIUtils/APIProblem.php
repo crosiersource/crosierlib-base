@@ -42,7 +42,7 @@ class APIProblem
                 : 'Unknown status code :(';
         } else {
             if (!isset(self::$titles[$type])) {
-                throw new \Exception(sprintf(
+                throw new \RuntimeException(sprintf(
                     'No title for type "%s". Did you make it up?',
                     $type
                 ));

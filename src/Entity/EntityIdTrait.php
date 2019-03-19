@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -14,6 +15,7 @@ trait EntityIdTrait
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="bigint")
+     * @Groups("entityId")
      */
     private $id;
 
@@ -21,6 +23,7 @@ trait EntityIdTrait
      *
      * @ORM\Column(name="inserted", type="datetime", nullable=false)
      * @Assert\Type("\DateTime")
+     * @Groups("entityId")
      */
     private $inserted;
 
@@ -28,22 +31,27 @@ trait EntityIdTrait
      *
      * @ORM\Column(name="updated", type="datetime", nullable=false)
      * @Assert\Type("\DateTime")
+     * @Groups("entityId")
+     * @var null|\DateTime
      */
     private $updated;
 
     /**
      *
      * @ORM\Column(name="estabelecimento_id", type="bigint", nullable=false)
+     * @Groups("entityId")
      */
     private $estabelecimentoId;
 
     /**
      * @ORM\Column(name="user_inserted_id", type="bigint", nullable=false)
+     * @Groups("entityId")
      */
     private $userInsertedId;
 
     /**
      * @ORM\Column(name="user_updated_id", type="bigint", nullable=false)
+     * @Groups("entityId")
      */
     private $userUpdatedId;
 

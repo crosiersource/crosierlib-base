@@ -50,6 +50,7 @@ class CrosierAPIClient
      * @param null $params
      * @return string
      * @throws ViewException
+     * @throws GuzzleException
      */
     public function doRequest($uri, $method, $params = null)
     {
@@ -80,6 +81,7 @@ class CrosierAPIClient
      * @param null $params
      * @return string
      * @throws ViewException
+     * @throws GuzzleException
      */
     public function post($uri, $params = null)
     {

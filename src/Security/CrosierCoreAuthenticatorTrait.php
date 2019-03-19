@@ -17,7 +17,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-trait ApiTokenAuthenticatorTrait
+/**
+ * Trait CrosierCoreAuthenticatorTrait.
+ *
+ * Para a autenticação de CrosierApps após acesso via CrosierCore.
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Security
+ */
+trait CrosierCoreAuthenticatorTrait
 {
 
     use TargetPathTrait;

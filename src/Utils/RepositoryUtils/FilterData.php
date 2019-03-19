@@ -36,4 +36,18 @@ class FilterData
         }
         $this->fieldType = $fieldType;
     }
+
+    /**
+     * Cria um FilterData a partir de um array.
+     *
+     * @param array $filter
+     * @return FilterData
+     */
+    public static function fromArray(array $filter): FilterData
+    {
+        $filterData = new FilterData($filter['field'], $filter['compar']);
+        $filterData->fieldType = isset($filter['fieldType']) ? $filter['fieldType'] : null;
+        $filterData->val = $filter['val'];
+        return $filterData;
+    }
 }

@@ -11,6 +11,7 @@ use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Classe base para repositórios com pesquisa pelo padrão FilterData.
  *
  * @author Carlos Eduardo Pauluk
  *
@@ -18,6 +19,7 @@ use Psr\Log\LoggerInterface;
 abstract class FilterRepository extends EntityRepository
 {
 
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(EntityManagerInterface $registry)
@@ -136,4 +138,5 @@ abstract class FilterRepository extends EntityRepository
         }
         return $query->execute();
     }
+
 }
