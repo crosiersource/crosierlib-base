@@ -5,16 +5,13 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 
-class PessoaAPIClient extends CrosierAPIClient
+class PessoaAPIClient extends CrosierEntityIdAPIClient
 {
 
-    /**
-     * @param int $id
-     * @return string
-     */
-    public function getPessoaById(int $id)
-    {
-        return $this->post('/pessoa/findById/' . $id);
+    public function getBaseUri(): string {
+        return '/api/pessoa';
     }
+
+
 
 }
