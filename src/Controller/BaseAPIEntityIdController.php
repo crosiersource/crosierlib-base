@@ -101,7 +101,6 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $repo = $this->getDoctrine()->getRepository($this->getEntityClass());
             $r = $repo->findByFilters($filterDatas);
 
-            $normalizer = new ObjectNormalizer();
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
             $serialized = $serializer->normalize($r, 'json',

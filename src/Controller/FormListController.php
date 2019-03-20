@@ -9,10 +9,14 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -230,6 +234,7 @@ abstract class FormListController extends BaseController
      * @param null $defaultFilters
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
@@ -278,9 +283,10 @@ abstract class FormListController extends BaseController
         }
         $dados = $dadosE;
 
-        $normalizer = new ObjectNormalizer();
-        $encoder = new JsonEncoder();
-        $serializer = new Serializer(array($normalizer), array($encoder));
+
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
 
         $context = [];
         // se foi passado uma lista de atributos da entidade, utiliza
@@ -289,9 +295,9 @@ abstract class FormListController extends BaseController
         } else {
             // caso contrário, tenta serializar pelos grupos setados no @Groups
             $context['groups'] = ['entityId', 'entity'];
-
         }
-        $data = $serializer->normalize($dados, 'json', $context);
+
+
 
         $recordsTotal = $repo->count(array());
 
@@ -299,10 +305,12 @@ abstract class FormListController extends BaseController
             'draw' => $draw,
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $countByFilter,
-            'data' => $data
+            'data' => $dados
         );
 
-        $json = $serializer->serialize($results, 'json');
+        $r = $serializer->normalize($results, 'json', $context);
+
+//        $json = $serializer->serialize($results, 'json');
 
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();
@@ -310,7 +318,7 @@ abstract class FormListController extends BaseController
             StoredViewInfoUtils::store($this->crudParams['listRoute'], $viewInfo);
         }
 
-        return new Response($json);
+        return new JsonResponse($r);
     }
 
     /**
@@ -318,7 +326,8 @@ abstract class FormListController extends BaseController
      *
      * @param array $dados
      */
-    public function handleDadosList(array &$dados) {
+    public function handleDadosList(array &$dados)
+    {
 
     }
 
