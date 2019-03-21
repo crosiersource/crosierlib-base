@@ -12,7 +12,9 @@ use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CrosierAPIClient.
+ *
  * @package CrosierSource\CrosierLibBaseBundle\APIClient
+ * @author Carlos Eduardo Pauluk
  */
 class CrosierAPIClient
 {
@@ -49,8 +51,6 @@ class CrosierAPIClient
      * @param $method
      * @param null $params
      * @return string
-     * @throws ViewException
-     * @throws GuzzleException
      */
     public function doRequest($uri, $method, $params = null)
     {
@@ -68,10 +68,13 @@ class CrosierAPIClient
                 ]
             );
             return $response->getBody()->getContents();
+        } catch (GuzzleException $e) {
+            $this->logger->error('URI: ' . $uri);
+            $this->logger->error($e->getMessage());
+            return null;
         } catch (\Exception $e) {
             $this->logger->error('URI: ' . $uri);
             $this->logger->error($e->getMessage());
-            // throw new ViewException('CrosierAPIClient:doRequest error', 0, $e);
             return null;
         }
     }
@@ -80,10 +83,8 @@ class CrosierAPIClient
      * @param $uri
      * @param null $params
      * @return string
-     * @throws ViewException
-     * @throws GuzzleException
      */
-    public function post($uri, $params = null)
+    public function post($uri, $params = null): string
     {
         return $this->doRequest($uri, 'post', $params);
     }
@@ -92,7 +93,6 @@ class CrosierAPIClient
      * @param $uri
      * @param null $params
      * @return string
-     * @throws ViewException
      */
     public function get($uri, $params = null)
     {
@@ -103,7 +103,7 @@ class CrosierAPIClient
      * @param $r
      * @throws ViewException
      */
-    public function handleErrorResponse($r)
+    public function handleErrorResponse($r): void
     {
         $this->logger->error(print_r($r, true));
         if (isset($r['status']) and $r['status'] === 400) {

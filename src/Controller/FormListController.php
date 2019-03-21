@@ -234,7 +234,6 @@ abstract class FormListController extends BaseController
      * @param null $defaultFilters
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
@@ -309,8 +308,6 @@ abstract class FormListController extends BaseController
         );
 
         $r = $serializer->normalize($results, 'json', $context);
-
-//        $json = $serializer->serialize($results, 'json');
 
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();

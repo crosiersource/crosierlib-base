@@ -48,21 +48,20 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function findById(int $id)
+    public function findById(int $id): JsonResponse
     {
         try {
             /** @var FilterRepository $repo */
             $repo = $this->getDoctrine()->getRepository($this->getEntityClass());
             $r = $repo->find($id);
 
-            $normalizer = new ObjectNormalizer();
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
             $serialized = $serializer->normalize($r, 'json',
                 ['groups' => ['entity', 'entityId']]);
             $result = array('result' => $serialized);
             return new JsonResponse($result);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return (new APIProblem(
                 400,
                 ApiProblem::TYPE_INTERNAL_ERROR
@@ -70,15 +69,22 @@ abstract class BaseAPIEntityIdController extends AbstractController
         }
     }
 
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    abstract public function findByFilters(Request $request): JsonResponse;
+
     /**
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function findByFilters(Request $request)
+    public function doFindByFilters(string $content): JsonResponse
     {
         try {
-            $this->logger->debug($request->getContent());
-            $json = json_decode($request->getContent(), true);
+            $this->logger->debug($content);
+            $json = json_decode($content, true);
             $filtersArray = $json['filters'];
             if (!$filtersArray) {
                 throw new \Exception('"filters" não definido');
@@ -105,9 +111,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
             $serialized = $serializer->normalize($r, 'json',
                 ['groups' => ['entity', 'entityId']]);
-            $results = array('result' => $serialized);
+            $results = array('results' => $serialized);
             return new JsonResponse($results);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return (new APIProblem(
                 400,
                 ApiProblem::TYPE_INTERNAL_ERROR

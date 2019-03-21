@@ -20,27 +20,26 @@ use Symfony\Component\Security\Core\Security;
 abstract class CrosierEntityIdAPIClient extends CrosierAPIClient
 {
 
-    public abstract function getBaseUri(): string;
+    abstract public static function getBaseUri(): string;
 
     /**
      * @param int $id
      * @return string
      */
-    public function getById(int $id)
+    public function getById(int $id): string
     {
-        return $this->post($this->getBaseUri() . '/findById/' . $id);
+        return $this->post($this::getBaseUri() . '/findById/' . $id);
     }
 
     /**
-     * @param string $uri
      * @param array $filters
      * @return string
      * @throws GuzzleException
      * @throws ViewException
      */
-    public function findByFilters(array $filters)
+    public function findByFilters(array $filters): string
     {
-        return $this->post($this->getBaseUri() . '/findByFilters/', $filters);
+        return $this->post($this::getBaseUri() . '/findByFilters/', $filters);
     }
 
 }

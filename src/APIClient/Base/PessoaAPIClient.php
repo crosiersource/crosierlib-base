@@ -3,15 +3,15 @@
 namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 
-use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
+use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 
 class PessoaAPIClient extends CrosierEntityIdAPIClient
 {
 
-    public function getBaseUri(): string {
-        return '/api/pessoa';
+    public static function getBaseUri(): string
+    {
+        return $_SERVER['CROSIERCORE_URL'] . '/api/bse/pessoa';
     }
-
 
 
 }
