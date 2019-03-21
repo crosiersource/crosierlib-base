@@ -45,7 +45,7 @@ class KernelSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => [
-                ['onRequest', 0],
+                ['onKernelRequest', 0],
             ]
         ];
     }
@@ -58,26 +58,28 @@ class KernelSubscriber implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         // Só é ativado para apps
-        if (getenv('APP_ID')) {
+        if (isset($_SERVER['CROSIERAPP_ID'])) {
             try {
                 $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> App KernelSubscriber onRequest checkLoginState()');
-                $this->securityAPIClient->checkLoginState();
+                if (!$this->securityAPIClient->checkLoginState()) {
+                    throw new \Exception('null');
+                }
                 $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OK');
-            } catch (ViewException $e) {
+            } catch (\Exception $e) {
                 $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERRO');
                 if ($e->getPrevious() instanceof \GuzzleHttp\Exception\ClientException) {
                     $exception = $e->getPrevious();
                     if ($exception->getCode() === 401) {
                         $event->setResponse(
                             new RedirectResponse(
-                                getenv('CROSIERCORE_URL') . '/reauthApp/' . getenv('APP_ID')
+                                $_SERVER['CROSIERCORE_URL'] . '/reauthApp/' . getenv('APP_ID')
                             )
                         );
                     }
                 } else {
                     $event->setResponse(
                         new RedirectResponse(
-                            getenv('CROSIERCORE_URL')
+                            $_SERVER['CROSIERCORE_URL']
                         )
                     );
                 }

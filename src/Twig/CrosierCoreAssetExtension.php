@@ -56,6 +56,10 @@ class CrosierCoreAssetExtension extends AbstractExtension
             $this->logger->debug('url="' . $decoded['url'] . '"');
             return $base_uri . $decoded['url'];
             return null;
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
+            $this->logger->error($e->getMessage());
+            return 'NOTFOUND/' . $asset;
         } catch (\Exception $e) {
             $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
             $this->logger->error($e->getMessage());

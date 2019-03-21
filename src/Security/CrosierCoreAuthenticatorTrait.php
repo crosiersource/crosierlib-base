@@ -104,9 +104,9 @@ trait CrosierCoreAuthenticatorTrait
         $session->set('programs_menus', null);
         $session->set('crosier_menus', null);
 
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            return new RedirectResponse($targetPath);
-        }
+//        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+//            return new RedirectResponse($targetPath);
+//        }
 
         return new RedirectResponse($this->router->generate('index'));
     }

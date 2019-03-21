@@ -19,7 +19,7 @@ class SecurityAPIClient extends CrosierAPIClient
      */
     public function checkLoginState()
     {
-        return json_decode($this->get('/sec/api/checkLoginState/'));
+        return json_decode($this->get('/api/sec/checkLoginState/'));
     }
 
 }

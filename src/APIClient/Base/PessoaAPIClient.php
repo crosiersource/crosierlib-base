@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 
+
 class PessoaAPIClient extends CrosierEntityIdAPIClient
 {
 

@@ -26,7 +26,8 @@ class DiaUtilAPIClient extends CrosierAPIClient
             'fim' => $fim->format('Y-m-d'),
             'futuro' => $futuro
         ];
-        return $this->get('/api/bse/diaUtil/incPeriodo/', $params);
+        $contents = $this->get('/api/bse/diaUtil/incPeriodo/', $params, true);
+        return json_decode($contents, true);
     }
 
     /**

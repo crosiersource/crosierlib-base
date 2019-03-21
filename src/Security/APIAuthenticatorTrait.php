@@ -61,10 +61,13 @@ trait APIAuthenticatorTrait
     {
         $this->logger->info('APIAuthenticator getCredentials()');
         // Lógica para poder liberar acesso em ambiente de dev.
-        if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
+        $this->logger->info('pathInfo: "' . $request->getPathInfo() . '"');
+        if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
+            $this->logger->info('APP_ENV = dev');
             return 1;
         } else {
             $authorizationHeader = $request->headers->get('X-Authorization');
+            $this->logger->info('....................... authorizationHeader = "' . $authorizationHeader . '"');
             // skip beyond "Bearer "
             return $authorizationHeader ? substr($authorizationHeader, 7) : '';
         }
@@ -73,7 +76,7 @@ trait APIAuthenticatorTrait
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         // Lógica para poder liberar acesso em ambiente de dev.
-        if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
+        if ($credentials && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
             return $this->userRepository->find(1); // admin
         } else {
             /** @var User $user */

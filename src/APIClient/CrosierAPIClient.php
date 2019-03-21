@@ -50,9 +50,10 @@ class CrosierAPIClient
      * @param $uri
      * @param $method
      * @param null $params
+     * @param bool $asQueryString
      * @return string
      */
-    public function doRequest($uri, $method, $params = null)
+    public function doRequest($uri, $method, $params = null, $asQueryString = false)
     {
         try {
             $base_uri = getenv('CROSIERCORE_URL');
@@ -61,10 +62,11 @@ class CrosierAPIClient
             }
             $client = new Client(['base_uri' => $base_uri]);
             $uri = $base_uri . $uri;
+            $key = $asQueryString ? 'query' : 'json';
             $response = $client->request($method, $uri,
                 [
                     'headers' => array_merge($this->getAuthHeader(), ['XDEBUG_SESSION' => 'blabla']),
-                    'json' => $params
+                    $key => $params
                 ]
             );
             return $response->getBody()->getContents();
@@ -82,21 +84,23 @@ class CrosierAPIClient
     /**
      * @param $uri
      * @param null $params
-     * @return string
+     * @param bool $asQueryString
+     * @return null|string
      */
-    public function post($uri, $params = null): string
+    public function post($uri, $params = null, $asQueryString = false): ?string
     {
-        return $this->doRequest($uri, 'post', $params);
+        return $this->doRequest($uri, 'post', $params, $asQueryString);
     }
 
     /**
      * @param $uri
      * @param null $params
-     * @return string
+     * @param bool $asQueryString
+     * @return null|string
      */
-    public function get($uri, $params = null)
+    public function get($uri, $params = null, $asQueryString = false): ?string
     {
-        return $this->doRequest($uri, 'get', $params);
+        return $this->doRequest($uri, 'get', $params, $asQueryString);
     }
 
     /**
