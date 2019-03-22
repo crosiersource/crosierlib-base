@@ -2,12 +2,12 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils;
 
-use App\Entity\Config\StoredViewInfo;
 
 /**
  * Métodos auxiliares para trabalhar com a StoredViewInfoAPI.
  *
  * @package CrosierSource\CrosierLibBaseBundle\ViewUtils
+ * @author Carlos Eduardo Pauluk
  */
 class StoredViewInfoUtils
 {

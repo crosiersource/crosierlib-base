@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Tests\Utils\DateTimeUtils;
+namespace Tests\Utils\DateTimeUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use PHPUnit\Framework\TestCase;
 
-
+/**
+ * Class DateTimeUtilsTest
+ *
+ * @package Tests\Utils\DateTimeUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class DateTimeUtilsTest extends TestCase
 {
 
@@ -107,32 +112,6 @@ class DateTimeUtilsTest extends TestCase
 
             $this->assertEquals($periodo_inc['dtIni'], $t['dtIni_inc']);
             $this->assertEquals($periodo_inc['dtFim'], $t['dtFim_inc']);
-
-//
-//
-//
-//            if ($periodo_dec['dtIni'] != $t['dtIni_dec']) {
-//                $r .=
-//                    "Dt Ini Dec deveria ser: " . $t['dtIni_dec'] . "<br />" .
-//                    "Retornou como         : " . $periodo_dec['dtIni'] . "<br />";
-//            }
-//            if ($periodo_dec['dtFim'] != $t['dtFim_dec']) {
-//                $r .=
-//                    "Dt Fim Dec deveria ser: " . $t['dtFim_dec'] . "<br />" .
-//                    "Retornou como         : " . $periodo_dec['dtFim'] . "<br />";
-//            }
-//            if ($periodo_inc['dtIni'] != $t['dtIni_inc']) {
-//                $r .=
-//                    "Dt Ini Inc deveria ser: " . $t['dtIni_inc'] . "<br />" .
-//                    "Retornou como         : " . $periodo_inc['dtIni'] . "<br />";
-//            }
-//            if ($periodo_inc['dtFim'] != $t['dtFim_inc']) {
-//                $r .=
-//                    "Dt Fim Inc deveria ser: " . $t['dtFim_inc'] . "<br />" .
-//                    "Retornou como         : " . $periodo_inc['dtFim'] . "<br />";
-//            }
-
-
         }
 
 

@@ -40,6 +40,9 @@ class CrosierAPIClient
     {
         /** @var User $user */
         $user = $this->security->getUser();
+        if (!$user) {
+            throw new \Exception('security->getUser() null');
+        }
         $authHeader['X-Authorization'] = 'Bearer ' . $user->getApiToken();
         return $authHeader;
     }

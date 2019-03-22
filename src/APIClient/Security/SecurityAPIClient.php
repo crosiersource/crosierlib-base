@@ -15,7 +15,6 @@ class SecurityAPIClient extends CrosierAPIClient
 
     /**
      * @return mixed
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
     public function checkLoginState()
     {

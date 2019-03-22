@@ -12,12 +12,13 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 /**
- * Classe responsável por varrer a estrutura de metadados do Doctrine, encontrar todos os campos que sejam string e montar o uppercaseFields.json.
- * Este arquivo json é utilizado nos eventos de PrePersist e PreUpdate das classes filhas de EntityId para colocar em uppercase todos os campos de caracteres.
- *
- *
+ * Classe responsável por varrer a estrutura de metadados do Doctrine, encontrar todos os campos que sejam string
+ * e montar o uppercaseFields.json.
+ * Este arquivo json é utilizado nos eventos de PrePersist e PreUpdate das classes filhas de EntityId para colocar
+ * em uppercase todos os campos de caracteres.
  *
  * @package App\Command\Base
+ * @author Carlos Eduardo Pauluk
  */
 class UppercaseFieldsJsonBuilderCommand extends Command
 {

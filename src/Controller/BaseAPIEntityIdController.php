@@ -86,6 +86,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $this->logger->debug($content);
             $json = json_decode($content, true);
             $filtersArray = $json['filters'];
+            $orders = isset($json['orders']) ? $json['orders'] : null;
+            $start = isset($json['start']) ? $json['start'] : null;
+            $limit = isset($json['start']) ? $json['limit'] : null;
             if (!$filtersArray) {
                 throw new \Exception('"filters" não definido');
             } else {
@@ -105,7 +108,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
         try {
             /** @var FilterRepository $repo */
             $repo = $this->getDoctrine()->getRepository($this->getEntityClass());
-            $r = $repo->findByFilters($filterDatas);
+            $r = $repo->findByFilters($filterDatas, $orders, $start, $limit);
 
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);

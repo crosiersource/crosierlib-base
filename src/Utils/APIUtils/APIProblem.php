@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * A wrapper for holding data to be used for a application/problem+json response
+ * 
+ * @author Carlos Eduardo Pauluk
  */
 class APIProblem
 {

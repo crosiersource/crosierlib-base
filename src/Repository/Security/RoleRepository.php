@@ -9,7 +9,6 @@ use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
  * RepositoryUtils para a entidade Role.
  *
  * @author Carlos Eduardo Pauluk
- *
  */
 class RoleRepository extends FilterRepository
 {

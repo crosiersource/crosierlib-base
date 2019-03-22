@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Campos padrão para endereços (no Brasil).
  *
  * @package CrosierSource\CrosierLibBaseBundle\Entity\Utils
- * @author Carlos Eduardo Pauluk *
+ * @author Carlos Eduardo Pauluk
  */
 trait EnderecoTrait
 {

@@ -2,6 +2,12 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\FTPUtils;
 
+/**
+ * Class FTPUtils
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Utils\FTPUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class FTPUtils
 {
 

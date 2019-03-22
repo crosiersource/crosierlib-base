@@ -6,7 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
+/**
+ * Trait EntityIdTrait
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Entity
+ * @author Carlos Eduardo Pauluk
+ */
 trait EntityIdTrait
 {
 

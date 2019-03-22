@@ -23,6 +23,7 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
  * Para a autenticação de CrosierApps após acesso via CrosierCore.
  *
  * @package CrosierSource\CrosierLibBaseBundle\Security
+ * @author Carlos Eduardo Pauluk
  */
 trait CrosierCoreAuthenticatorTrait
 {

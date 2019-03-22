@@ -16,7 +16,9 @@
         "guzzlehttp/guzzle": "~6.0",
         "symfony/monolog-bundle": "^3.3",
         "symfony/property-access": "^4.2",
-        "symfony/serializer": "^4.2"
+        "symfony/serializer": "^4.2",
+        "symfony/flex": "^1.2",
+        "symfony/dotenv": "^4.2"
     },
     "autoload": {
         "psr-4": {
@@ -25,7 +27,6 @@
         }
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^4.2",
         "symfony/framework-bundle": "^4.2",
         "symfony/config": "^4.2",
         "symfony/dependency-injection": "^4.2",
@@ -33,6 +34,7 @@
         "symfony/http-kernel": "^4.2",
         "twig/extensions": "^1.5",
         "twig/twig": "^2.6",
-        "symfony/orm-pack": "1.*"
+        "symfony/orm-pack": "1.*",
+        "symfony/phpunit-bridge": "^4.2"
     }
 }

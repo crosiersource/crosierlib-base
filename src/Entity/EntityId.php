@@ -2,7 +2,12 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity;
 
-
+/**
+ * Interface EntityId
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Entity
+ * @author Carlos Eduardo Pauluk
+ */
 interface EntityId
 {
 

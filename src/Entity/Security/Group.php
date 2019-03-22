@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository")
  * @ORM\Table(name="sec_group")
+ *
+ * @author Carlos Eduardo Pauluk
  */
 class Group implements EntityId
 {
@@ -21,6 +23,7 @@ class Group implements EntityId
     /**
      *
      * @ORM\Column(name="groupname", type="string", length=90, unique=true)
+     * @var null|string
      */
     private $groupname;
 
@@ -31,6 +34,7 @@ class Group implements EntityId
      *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
      *      )
+     * @var Collection
      */
     private $roles;
 
@@ -40,33 +44,39 @@ class Group implements EntityId
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getGroupname()
+    public function getGroupname(): ?string
     {
         return $this->groupname;
     }
 
     /**
-     * @param mixed $groupname
+     * @param null|string $groupname
+     * @return Group
      */
-    public function setGroupname($groupname): void
+    public function setGroupname(?string $groupname): Group
     {
         $this->groupname = $groupname;
+        return $this;
     }
 
     /**
-     *
-     * @return Collection|Role[]
+     * @return Collection
      */
     public function getRoles(): Collection
     {
         return $this->roles;
     }
 
-    public function setRoles($roles)
+    /**
+     * @param Collection $roles
+     * @return Group
+     */
+    public function setRoles(Collection $roles): Group
     {
         $this->roles = $roles;
+        return $this;
     }
 
 

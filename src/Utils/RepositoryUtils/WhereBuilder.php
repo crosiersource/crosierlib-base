@@ -5,6 +5,12 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * Class WhereBuilder
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class WhereBuilder
 {
 

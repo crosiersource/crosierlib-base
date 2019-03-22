@@ -5,6 +5,12 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\StringUtils;
 use NumberFormatter;
 use Transliterator;
 
+/**
+ * Class StringUtils
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Utils\StringUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class StringUtils
 {
 

@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="\CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository")
  * @ORM\Table(name="sec_role")
+ *
+ * @author Carlos Eduardo Pauluk
  */
 class Role implements EntityId
 {

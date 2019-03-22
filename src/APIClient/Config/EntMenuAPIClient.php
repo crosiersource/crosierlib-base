@@ -7,9 +7,9 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Config;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 
 /**
- * Class EntMenuAPIClient
- * @package CrosierSource\CrosierLibBaseBundle\APIClient\Config
+ * Cliente para consumir os serviços REST da EntMenuAPI.
  *
+ * @package CrosierSource\CrosierLibBaseBundle\APIClient\Config
  * @author Carlos Eduardo Pauluk
  */
 class EntMenuAPIClient extends CrosierAPIClient

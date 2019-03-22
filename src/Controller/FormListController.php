@@ -23,7 +23,6 @@ use Symfony\Component\Serializer\Serializer;
 /**
  * Classe pai para CRUDs padrão.
  *
- * @package App\Controller
  * @author Carlos Eduardo Pauluk
  */
 abstract class FormListController extends BaseController

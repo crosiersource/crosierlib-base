@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *
  *
  * @package CrosierSource\CrosierLibBaseBundle\EventSubscriber
+ * @author Carlos Eduardo Pauluk
  */
 class KernelSubscriber implements EventSubscriberInterface
 {

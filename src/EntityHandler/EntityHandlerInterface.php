@@ -7,7 +7,12 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 
-
+/**
+ * Interface EntityHandlerInterface
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\EntityHandler
+ * @author Carlos Eduardo Pauluk
+ */
 interface EntityHandlerInterface
 {
     /**

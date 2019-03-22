@@ -6,6 +6,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * Class RouteExistsExtension
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Twig
+ * @author Carlos Eduardo Pauluk
+ */
 class RouteExistsExtension extends AbstractExtension
 {
 

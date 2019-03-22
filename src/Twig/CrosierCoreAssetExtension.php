@@ -8,7 +8,12 @@ use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-
+/**
+ * Class CrosierCoreAssetExtension
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Twig
+ * @author Carlos Eduardo Pauluk
+ */
 class CrosierCoreAssetExtension extends AbstractExtension
 {
     /** @var LoggerInterface */

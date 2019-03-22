@@ -2,6 +2,12 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\FileUtils;
 
+/**
+ * Class FileUtils
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Utils\FileUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class FileUtils
 {
 

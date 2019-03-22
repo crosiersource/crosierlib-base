@@ -14,7 +14,6 @@ use Psr\Log\LoggerInterface;
  * Classe base para repositórios com pesquisa pelo padrão FilterData.
  *
  * @author Carlos Eduardo Pauluk
- *
  */
 abstract class FilterRepository extends EntityRepository
 {

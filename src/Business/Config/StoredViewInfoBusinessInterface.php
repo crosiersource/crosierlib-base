@@ -2,22 +2,23 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandlerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Security\Core\Security;
+
+/**
+ * Interface StoredViewInfoBusinessInterface
+ * @package CrosierSource\CrosierLibBaseBundle\Business\Config
+ * @author Carlos Eduardo Pauluk
+ */
 interface StoredViewInfoBusinessInterface
 {
 
-    private $doctrine;
-
-    private $security;
-
-    private $entityHandler;
-
-
-    public function getDoctrine():RegistryInterface;
+    public function getDoctrine(): RegistryInterface;
 
     public function getSecurity(): Security;
 
-    public function getEntityHandler():
-
+    public function getEntityHandler(): EntityHandlerInterface;
 
     public function store(string $viewName, string $viewInfo);
 

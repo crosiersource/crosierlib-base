@@ -9,6 +9,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
+/**
+ * Class CrosierLibBaseExtension
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\DependencyInjection
+ * @author Carlos Eduardo Pauluk
+ */
 class CrosierLibBaseExtension extends Extension
 {
 

@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository")
  * @ORM\Table(name="sec_user")
+ * @author Carlos Eduardo Pauluk
  */
 class User implements EntityId, UserInterface, \Serializable
 {

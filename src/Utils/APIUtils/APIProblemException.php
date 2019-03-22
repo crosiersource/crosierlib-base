@@ -4,6 +4,12 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\APIUtils;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * Class APIProblemException
+ *
+ * @package CrosierSource\CrosierLibBaseBundle\Utils\APIUtils
+ * @author Carlos Eduardo Pauluk
+ */
 class APIProblemException extends HttpException
 {
     private $apiProblem;

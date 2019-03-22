@@ -10,8 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- * Class BaseController
+ * Class BaseController.
+ *
  * @package CrosierSource\CrosierLibBaseBundle\Controller
+ * @author Carlos Eduardo Pauluk
  */
 class BaseController extends AbstractController
 {
