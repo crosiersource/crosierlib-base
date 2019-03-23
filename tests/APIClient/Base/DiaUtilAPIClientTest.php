@@ -2,7 +2,9 @@
 
 namespace Tests\APIClient\Base;
 
+use CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -11,21 +13,26 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * @package Tests\APIClient\Base
  * @author Carlos Eduardo Pauluk
  */
-class DiaUtilAPIClientTest // extends KernelTestCase
+class DiaUtilAPIClientTest extends KernelTestCase
 {
 
-//    public function testDiasUteis()
-//    {
-//        self::bootKernel();
-//
-//        // returns the real and unchanged service container
-//        $container = self::$kernel->getContainer();
-//
-//        // gets the special container that allows fetching private services
-//        $container = self::$container;
-//
-//        $diaUtilAPIClient = self::$container->get(CrosierAPIClient::class);
-//    }
+
+    public function testDiasUteis()
+    {
+        self::bootKernel();
+        /** @var DiaUtilAPIClient $diaUtilAPIClient */
+        $diaUtilAPIClient = self::$container->get('test.CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient');
+
+        $this->assertInstanceOf(DiaUtilAPIClient::class, $diaUtilAPIClient);
+
+
+
+        $du = $diaUtilAPIClient->findDiaUtil(DateTimeUtils::parseDateStr('25/12/2019'), true, true);
+        $prox = DateTimeUtils::parseDateStr('26/12/2019');
+        $this->assertEquals($du->format('d/M/Y'), $prox->format('d/M/Y'));
+
+
+    }
 
 }
 
