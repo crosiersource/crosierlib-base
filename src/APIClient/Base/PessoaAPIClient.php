@@ -16,12 +16,12 @@ class PessoaAPIClient extends CrosierEntityIdAPIClient
 
     public static function getBaseUri(): string
     {
-        return '/api/bse/pessoa';
+        return $_SERVER['CROSIERCORE_URL'] . '/api/bse/pessoa';
     }
 
     public function findByCategEStr(string $categ, string $str = null)
     {
-        $r = $this->get(PessoaAPIClient::getBaseUri() . '/findByCategEStr/' . $categ . '/' . $str);
+        $r = $this->get('/findByCategEStr/' . $categ . '/' . $str);
         return json_decode($r, true);
     }
 

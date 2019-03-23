@@ -15,16 +15,22 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 class EntMenuAPIClient extends CrosierAPIClient
 {
 
+
+    public static function getBaseUri(): string
+    {
+        return $_SERVER['CROSIERCORE_URL'] . '/api/cfg/entMenu';
+    }
+
     public function buildMenu(string $programUUID)
     {
-        $uri = '/api/cfg/entMenu/buildMenu/' . $programUUID;
+        $uri = '/buildMenu/' . $programUUID;
         $json = $this->post($uri);
         return json_decode($json, true);
     }
 
     public function getEntMenuByProgramUUID(string $programUUID)
     {
-        $uri = '/api/cfg/entMenu/getEntMenuByProgramUUID/' . $programUUID;
+        $uri = '/getEntMenuByProgramUUID/' . $programUUID;
         $json = $this->post($uri);
         return json_decode($json, true);
     }

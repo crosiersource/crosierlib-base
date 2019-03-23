@@ -15,6 +15,11 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 class DiaUtilAPIClient extends CrosierAPIClient
 {
 
+    public static function getBaseUri(): string
+    {
+        return $_SERVER['CROSIERCORE_URL'] . '/api/bse/diaUtil';
+    }
+
     /**
      * @param int $id
      * @return string
@@ -26,7 +31,7 @@ class DiaUtilAPIClient extends CrosierAPIClient
             'fim' => $fim->format('Y-m-d'),
             'futuro' => $futuro
         ];
-        $contents = $this->get('/api/bse/diaUtil/incPeriodo/', $params, true);
+        $contents = $this->get('/incPeriodo/', $params, true);
         return json_decode($contents, true);
     }
 
@@ -48,7 +53,7 @@ class DiaUtilAPIClient extends CrosierAPIClient
                 'comercial' => $comercial,
             ]
         ];
-        $r = json_decode($this->post('/api/bse/diaUtil/findDiaUtil/', $params), true);
+        $r = json_decode($this->post('/findDiaUtil/', $params), true);
 
         if (!isset($r['diaUtil'])) {
             $this->handleErrorResponse($r);
@@ -66,8 +71,9 @@ class DiaUtilAPIClient extends CrosierAPIClient
         $params = [
             'mesano' => $mesano->format('Y-m'),
         ];
-        $r = json_decode($this->get('/api/bse/diaUtil/findDiasUteisFinanceirosByMesAno/', $params));
+        $r = json_decode($this->get('/findDiasUteisFinanceirosByMesAno/', $params));
         return $r;
     }
+
 
 }

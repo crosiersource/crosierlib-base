@@ -13,12 +13,17 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 class SecurityAPIClient extends CrosierAPIClient
 {
 
+    public static function getBaseUri(): string
+    {
+        return $_SERVER['CROSIERCORE_URL'] . '/api/sec';
+    }
+
     /**
      * @return mixed
      */
     public function checkLoginState()
     {
-        return json_decode($this->get('/api/sec/checkLoginState/'));
+        return json_decode($this->get('/checkLoginState/'));
     }
 
 }

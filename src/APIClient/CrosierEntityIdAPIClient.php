@@ -20,12 +20,6 @@ use Symfony\Component\Security\Core\Security;
 abstract class CrosierEntityIdAPIClient extends CrosierAPIClient
 {
 
-    abstract public static function getBaseUri(): string;
-
-    public static function getFullBaseUri(): string {
-        return $_SERVER['CROSIERCORE_URL'] . CrosierEntityIdAPIClient::getBaseUri();
-    }
-
     /**
      * @param int $id
      * @return string

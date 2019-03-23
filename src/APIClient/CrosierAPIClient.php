@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Security;
  * @package CrosierSource\CrosierLibBaseBundle\APIClient
  * @author Carlos Eduardo Pauluk
  */
-class CrosierAPIClient
+abstract class CrosierAPIClient
 {
 
     /**
@@ -32,6 +32,8 @@ class CrosierAPIClient
         $this->security = $security;
         $this->logger = $logger;
     }
+
+    abstract public static function getBaseUri(): string;
 
     /**
      * @return mixed
@@ -58,12 +60,8 @@ class CrosierAPIClient
     public function doRequest($uri, $method, $params = null, $asQueryString = false)
     {
         try {
-            $base_uri = getenv('CROSIERCORE_URL');
-            if (!$base_uri) {
-                throw new \Exception('CROSIERCORE_URL não definida');
-            }
-            $client = new Client(['base_uri' => $base_uri]);
-            $uri = $base_uri . $uri;
+            $uri = $this::getBaseUri() . $uri;
+            $client = new Client();
             $key = $asQueryString ? 'query' : 'json';
             $response = $client->request($method, $uri,
                 [
