@@ -38,9 +38,9 @@ class BaseController extends AbstractController
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
         $session = new Session();
-        if (!isset($parameters['PROGRAM_UUID'])) {
-            // Por padrão, exibe o menu principal do Crosier.
-            $parameters['PROGRAM_UUID'] = '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
+        if (!isset($parameters['PROGRAM_UUID']) || !$parameters['PROGRAM_UUID']) {
+            // Caso não tenha sido passado o PROGRAM_UUID, utiliza o programa da Dashboard deste aplicativo
+            $parameters['PROGRAM_UUID'] = $this->entMenuAPIClient->getDashboardProgramUUID($_SERVER['CROSIERAPP_UUID']); // '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
         }
         $programUUID = $parameters['PROGRAM_UUID'];
         $menu = null;
