@@ -69,6 +69,14 @@ class DateTimeUtilsTest extends TestCase
                 'dtIni_inc' => '2020-03-01',
                 'dtFim_inc' => '2020-07-31'
             ],
+            [
+                'dtIni' => '2019-04-25',
+                'dtFim' => '2019-04-29',
+                'dtIni_dec' => '2019-04-20',
+                'dtFim_dec' => '2019-04-24',
+                'dtIni_inc' => '2019-04-30',
+                'dtFim_inc' => '2019-05-04'
+            ],
             // bimestre
             [
                 'dtIni' => '2020-01-01',
@@ -107,11 +115,11 @@ class DateTimeUtilsTest extends TestCase
             $periodo_dec = DateTimeUtils::decPeriodoRelatorial($dtIni, $dtFim);
             $periodo_inc = DateTimeUtils::incPeriodoRelatorial($dtIni, $dtFim);
 
-            $this->assertEquals($periodo_dec['dtIni'], $t['dtIni_dec']);
-            $this->assertEquals($periodo_dec['dtFim'], $t['dtFim_dec']);
+            $this->assertEquals($t['dtIni_dec'], $periodo_dec['dtIni'], print_r($t, true));
+            $this->assertEquals($t['dtFim_dec'], $periodo_dec['dtFim'], print_r($t, true));
 
-            $this->assertEquals($periodo_inc['dtIni'], $t['dtIni_inc']);
-            $this->assertEquals($periodo_inc['dtFim'], $t['dtFim_inc']);
+            $this->assertEquals($t['dtIni_inc'], $periodo_inc['dtIni'], print_r($t, true));
+            $this->assertEquals($t['dtFim_inc'], $periodo_inc['dtFim'], print_r($t, true));
         }
 
 

@@ -27,9 +27,10 @@ class FilterData
      * @param null $fieldType
      * @param array|null $params
      */
-    public function __construct($field, $compar, $viewFieldName = null, $fieldType = null, ?array $params = null)
+    public function __construct($field, $compar, $viewFieldName = null, ?array $params = null, $fieldType = null)
     {
-        $this->field = $field;
+        // sempre será tratado como array
+        $this->field = is_array($field) ? $field : [$field];
         $this->compar = $compar;
         if (isset($params['filter'][$viewFieldName])) {
             $this->val = $params['filter'][$viewFieldName];

@@ -49,3 +49,10 @@
 
 
 {% endblock %}
+
+
+{% block down_scripts %}
+	{% if formJS is defined %}
+		<script src="{{ asset('build/' ~ formJS) }}"></script>
+	{% endif %}
+{% endblock %}

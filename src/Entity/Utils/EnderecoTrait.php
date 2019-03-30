@@ -64,7 +64,7 @@ trait EnderecoTrait
 
     /**
      *
-     * @ORM\Column(name="tipoEndereco", type="string", nullable=true, length=100)
+     * @ORM\Column(name="tipo_endereco", type="string", nullable=true, length=100)
      * @var string|null
      */
     private $tipoEndereco;

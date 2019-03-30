@@ -98,7 +98,7 @@ abstract class CrosierAPIClient
      * @param bool $asQueryString
      * @return null|string
      */
-    public function get($uri, $params = null, $asQueryString = false): ?string
+    public function get($uri, $params = null, $asQueryString = true): ?string
     {
         return $this->doRequest($uri, 'get', $params, $asQueryString);
     }

@@ -45,21 +45,20 @@ class DiaUtilAPIClient extends CrosierAPIClient
      */
     public function findDiaUtil(\DateTime $dt, bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
     {
-        $params = [
+        $params =
             [
                 'dt' => $dt->format('Y-m-d'),
                 'prox' => $prox,
                 'financeiro' => $financeiro,
                 'comercial' => $comercial,
-            ]
-        ];
-        $r = json_decode($this->post('/findDiaUtil/', $params), true);
+            ];
+        $r = json_decode($this->get('/findDiaUtil/', $params), true);
 
         if (!isset($r['diaUtil'])) {
             $this->handleErrorResponse($r);
         }
         $diaUtil = $r['diaUtil'];
-        return \DateTime::createFromFormat('Y-m-d H:i:s.u', $diaUtil['date']);
+        return \DateTime::createFromFormat('Y-m-d', $diaUtil);
     }
 
     /**

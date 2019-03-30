@@ -14,50 +14,73 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 class DateTimeUtils
 {
 
+    /**
+     * @param $dateStr
+     * @return bool|\DateTime
+     * @throws ViewException
+     */
     public static function parseDateStr($dateStr)
     {
         if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
-            $dt->setTime(12, 0, 0, 0);
+            $dt->setTime(12, 0);
             return $dt;
-        } else if (strlen($dateStr) === 7) { // YYYY-mm (mesAno)
+        }
+
+        if (strlen($dateStr) === 7) { // YYYY-mm (mesAno)
             $dt = \DateTime::createFromFormat('Y-m-d', $dateStr . '-01');
-            $dt->setTime(12, 0, 0, 0);
+            $dt->setTime(12, 0);
             return $dt;
-        } else if (strlen($dateStr) === 8) { // dd/mm/yy
+        }
+
+        if (strlen($dateStr) === 8) { // dd/mm/yy
             $dt = \DateTime::createFromFormat('d/m/y', $dateStr);
-            $dt->setTime(12, 0, 0, 0);
+            $dt->setTime(12, 0);
             return $dt;
-        } else if (strlen($dateStr) === 10) { // dd/mm/YYYY
+        }
+
+        if (strlen($dateStr) === 10) { // dd/mm/YYYY
             if (preg_match('/\d{4}-\d{2}-\d{2}/', $dateStr)) {
                 $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
             } else {
                 $dt = \DateTime::createFromFormat('d/m/Y', $dateStr);
             }
-            $dt->setTime(12, 0, 0, 0);
+            $dt->setTime(12, 0);
             return $dt;
-        } else if (strlen($dateStr) === 16) { // dd/mm/YYYY 12:34
-            return \DateTime::createFromFormat('d/m/Y H:i', $dateStr);
-        } else if (strlen($dateStr) === 19) { // dd/mm/YYYY 12:34:00
-            return \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
-        } else {
-            throw new ViewException('Impossível parse na data [' . $dateStr . ']');
         }
+
+        if (strlen($dateStr) === 16) { // dd/mm/YYYY 12:34
+            return \DateTime::createFromFormat('d/m/Y H:i', $dateStr);
+        }
+
+        if (strlen($dateStr) === 19) { // dd/mm/YYYY 12:34:00
+            return \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
+        }
+
+        throw new ViewException('Impossível parse na data [' . $dateStr . ']');
     }
 
+    /**
+     * Calcula a diferença em meses.
+     *
+     * @param \DateTime $dtIni
+     * @param \DateTime $dtFim
+     * @return float|int
+     * @throws \Exception
+     */
     public static function monthDiff(\DateTime $dtIni, \DateTime $dtFim)
     {
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
-            throw new \Exception("dtIni > dtFim");
+            throw new \RuntimeException('dtIni deve ser menor ou igual a dtFim');
         }
-        $difAnos = intval($dtFim->format('Y')) - intval($dtIni->format('Y'));
-        $difMeses = intval($dtFim->format('m')) - intval($dtIni->format('m'));
+        $difAnos = (int)$dtFim->format('Y') - (int)$dtIni->format('Y');
+        $difMeses = (int)$dtFim->format('m') - (int)$dtIni->format('m');
         return ($difAnos * 12) + $difMeses;
     }
 
     /**
-     *
      * Retorna se o período especificado é um período relatorial.
+     *
      * 01 - 15
      * 01 - ultimoDia
      * 16 - ultimoDia
@@ -68,25 +91,25 @@ class DateTimeUtils
      * @return bool
      * @throws \Exception
      */
-    public static function isPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim)
+    public static function isPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim): bool
     {
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
-            throw new \Exception("dtIni > dtFim");
+            throw new \RuntimeException('dtIni deve ser menor ou igual a dtFim');
         }
 
         $dtFimEhUltimoDiaDoMes = $dtFim->format('Y-m-d') === $dtFim->format('Y-m-t');
-        $dtIniDia = intval($dtIni->format('d'));
-        $dtFimDia = intval($dtFim->format('d'));
+        $dtIniDia = (int)$dtIni->format('d');
+        $dtFimDia = (int)$dtFim->format('d');
 
         // 01 - 15
         // 01 - ultimoDia
         // 16 - ultimoDia
         // 16 - 15
-        return ($dtIni->format('d') === $dtFim->format('d')) OR
-            ($dtIniDia == 1 and $dtFimDia == 15) OR
-            ($dtIniDia == 1 and $dtFimEhUltimoDiaDoMes) OR
-            ($dtIniDia == 16 and $dtFimEhUltimoDiaDoMes) OR
-            ($dtIniDia == 16 and $dtFimDia == 15);
+        return ($dtIniDia === $dtFimDia) OR
+            ($dtIniDia === 1 && $dtFimDia === 15) OR
+            ($dtIniDia === 1 && $dtFimEhUltimoDiaDoMes) OR
+            ($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) OR
+            ($dtIniDia === 16 && $dtFimDia === 15);
 
     }
 
@@ -96,128 +119,137 @@ class DateTimeUtils
      *
      * @param \DateTime $dtIni
      * @param \DateTime $dtFim
+     * @param bool $strict Se deve verificar se o período realmente é um período relatorial.
      * @return false|string
      * @throws \Exception
      */
-    public static function incPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim)
+    public static function incPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false)
     {
         $dtIni = clone $dtIni;
         $dtFim = clone $dtFim;
         // Seto para meio-dia para evitar problemas com as funções diff caso bata com horário de verão
-        $dtIni->setTime(12, 0, 0, 0);
-        $dtFim->setTime(12, 0, 0, 0);
+        $dtIni->setTime(12, 0);
+        $dtFim->setTime(12, 0);
 
-        if (!DateTimeUtils::isPeriodoRelatorial($dtIni, $dtFim)) {
-            throw new \Exception("O período informado não é relatorial.");
+        if ( (!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
+            throw new \RuntimeException('O período informado não é relatorial.');
         }
 
-        $dtFimEhUltimoDiaDoMes = $dtFim->format('Y-m-d') === $dtFim->format('Y-m-t');
-        $dtIniDia = $dtIni->format('d');
-        $dtFimDia = $dtFim->format('d');
 
-        $difMeses = DateTimeUtils::monthDiff($dtIni, $dtFim);
+        $difMeses = self::monthDiff($dtIni, $dtFim);
         $difDias = $dtFim->diff($dtIni)->days;
 
         // A próxima dtIni vai ser sempre um dia depois da dtFim
-        $proxDtIni = clone $dtFim;
-        $proxDtIni = $proxDtIni->add(new \DateInterval('P1D'));
+        $proxDtIni = (clone $dtFim)->add(new \DateInterval('P1D'));
         $proxDtIniF = $proxDtIni->format('Y-m-d');
+
+        // Se não é um período relatorial, apenas acrescenta o número de dias
+        if (!$ehPeriodoRelatorial) {
+            $proxDtFim = (clone $proxDtIni)->add(new \DateInterval('P' . $difDias . 'D'));
+            $proxDtFimF = $proxDtFim->format('Y-m-d');
+            $periodo['dtIni'] = $proxDtIniF;
+            $periodo['dtFim'] = $proxDtFimF;
+            return $periodo;
+        }
+        // else
+
+        $dtFimEhUltimoDiaDoMes = $dtFim->format('Y-m-d') === $dtFim->format('Y-m-t');
+        $dtIniDia = (int)$dtIni->format('d');
+        $dtFimDia = (int)$dtFim->format('d');
 
         $proxDtFimF = null;
 
         // Se é o mesmo dia
         if ($dtIni->format('Y-m-d') === $dtFim->format('Y-m-d')) {
             $proxDtFimF = $proxDtIniF;
+        } else if ($difMeses === 0) {
+            if ($difDias > 16) {
+                // Não é quinzena, é o mês inteiro
+                $proxDtFimF = $dtFim->setDate($dtFim->format('Y'), (int)$dtFim->format('m') + 1, 28)->format('Y-m-t');
+            } else if ($dtFimDia === 15) {
+                $proxDtFimF = $dtFim->format('Y-m-t');
+            } else { // fimDia === ultimo dia do mês
+                $proxDtFimF = $dtFim->setDate($dtFim->format('Y'), (int)$dtFim->format('m') + 1, 15)->format('Y-m-d');
+            }
         } else {
-
-            // dtFim vai ser sempre dia 16 ou o último dia do mês
-            if ($difMeses == 0) {
-                if ($difDias > 16) {
-                    // Não é quinzena, é o mês inteiro
-                    $proxDtFimF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') + 1, 28)->format('Y-m-t');
-                } else {
-                    // é uma quinzena
-                    if ($dtFimDia == 15) {
-                        $proxDtFimF = $dtFim->format('Y-m-t');
-                    } else { // fimDia == ultimo dia do mês
-                        $proxDtFimF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') + 1, 15)->format('Y-m-d');
-                    }
-                }
-            } else {
-                // não estão no mesmo mês...
-
-                // É um período de 45 dias ou mais
-                if (($dtIniDia == 1) and ($dtFimDia == 15 or $dtFimEhUltimoDiaDoMes)) {
-                    // iniDia = 16 (fimDia + 1)
-                    // fimDia = ultimo dia do mês
-                    $proxDtFimF = $proxDtIni->setDate($proxDtIni->format('Y'), $proxDtIni->format('m') + ($difMeses), 28)->format('Y-m-t');
-                } else if (($dtIniDia == 16) and $dtFimEhUltimoDiaDoMes or $dtFimDia == 15) {
-                    $proxDtFimF = $proxDtIni->setDate($proxDtIni->format('Y'), $proxDtIni->format('m') + ($difMeses), 15)->format('Y-m-d');
-                }
+            if (($dtIniDia === 1) && ($dtFimDia === 15 || $dtFimEhUltimoDiaDoMes)) {
+                // iniDia = 16 (fimDia + 1)
+                // fimDia = ultimo dia do mês
+                $proxDtFimF = $proxDtIni->setDate($proxDtIni->format('Y'), (int)$proxDtIni->format('m') + $difMeses, 28)->format('Y-m-t');
+            } else if (($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) || $dtFimDia === 15) {
+                $proxDtFimF = $proxDtIni->setDate($proxDtIni->format('Y'), (int)$proxDtIni->format('m') + $difMeses, 15)->format('Y-m-d');
             }
         }
-
-
         $periodo['dtIni'] = $proxDtIniF;
         $periodo['dtFim'] = $proxDtFimF;
 
         return $periodo;
     }
 
-    public static function decPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim)
+    /**
+     * Decrementa um período relatorial.
+     *
+     * @param \DateTime $dtIni
+     * @param \DateTime $dtFim
+     * @param bool $strict Se deve verificar se o período realmente é um período relatorial.
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function decPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false)
     {
-        // Seto para meio-dia para evitar problemas com as funções diff caso bata com horário de verão
         $dtIni = clone $dtIni;
         $dtFim = clone $dtFim;
-        $dtIni->setTime(12, 0, 0, 0);
-        $dtFim->setTime(12, 0, 0, 0);
+        // Seto para meio-dia para evitar problemas com as funções diff caso bata com horário de verão
+        $dtIni->setTime(12, 0);
+        $dtFim->setTime(12, 0);
 
-        if (!DateTimeUtils::isPeriodoRelatorial($dtIni, $dtFim)) {
-            throw new \Exception("O período informado não é relatorial.");
+        if ( (!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
+            throw new \RuntimeException('O período informado não é relatorial.');
         }
 
 
-        $dtFimEhUltimoDiaDoMes = $dtFim->format('Y-m-d') === $dtFim->format('Y-m-t');
-        $dtIniDia = $dtIni->format('d');
-        $dtFimDia = $dtFim->format('d');
-
-        $difMeses = DateTimeUtils::monthDiff($dtIni, $dtFim);
+        $difMeses = self::monthDiff($dtIni, $dtFim);
         $difDias = $dtFim->diff($dtIni)->days;
 
-        // A próxima dtIni vai ser sempre um dia depois da dtFim
-        $proxDtFim = clone $dtIni;
-
-        $proxDtFim = $proxDtFim->sub(new \DateInterval('P1D'));
+        // A próxima dtFim vai ser sempre um dia antes da dtIni
+        $proxDtFim = (clone $dtIni)->sub(new \DateInterval('P1D'));
         $proxDtFimF = $proxDtFim->format('Y-m-d');
+
+        // Se não é um período relatorial, apenas decrementa o número de dias
+        if (!$ehPeriodoRelatorial) {
+            $proxDtIni = (clone $proxDtFim)->sub(new \DateInterval('P' . $difDias . 'D'));
+            $proxDtIniF = $proxDtIni->format('Y-m-d');
+            $periodo['dtIni'] = $proxDtIniF;
+            $periodo['dtFim'] = $proxDtFimF;
+            return $periodo;
+        }
+        // else
+
+        $dtFimEhUltimoDiaDoMes = $dtFim->format('Y-m-d') === $dtFim->format('Y-m-t');
+        $dtIniDia = (int)$dtIni->format('d');
+        $dtFimDia = (int)$dtFim->format('d');
+
+        $proxDtIniF = null;
 
         // Se é o mesmo dia
         if ($dtIni->format('Y-m-d') === $dtFim->format('Y-m-d')) {
             $proxDtIniF = $proxDtFimF;
+        } else if ($difMeses === 0) {
+            if ($difDias > 16) {
+                // Não é quinzena
+                $proxDtIniF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') - 1, 1)->format('Y-m-d');
+            } else if ($dtIniDia === 16) {
+                $proxDtIniF = $dtFim->setDate($dtIni->format('Y'), $dtIni->format('m'), 1)->format('Y-m-d');
+            } else { // iniDia === 01
+                $proxDtIniF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') - 1, 16)->format('Y-m-d');
+            }
         } else {
-
-            // dtFim vai ser sempre dia 16 ou o último dia do mês
-            $proxDtIniF = null;
-            if ($difMeses == 0) {
-                if ($difDias > 16) {
-                    // Não é quinzena
-//                $proxDtIni = $dtFim->sub(new \DateInterval('P1M'))->format('Y-m-') . '01';
-                    $proxDtIniF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') - 1, 1)->format('Y-m-d');
-                } else {
-                    // é quinzena
-                    if ($dtIniDia == 16) {
-                        $proxDtIniF = $dtFim->setDate($dtIni->format('Y'), $dtIni->format('m'), 1)->format('Y-m-d');
-                    } else { // iniDia == 01
-                        $proxDtIniF = $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m') - 1, 16)->format('Y-m-d');
-                    }
-                }
-            } else {
-                // não estão no mesmo mês...
-
+            if ($dtIniDia === 01 || $dtIniDia === 16) {
                 // É um período de 45 dias ou mais
-                if (($dtIniDia == 01 or $dtIniDia == 16) and ($dtFimDia == 15)) {
-                    $proxDtIniF = $proxDtFim->setDate($proxDtFim->format('Y'), $proxDtFim->format('m') - ($difMeses), 16)->format('Y-m-d');
-                } else if (($dtIniDia == 01 or $dtIniDia == 16) and $dtFimEhUltimoDiaDoMes) {
-                    $proxDtIniF = $proxDtFim->setDate($proxDtFim->format('Y'), $proxDtFim->format('m') - ($difMeses), 01)->format('Y-m-d');
+                if ($dtFimDia === 15) {
+                    $proxDtIniF = $proxDtFim->setDate($proxDtFim->format('Y'), $proxDtFim->format('m') - $difMeses, 16)->format('Y-m-d');
+                } else if ($dtFimEhUltimoDiaDoMes) {
+                    $proxDtIniF = $proxDtFim->setDate($proxDtFim->format('Y'), $proxDtFim->format('m') - $difMeses, 01)->format('Y-m-d');
                 }
             }
         }
@@ -235,13 +267,13 @@ class DateTimeUtils
      * @return false|string
      * @throws \Exception
      */
-    public static function iteratePeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $proFuturo)
+    public static function iteratePeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $proFuturo = true)
     {
         if ($proFuturo) {
-            return DateTimeUtils::incPeriodoRelatorial($dtIni, $dtFim);
-        } else {
-            return DateTimeUtils::decPeriodoRelatorial($dtIni, $dtFim);
+            return self::incPeriodoRelatorial($dtIni, $dtFim);
         }
+        // else
+        return self::decPeriodoRelatorial($dtIni, $dtFim);
     }
 
 
@@ -257,12 +289,12 @@ class DateTimeUtils
         $ehUltimoDiaDoMes = $dt->format('Y-m-d') === $dt->format('Y-m-t');
         $dtProx = clone $dt;
         if ($ehUltimoDiaDoMes) {
-            $dtProx = $dtProx->setDate($dt->format('Y'), intval($dt->format('m')) + $inc, 1);
+            $dtProx = $dtProx->setDate($dt->format('Y'), (int)$dt->format('m') + $inc, 1);
             $dtProx = \DateTime::createFromFormat('Y-m-d', $dtProx->format('Y-m-t'));
         } else {
-            $dtProx = $dt->setDate($dt->format('Y'), intval($dt->format('m')) + $inc, $dt->format('d'));
+            $dtProx = $dt->setDate($dt->format('Y'), (int)$dt->format('m') + $inc, $dt->format('d'));
         }
-        $dtProx->setTime(0, 0, 0, 0);
+        $dtProx->setTime(0, 0);
         return $dtProx;
     }
 
@@ -275,7 +307,7 @@ class DateTimeUtils
     public static function getPrimeiroDiaMes(\DateTime $dt)
     {
         $primeiroDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . '01');
-        $primeiroDiaMes->setTime(0, 0, 0, 0);
+        $primeiroDiaMes->setTime(0, 0);
         return $primeiroDiaMes;
     }
 
@@ -288,7 +320,7 @@ class DateTimeUtils
     public static function getUltimoDiaMes(\DateTime $dt)
     {
         $ultimoDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . $dt->format('t'));
-        $ultimoDiaMes->setTime(0, 0, 0, 0);
+        $ultimoDiaMes->setTime(0, 0);
         return $ultimoDiaMes;
     }
 

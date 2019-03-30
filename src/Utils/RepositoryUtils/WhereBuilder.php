@@ -38,7 +38,7 @@ class WhereBuilder
      * @return \Doctrine\ORM\Query\Expr\Comparison[]|string[]|NULL[]
      * @throws ViewException
      */
-    public static function build(QueryBuilder &$qb, $filters)
+    public static function build(QueryBuilder $qb, ?array $filters): ?array
     {
         if (!$filters) {
             return null;
@@ -47,31 +47,28 @@ class WhereBuilder
 
         $filtrando = false;
 
+        /** @var FilterData $filter */
         foreach ($filters as $filter) {
 
-            WhereBuilder::parseVal($filter);
+            self::parseVal($filter);
 
-            if (!WhereBuilder::checkHasVal($filter)) {
+            if (!self::checkHasVal($filter)) {
                 continue;
             }
             $filtrando = true;
 
-            $field_array = is_array($filter->field) ? $filter->field : array(
-                $filter->field
-            );
+            // Adiciona o prefixo padrão 'e.' para os nomes de campos que não tiverem
+            foreach ($filter->field as $key => $fieldName) {
+                if (strpos($fieldName, '.') === FALSE) {
+                    $fieldName = 'e.' . $fieldName;
+                }
+                $filter->field[$key] = $fieldName;
+            }
 
             $orX = $qb->expr()->orX();
 
-            $fieldP = null;
-            foreach ($field_array as $field) {
-
-                // Verifica se foi passado somente o nome do campo, sem o prefixo do alias da tabela
-                if (strpos($field, '.') === FALSE) {
-                    $field = 'e.' . $field;
-                }
-                // nome do parâmetro que ficará na query (tenho que trocar o '.' por '_')
-                // depois de setado, usa sempre o mesmo (para os casos onde é feito um OR entre vários campos)
-                $fieldP = $fieldP === null ? ':' . str_replace('.', '_', $field) : $fieldP;
+            $fieldP = ':' . str_replace('.', '_', $filter->field[0]);
+            foreach ($filter->field as $field) {
 
                 switch ($filter->compar) {
                     case 'EQ':
@@ -128,7 +125,7 @@ class WhereBuilder
                         break;
                     case 'BETWEEN':
                     case 'BETWEEN_DATE':
-                        $orX->add(WhereBuilder::handleBetween($filter, $qb));
+                        $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
                     default:
                         throw new ViewException('Tipo de filtro desconhecido.');
@@ -141,91 +138,75 @@ class WhereBuilder
         }
         $qb->where($andX);
 
+        // $qb->getDql()
         foreach ($filters as $filter) {
 
-            if (!WhereBuilder::checkHasVal($filter)) {
+            if (!self::checkHasVal($filter)) {
                 continue;
             }
 
-            $field_array = is_array($filter->field) ? $filter->field : array(
-                $filter->field
-            );
+            $fieldP = str_replace('.', '_', $filter->field[0]);
+//            foreach ($field_array as $field) {
 
-            $fieldP = null;
-            foreach ($field_array as $field) {
-
-                // Verifica se foi passado somente o nome do campo, sem o prefixo do alias da tabela
-                if (strpos($field, '.') === FALSE) {
-                    $field = 'e.' . $field;
-                }
-
-                $fieldP = $fieldP === null ? str_replace('.', '_', $field) : $fieldP;
-
-
-                switch ($filter->compar) {
-                    case 'BETWEEN':
-                    case 'BETWEEN_DATE':
-                        if ($filter->val['i'])
-                            $qb->setParameter($fieldP . '_i', $filter->val['i']);
-                        if ($filter->val['f'])
-                            $qb->setParameter($fieldP . '_f', $filter->val['f']);
-                        break;
-                    case 'LIKE':
-                        $qb->setParameter($fieldP,  '%' . strtolower($filter->val) . '%');
-                        break;
-                    case 'LIKE_ONLY':
-                        $qb->setParameter($fieldP, $filter->val);
-                        break;
-                    case 'EQ_BOOL':
-                        $qb->setParameter($fieldP, $filter->val === 'true' ? true : false);
-                        break;
-                    case 'IS_NULL':
-                    case 'IS_NOT_NULL':
-                        break;
-                    default:
-                        $qb->setParameter($fieldP, $filter->val);
-                        break;
-                }
+            switch ($filter->compar) {
+                case 'BETWEEN':
+                case 'BETWEEN_DATE':
+                    if ($filter->val['i']) {
+                        $qb->setParameter($fieldP . '_i', $filter->val['i']);
+                    }
+                    if ($filter->val['f']) {
+                        $qb->setParameter($fieldP . '_f', $filter->val['f']);
+                    }
+                    break;
+                case 'LIKE':
+                    $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
+                    break;
+                case 'LIKE_ONLY':
+                    $qb->setParameter($fieldP, $filter->val);
+                    break;
+                case 'EQ_BOOL':
+                    $qb->setParameter($fieldP, $filter->val === 'true');
+                    break;
+                case 'IS_NULL':
+                case 'IS_NOT_NULL':
+                    break;
+                default:
+                    $qb->setParameter($fieldP, $filter->val);
+                    break;
             }
+//            }
         }
         return null;
 
     }
 
     /**
-     * @param $filter
-     * @param $qb
+     * @param string $field
+     * @param FilterData $filter
+     * @param QueryBuilder $qb
      * @return null
      */
-    private static function handleBetween($filter, $qb)
+    private static function handleBetween(string $field, FilterData $filter, QueryBuilder $qb)
     {
-        if (!$filter->val['i'] && !$filter->val['f']) {
-            return null;
-        }
-
-        $field = $filter->field;
-        if (strpos($field, '.') === FALSE) {
-            $field = 'e.' . $field;
-        }
-
-        $fieldP = str_replace('.', '_', $field);
-
+        // Usa sempre o nme do primeiro campo como nome para o parâmetro, pois setará sempre o mesmo na lógica do "OR"
+        $fieldP = str_replace('.', '_', $filter->field[0]);
 
         if (!$filter->val['i']) {
             return $qb->expr()->lte($field, ':' . $fieldP . '_f');
-        } else if (!$filter->val['f']) {
-            return $qb->expr()->gte($field, ':' . $fieldP . '_i');
-        } else {
-            return $qb->expr()->between($field, ':' . $fieldP . '_i', ':' . $fieldP . '_f');
         }
+        if (!$filter->val['f']) {
+            return $qb->expr()->gte($field, ':' . $fieldP . '_i');
+        }
+        return $qb->expr()->between($field, ':' . $fieldP . '_i', ':' . $fieldP . '_f');
+
     }
 
     /**
      * @param FilterData $filter
      */
-    private static function parseVal(FilterData $filter)
+    private static function parseVal(FilterData $filter): void
     {
-        if ($filter->fieldType == 'decimal') {
+        if ($filter->fieldType === 'decimal') {
             if (!is_array($filter->val)) {
                 $filter->val = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val);
             } else {
@@ -237,10 +218,10 @@ class WhereBuilder
                 }
             }
         }
-        if ($filter->compar == 'BETWEEN_DATE') {
+        if ($filter->compar === 'BETWEEN_DATE') {
             if ($filter->val['i']) {
                 $ini = \DateTime::createFromFormat('Y-m-d', $filter->val['i']);
-                $ini->setTime(0, 0, 0, 0);
+                $ini->setTime(0, 0);
                 $filter->val['i'] = $ini;
             }
             if ($filter->val['f']) {
@@ -255,7 +236,7 @@ class WhereBuilder
      * @param FilterData $filter
      * @return bool
      */
-    private static function checkHasVal(FilterData $filter)
+    private static function checkHasVal(FilterData $filter): bool
     {
         if ($filter->compar === 'IS_NULL' || $filter->compar === 'IS_NOT_NULL') {
             return true;
@@ -266,10 +247,8 @@ class WhereBuilder
                     return true;
                 }
             }
-        } else {
-            if ($filter->val) {
-                return true;
-            }
+        } else if ($filter->val) {
+            return true;
         }
         return false;
     }
@@ -278,25 +257,26 @@ class WhereBuilder
      * @param $ordersStrs
      * @return array
      */
-    public static function buildOrderBy($ordersStrs)
+    public static function buildOrderBy($ordersStrs): array
     {
         $ordersBy = array();
-        if (!is_array($ordersStrs)) {
-            $ordersStrs = array($ordersStrs);
-        }
+        $ordersStrs = is_array($ordersStrs) ? $ordersStrs : [$ordersStrs];
         foreach ($ordersStrs as $orderStr) {
-            if (strpos($orderStr, " ") !== FALSE) {
-                $o = explode(" ", $orderStr);
+            // Se tiver espaço, então deve ser 'campo DESC' ou 'campo ASC'
+            if (strpos($orderStr, ' ') !== FALSE) {
+                $o = explode(' ', $orderStr);
                 $field = $o[0];
+                $dir = $o[1];
                 if (strpos($field, '.') === FALSE) {
                     $field = 'e.' . $field;
                 }
-                $ordersBy = [$field => $o[1]];
+                $ordersBy = [$field => $dir];
             } else {
-                if (strpos($orderStr, '.') === FALSE) {
-                    $orderStr = 'e.' . $orderStr;
+                $field = $orderStr;
+                if (strpos($field, '.') === FALSE) {
+                    $field = 'e.' . $field;
                 }
-                $ordersBy = [$orderStr => 'asc'];
+                $ordersBy = [$field => 'asc'];
             }
         }
         return $ordersBy;

@@ -117,7 +117,7 @@ abstract class FormListController extends BaseController
         if (!isset($parameters['PROGRAM_UUID']) && isset($this->crudParams['form_PROGRAM_UUID'])) {
             $parameters['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
         }
-
+        $this->crudParams['formView'] = isset($this->crudParams['formView']) ? $this->crudParams['formView'] : '@CrosierLibBase/form.html.twig';
         return $this->render($this->crudParams['formView'], $parameters);
     }
 
@@ -141,9 +141,9 @@ abstract class FormListController extends BaseController
 
             return $this->redirect($url);
 
-        } else {
-            return $this->redirectToRoute($this->crudParams['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
         }
+
+        return $this->redirectToRoute($this->crudParams['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
     }
 
     /**
@@ -154,7 +154,7 @@ abstract class FormListController extends BaseController
      */
     public function getFilterDatas(array $params): ?array
     {
-
+        return null;
     }
 
     /**
@@ -208,11 +208,10 @@ abstract class FormListController extends BaseController
                 StoredViewInfoUtils::clear($this->crudParams['listRoute']);
             } else {
                 $storedViewInfo = StoredViewInfoUtils::retrieve($this->crudParams['listRoute']);
-                if (false and $storedViewInfo) { //FIXME: problema no caso do grupoItemList. Não estava aceitando nova url com novo pai.
-                    $blob = stream_get_contents($storedViewInfo['viewInfo']);
-                    $unserialized = unserialize($blob);
-                    $formPesquisar = isset($unserialized['formPesquisar']) ? $unserialized['formPesquisar'] : null;
-                    if ($formPesquisar and $formPesquisar != $params) {
+                if ($storedViewInfo) {
+                    $json = json_decode($storedViewInfo['viewInfo'], true);
+                    $formPesquisar = $json['formPesquisar'] ?? null;
+                    if ($formPesquisar and $formPesquisar !== $params) {
                         return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
                     }
                 }
@@ -232,7 +231,9 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param null $defaultFilters
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
@@ -253,7 +254,7 @@ abstract class FormListController extends BaseController
         $formPesquisar = null;
         if ($rParams) {
             $start = $rParams['start'];
-            $limit = $rParams['length'] != '-1' ? $rParams['length'] : null;
+            $limit = $rParams['length'] !== '-1' ? $rParams['length'] : null;
 
             $orders = array();
             foreach ($rParams['order'] as $pOrder) {
@@ -282,7 +283,6 @@ abstract class FormListController extends BaseController
         $dados = $dadosE;
 
 
-
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
 
@@ -294,7 +294,6 @@ abstract class FormListController extends BaseController
             // caso contrário, tenta serializar pelos grupos setados no @Groups
             $context['groups'] = ['entityId', 'entity'];
         }
-
 
 
         $recordsTotal = $repo->count(array());
@@ -347,10 +346,9 @@ abstract class FormListController extends BaseController
         }
         if ($request->server->get('HTTP_REFERER')) {
             return $this->redirect($request->server->get('HTTP_REFERER'));
-        } else {
-
-            return $this->redirectToRoute($this->crudParams['listRoute']);
         }
+
+        return $this->redirectToRoute($this->crudParams['listRoute']);
     }
 
     /**
