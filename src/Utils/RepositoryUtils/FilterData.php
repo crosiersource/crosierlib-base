@@ -2,6 +2,8 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+
 /**
  * Class FilterData
  *
@@ -13,25 +15,44 @@ class FilterData
 
     public $field;
 
-    public $compar;
+    public $filterType;
 
     public $val;
 
     public $fieldType;
 
+    public $filterTypes = array(
+        'EQ' => 1,
+        'NEQ' => 1,
+        'LT' => 1,
+        'LTE' => 1,
+        'GT' => 1,
+        'GTE' => 1,
+        'IS_NULL' => 0,
+        'IS_NOT_NULL' => 0,
+        'IN' => 999,
+        'NOT_IN' => 999,
+        'LIKE' => 1,
+        'LIKE_ONLY' => 1,
+        'NOT_LIKE' => 1,
+        'BETWEEN' => 2,
+        'BETWEEN_DATE' => 2
+    );
+
     /**
      * FilterData constructor.
-     * @param $fields
-     * @param $compar
+     * @param null $field
+     * @param null $filterType
      * @param null $viewFieldName
-     * @param null $fieldType
      * @param array|null $params
+     * @param null $fieldType
+     * @throws ViewException
      */
-    public function __construct($field, $compar, $viewFieldName = null, ?array $params = null, $fieldType = null)
+    public function __construct($field = null, $filterType = null, $viewFieldName = null, ?array $params = null, $fieldType = null)
     {
         // sempre será tratado como array
-        $this->field = is_array($field) ? $field : [$field];
-        $this->compar = $compar;
+        $this->setField($field);
+        $this->setFilterType($filterType);
         if (isset($params['filter'][$viewFieldName])) {
             $this->val = $params['filter'][$viewFieldName];
         }
@@ -43,12 +64,63 @@ class FilterData
      *
      * @param array $filter
      * @return FilterData
+     * @throws ViewException
      */
     public static function fromArray(array $filter): FilterData
     {
         $filterData = new FilterData($filter['field'], $filter['compar']);
-        $filterData->fieldType = isset($filter['fieldType']) ? $filter['fieldType'] : null;
+        $filterData->fieldType = $filter['fieldType'] ?? null;
         $filterData->val = $filter['val'];
         return $filterData;
     }
+
+    /**
+     * @param array $field
+     * @return FilterData
+     */
+    public function setField($field): FilterData
+    {
+        $field = is_array($field) ? $field : [$field];
+        foreach ($field as $k => $f) {
+            $field[$k] = strpos($f, '.') === FALSE ? 'e.' . $f : $f;
+        }
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
+     * @param $filterType
+     * @return FilterData
+     * @throws ViewException
+     */
+    public function setFilterType($filterType): FilterData
+    {
+        if (!array_key_exists($filterType, $this->filterTypes)) {
+            throw new ViewException('FilterType não encontrado: ' . $filterType);
+        }
+        $this->filterType = $filterType;
+        return $this;
+    }
+
+    /**
+     * @param mixed $val
+     * @return FilterData
+     */
+    public function setVal($val): FilterData
+    {
+        $this->val = $val;
+        return $this;
+    }
+
+    /**
+     * @param string $fieldType
+     * @return FilterData
+     */
+    public function setFieldType(string $fieldType): FilterData
+    {
+        $this->fieldType = $fieldType;
+        return $this;
+    }
+
+
 }

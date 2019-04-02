@@ -286,7 +286,6 @@ abstract class FormListController extends BaseController
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
 
-        $context = [];
         // se foi passado uma lista de atributos da entidade, utiliza
         if (isset($this->crudParams['normalizedAttrib'])) {
             $context['attributes'] = $this->crudParams['normalizedAttrib'];
@@ -304,6 +303,9 @@ abstract class FormListController extends BaseController
             'recordsFiltered' => $countByFilter,
             'data' => $dados
         );
+
+        $context['circular_reference_limit'] = 3;
+        $context['enable_max_depth'] = true;
 
         $r = $serializer->normalize($results, 'json', $context);
 

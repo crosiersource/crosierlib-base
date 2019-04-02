@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -14,22 +15,6 @@ use Doctrine\ORM\QueryBuilder;
 class WhereBuilder
 {
 
-    public $filterTypes = array(
-        'EQ' => 1,
-        'NEQ' => 1,
-        'LT' => 1,
-        'LTE' => 1,
-        'GT' => 1,
-        'GTE' => 1,
-        'IS_NULL' => 0,
-        'IS_NOT_NULL' => 0,
-        'IN' => 999,
-        'NOT_IN' => 999,
-        'LIKE' => 1,
-        'LIKE_ONLY' => 1,
-        'NOT_LIKE' => 1,
-        'BETWEEN' => 2
-    );
 
     /**
      *
@@ -55,6 +40,8 @@ class WhereBuilder
             if (!self::checkHasVal($filter)) {
                 continue;
             }
+
+
             $filtrando = true;
 
             // Adiciona o prefixo padrão 'e.' para os nomes de campos que não tiverem
@@ -70,7 +57,7 @@ class WhereBuilder
             $fieldP = ':' . str_replace('.', '_', $filter->field[0]);
             foreach ($filter->field as $field) {
 
-                switch ($filter->compar) {
+                switch ($filter->filterType) {
                     case 'EQ':
                         $orX->add($qb->expr()
                             ->eq($field, $fieldP));
@@ -148,7 +135,7 @@ class WhereBuilder
             $fieldP = str_replace('.', '_', $filter->field[0]);
 //            foreach ($field_array as $field) {
 
-            switch ($filter->compar) {
+            switch ($filter->filterType) {
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
                     if ($filter->val['i']) {
@@ -203,6 +190,7 @@ class WhereBuilder
 
     /**
      * @param FilterData $filter
+     * @throws ViewException
      */
     private static function parseVal(FilterData $filter): void
     {
@@ -218,14 +206,14 @@ class WhereBuilder
                 }
             }
         }
-        if ($filter->compar === 'BETWEEN_DATE') {
-            if ($filter->val['i']) {
-                $ini = \DateTime::createFromFormat('Y-m-d', $filter->val['i']);
+        if ($filter->filterType === 'BETWEEN_DATE') {
+            if ($filter->val['i'] && !($filter->val['i'] instanceof \DateTime)) {
+                $ini = DateTimeUtils::parseDateStr($filter->val['i']);
                 $ini->setTime(0, 0);
                 $filter->val['i'] = $ini;
             }
-            if ($filter->val['f']) {
-                $fim = \DateTime::createFromFormat('Y-m-d', $filter->val['f']);
+            if ($filter->val['f'] && !($filter->val['f'] instanceof \DateTime)) {
+                $fim = DateTimeUtils::parseDateStr($filter->val['f']);
                 $fim->setTime(23, 59, 59, 999999);
                 $filter->val['f'] = $fim;
             }
@@ -238,7 +226,7 @@ class WhereBuilder
      */
     private static function checkHasVal(FilterData $filter): bool
     {
-        if ($filter->compar === 'IS_NULL' || $filter->compar === 'IS_NOT_NULL') {
+        if ($filter->filterType === 'IS_NULL' || $filter->filterType === 'IS_NOT_NULL') {
             return true;
         }
         if (is_array($filter->val)) {
