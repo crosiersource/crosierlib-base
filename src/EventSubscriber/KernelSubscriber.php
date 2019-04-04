@@ -59,7 +59,7 @@ class KernelSubscriber implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         // Só é ativado para apps
-        if (isset($_SERVER['CROSIERAPP_ID'])) {
+        if (isset($_SERVER['CROSIERAPP_ID']) && (isset($_SERVER['CROSIERAPP_LOGINBYCORE']) && filter_var($_SERVER['CROSIERAPP_LOGINBYCORE'], FILTER_VALIDATE_BOOLEAN) === true)) {
             try {
                 $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> App KernelSubscriber onRequest checkLoginState()');
                 if (!$this->securityAPIClient->checkLoginState()) {

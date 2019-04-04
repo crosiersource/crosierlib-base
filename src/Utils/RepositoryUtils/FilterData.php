@@ -2,8 +2,6 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-
 /**
  * Class FilterData
  *
@@ -46,7 +44,6 @@ class FilterData
      * @param null $viewFieldName
      * @param array|null $params
      * @param null $fieldType
-     * @throws ViewException
      */
     public function __construct($field = null, $filterType = null, $viewFieldName = null, ?array $params = null, $fieldType = null)
     {
@@ -64,7 +61,6 @@ class FilterData
      *
      * @param array $filter
      * @return FilterData
-     * @throws ViewException
      */
     public static function fromArray(array $filter): FilterData
     {
@@ -96,7 +92,7 @@ class FilterData
     public function setFilterType($filterType): FilterData
     {
         if (!array_key_exists($filterType, $this->filterTypes)) {
-            throw new ViewException('FilterType não encontrado: ' . $filterType);
+            throw new \RuntimeException('FilterType não encontrado: ' . $filterType);
         }
         $this->filterType = $filterType;
         return $this;
