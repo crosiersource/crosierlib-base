@@ -112,6 +112,7 @@ class WhereBuilder
                         break;
                     case 'BETWEEN':
                     case 'BETWEEN_DATE':
+                    case 'BETWEEN_IDADE':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
                     default:
@@ -138,6 +139,7 @@ class WhereBuilder
             switch ($filter->filterType) {
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
+                case 'BETWEEN_IDADE':
                     if ($filter->val['i']) {
                         $qb->setParameter($fieldP . '_i', $filter->val['i']);
                     }
@@ -192,7 +194,7 @@ class WhereBuilder
      * @param FilterData $filter
      * @throws ViewException
      */
-    private static function parseVal(FilterData $filter): void
+    public static function parseVal(FilterData $filter): void
     {
         if ($filter->fieldType === 'decimal') {
             if (!is_array($filter->val)) {
@@ -205,6 +207,7 @@ class WhereBuilder
                     $filter->val['f'] = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val['f']);
                 }
             }
+            return;
         }
         if ($filter->filterType === 'BETWEEN_DATE') {
             if ($filter->val['i'] && !($filter->val['i'] instanceof \DateTime)) {
@@ -217,6 +220,28 @@ class WhereBuilder
                 $fim->setTime(23, 59, 59, 999999);
                 $filter->val['f'] = $fim;
             }
+            return;
+        }
+        if ($filter->filterType === 'BETWEEN_IDADE') {
+
+            $f = $filter->val['f']; // auxiliar, pois poderá ser alterado
+            if ($filter->val['i']) {
+                $max = new \DateTime('now');
+                $max->sub(new \DateInterval('P' . (int)$filter->val['i'] . 'Y'));
+                $filter->val['f'] = $max->format('Y-m-d');
+            } else {
+                $filter->val['f'] = null;
+            }
+            if ($f) {
+                $min = new \DateTime('now');
+                $min->sub(new \DateInterval('P' . (((int)$f) + 1) . 'Y'));
+                $min->add(new \DateInterval('P1D'));
+                $min->setTime(0, 0);
+                $filter->val['i'] = $min->format('Y-m-d');
+            } else {
+                $filter->val['i'] = null;
+            }
+            return;
         }
     }
 

@@ -21,16 +21,16 @@ class StringUtils
 
     public static function parseFloat($formattedFloat, $clear = false)
     {
-        $formattedFloat = str_replace(" ", "", $formattedFloat);
+        $formattedFloat = str_replace(' ', '', $formattedFloat);
         $negativo = null;
-        if ($formattedFloat[strlen($formattedFloat) - 1] == 'D') {
+        if ($formattedFloat[strlen($formattedFloat) - 1] === 'D') {
             $negativo = true;
         }
         // Se pedir pra remover caracteres estranhos...
         if ($clear) {
             $formattedFloat = preg_replace("@[^0-9\\.\\,]@", "", $formattedFloat);
         }
-        $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+        $fmt = new NumberFormatter('pt-BR', NumberFormatter::DECIMAL);
         $float = $fmt->parse($formattedFloat);
         $float = $negativo ? -(abs($float)) : $float;
         return $float;

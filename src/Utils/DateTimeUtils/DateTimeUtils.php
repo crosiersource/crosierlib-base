@@ -16,10 +16,10 @@ class DateTimeUtils
 
     /**
      * @param $dateStr
-     * @return bool|\DateTime
+     * @return null|\DateTime
      * @throws ViewException
      */
-    public static function parseDateStr($dateStr)
+    public static function parseDateStr($dateStr): ?\DateTime
     {
         if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
@@ -131,7 +131,7 @@ class DateTimeUtils
         $dtIni->setTime(12, 0);
         $dtFim->setTime(12, 0);
 
-        if ( (!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
+        if ((!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
             throw new \RuntimeException('O período informado não é relatorial.');
         }
 
@@ -203,7 +203,7 @@ class DateTimeUtils
         $dtIni->setTime(12, 0);
         $dtFim->setTime(12, 0);
 
-        if ( (!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
+        if ((!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
             throw new \RuntimeException('O período informado não é relatorial.');
         }
 

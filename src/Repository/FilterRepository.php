@@ -135,7 +135,7 @@ abstract class FilterRepository extends EntityRepository
         if ($limit) {
             $query->setMaxResults($limit);
         }
-        return $query->execute();
+        return $query->getResult();
     }
 
 }
