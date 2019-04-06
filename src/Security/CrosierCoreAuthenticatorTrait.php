@@ -45,6 +45,12 @@ trait CrosierCoreAuthenticatorTrait
      */
     private $logger;
 
+    /**
+     * CrosierCoreAuthenticatorTrait constructor.
+     * @param UserRepository $userRepository
+     * @param RouterInterface $router
+     * @param LoggerInterface $logger
+     */
     public function __construct(UserRepository $userRepository, RouterInterface $router, LoggerInterface $logger)
     {
         $this->userRepository = $userRepository;
@@ -105,11 +111,7 @@ trait CrosierCoreAuthenticatorTrait
         $session->set('programs_menus', null);
         $session->set('crosier_menus', null);
 
-//        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-//            return new RedirectResponse($targetPath);
-//        }
-
-        return new RedirectResponse($this->router->generate('index'));
+        return new RedirectResponse($_SERVER['PATH_INFO']);
     }
 
     public function start(Request $request, AuthenticationException $authException = null)

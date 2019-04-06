@@ -38,9 +38,14 @@ class BaseController extends AbstractController
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
         $session = new Session();
+        // Caso não tenha sido passado o PROGRAM_UUID, utiliza o programa da Dashboard deste aplicativo
         if (!isset($parameters['PROGRAM_UUID']) || !$parameters['PROGRAM_UUID']) {
-            // Caso não tenha sido passado o PROGRAM_UUID, utiliza o programa da Dashboard deste aplicativo
-            $parameters['PROGRAM_UUID'] = $this->entMenuAPIClient->getDashboardProgramUUID($_SERVER['CROSIERAPP_UUID']); // '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
+            // para o crosier-core, já retorna sem precisar pesquisar
+            if ($_SERVER['CROSIERAPP_UUID'] === '175bd6d3-6c29-438a-9520-47fcee653cc5') {
+                $parameters['PROGRAM_UUID'] = '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
+            } else {
+                $parameters['PROGRAM_UUID'] = $this->entMenuAPIClient->getAppMainProgramUUID($_SERVER['CROSIERAPP_UUID']); // '4f4df268-09ef-4e9c-bbc9-82eaf85de43f';
+            }
         }
         $programUUID = $parameters['PROGRAM_UUID'];
         $menu = null;

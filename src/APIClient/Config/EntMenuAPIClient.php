@@ -35,9 +35,9 @@ class EntMenuAPIClient extends CrosierAPIClient
         return json_decode($json, true);
     }
 
-    public function getDashboardProgramUUID(string $appUUID)
+    public function getAppMainProgramUUID(string $appUUID)
     {
-        $uri = '/getDashboardProgramUUID/' . $appUUID;
+        $uri = '/getAppMainProgramUUID/' . $appUUID;
         $r = $this->post($uri);
         $json = json_decode($r, true);
         return $json['programUUID'];

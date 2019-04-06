@@ -4,7 +4,11 @@
 
             {% for ent in menu %}
 
-                {% if ent.tipo == 'ENT' %}
+                {% if ent.tipo == 'CROSIERCORE_APPENT' %}
+                    <li class="nav-item" style="{{ ent.cssStyle != null ? ent.cssStyle : 'background-color: darkblue' }};">
+                        <a class="nav-link" href="{{ ent.program.url is defined ? ent.program.url : '' }}">
+                            <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
+                {% elseif ent.tipo == 'ENT' %}
                     <li class="nav-item" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
                         <a class="nav-link" href="{{ ent.program.url is defined ? ent.program.url : '' }}">
                             <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
