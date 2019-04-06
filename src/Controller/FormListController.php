@@ -232,8 +232,6 @@ abstract class FormListController extends BaseController
      * @param null $defaultFilters
      * @return Response
      * @throws ViewException
-     * @throws \Doctrine\Common\Annotations\AnnotationException
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
