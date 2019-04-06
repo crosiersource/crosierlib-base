@@ -17,7 +17,6 @@ class DateTimeUtils
     /**
      * @param $dateStr
      * @return null|\DateTime
-     * @throws ViewException
      */
     public static function parseDateStr($dateStr): ?\DateTime
     {
@@ -57,7 +56,7 @@ class DateTimeUtils
             return \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
         }
 
-        throw new ViewException('Impossível parse na data [' . $dateStr . ']');
+        return null;
     }
 
     /**
