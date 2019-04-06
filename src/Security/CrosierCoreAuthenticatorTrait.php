@@ -111,7 +111,14 @@ trait CrosierCoreAuthenticatorTrait
         $session->set('programs_menus', null);
         $session->set('crosier_menus', null);
 
-        return new RedirectResponse($_SERVER['PATH_INFO']);
+        $whereTo = "/";
+        if (isset($_SERVER['PATH_INFO'])) {
+            $whereTo = $_SERVER['PATH_INFO']; // em alguns servers, não está definida
+        } else {
+            $whereTo = str_replace('?' . $_SERVER['QUERY_STRING'],'', $_SERVER['REQUEST_URI']);
+        }
+
+        return new RedirectResponse($whereTo);
     }
 
     public function start(Request $request, AuthenticationException $authException = null)
