@@ -34,6 +34,10 @@ class DiaUtilAPIClientTest extends KernelTestCase
         $du = $diaUtilAPIClient->findDiaUtil(DateTimeUtils::parseDateStr('30/03/2019'), true, true);
         $prox = DateTimeUtils::parseDateStr('01/04/2019');
         $this->assertEquals($du->format('d/M/Y'), $prox->format('d/M/Y'));
+
+        $du = $diaUtilAPIClient->findDiaUtil(DateTimeUtils::parseDateStr('02/01/2019'), true, null);
+        $prox = DateTimeUtils::parseDateStr('03/01/2019');
+        $this->assertEquals($du->format('d/m/Y'), $prox->format('d/m/Y'));
     }
 
 

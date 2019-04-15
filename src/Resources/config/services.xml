@@ -10,6 +10,8 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
             <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
@@ -40,16 +42,6 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>
-
-        <!-- EntityIdListener -->
-        <service id="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"
-                 class="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\EventListener\EntityIdListener"
-                 alias="crosier_source.crosier_lib_base_bundle.doctrine.event_listener.entity_id_listener"/>
 
         <!-- UppercaseFieldsJsonBuilderCommand -->
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
@@ -157,6 +149,29 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
                  alias="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"/>
+
+
+
+        <!-- StoredViewInfoEntityHandler -->
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"
+                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
+                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
+                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
+
+        <!-- StoredViewInfoBusiness -->
+        <service id="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"
+                 class="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness">
+            <argument type="service" id="security.helper" />
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler" />
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness"
+                 alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"/>
 
 
     </services>

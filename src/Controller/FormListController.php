@@ -3,12 +3,12 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\ViewUtils\StoredViewInfoUtils;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,6 +36,9 @@ abstract class FormListController extends BaseController
     /** @var EntityHandler */
     protected $entityHandler;
 
+    /** @var StoredViewInfoBusiness */
+    protected $storedViewInfoBusiness;
+
     protected $crudParams =
         [
             'typeClass' => '',
@@ -59,10 +62,24 @@ abstract class FormListController extends BaseController
         $this->logger = $logger;
     }
 
+    /**
+     * Neste caso é necessário o getter pois (??)
+     * @return EntityHandler
+     */
     public function getEntityHandler(): EntityHandler
     {
         return $this->entityHandler;
     }
+
+    /**
+     * @required
+     * @param StoredViewInfoBusiness $storedViewInfoBusiness
+     */
+    public function setStoredViewInfoBusiness(StoredViewInfoBusiness $storedViewInfoBusiness): void
+    {
+        $this->storedViewInfoBusiness = $storedViewInfoBusiness;
+    }
+
 
     /**
      * Monta o formulário, faz as validações, manda salvar, trata erros, etc.
@@ -205,9 +222,9 @@ abstract class FormListController extends BaseController
             $params['filter'] = null;
 
             if (isset($params['r']) and $params['r']) {
-                StoredViewInfoUtils::clear($this->crudParams['listRoute']);
+                $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
             } else {
-                $storedViewInfo = StoredViewInfoUtils::retrieve($this->crudParams['listRoute']);
+                $storedViewInfo = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
                 if ($storedViewInfo) {
                     $json = json_decode($storedViewInfo['viewInfo'], true);
                     $formPesquisar = $json['formPesquisar'] ?? null;
@@ -310,7 +327,7 @@ abstract class FormListController extends BaseController
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();
             $viewInfo['formPesquisar'] = $formPesquisar;
-            StoredViewInfoUtils::store($this->crudParams['listRoute'], $viewInfo);
+            $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
         }
 
         return new JsonResponse($r);

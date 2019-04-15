@@ -46,7 +46,7 @@ class FilterData
      * @param array|null $params
      * @param null $fieldType
      */
-    public function __construct($field = null, $filterType = null, $viewFieldName = null, ?array $params = null, $fieldType = null)
+    public function __construct($field = null, $filterType = 'EQ', $viewFieldName = null, ?array $params = null, $fieldType = null)
     {
         // sempre será tratado como array
         $this->setField($field);
@@ -72,7 +72,7 @@ class FilterData
     }
 
     /**
-     * @param array $field
+     * @param mixed $field
      * @return FilterData
      */
     public function setField($field): FilterData
