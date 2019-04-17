@@ -180,7 +180,7 @@ abstract class FormListController extends BaseController
      * @param $params
      * @return array
      */
-    public function doGetFilterDatas($params): array
+    public function getSomenteFilterDatasComValores($params): array
     {
         $filterDatas = $this->getFilterDatas($params);
         $filterDatasComValores = [];
@@ -224,10 +224,9 @@ abstract class FormListController extends BaseController
             if (isset($params['r']) and $params['r']) {
                 $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
             } else {
-                $storedViewInfo = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
-                if ($storedViewInfo) {
-                    $json = json_decode($storedViewInfo['viewInfo'], true);
-                    $formPesquisar = $json['formPesquisar'] ?? null;
+                $svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
+                if ($svi) {
+                    $formPesquisar = $svi['formPesquisar'] ?? null;
                     if ($formPesquisar and $formPesquisar !== $params) {
                         return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
                     }
@@ -298,31 +297,28 @@ abstract class FormListController extends BaseController
         $dados = $dadosE;
 
 
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
-
-        // se foi passado uma lista de atributos da entidade, utiliza
-        if (isset($this->crudParams['normalizedAttrib'])) {
-            $context['attributes'] = $this->crudParams['normalizedAttrib'];
-        } else {
-            // caso contrário, tenta serializar pelos grupos setados no @Groups
-            $context['groups'] = ['entityId', 'entity'];
+        try {
+            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);// se foi passado uma lista de atributos da entidade, utiliza
+            if (isset($this->crudParams['normalizedAttrib'])) {
+                $context['attributes'] = $this->crudParams['normalizedAttrib'];
+            } else {
+                // caso contrário, tenta serializar pelos grupos setados no @Groups
+                $context['groups'] = ['entityId', 'entity'];
+            }
+            $recordsTotal = $repo->count(array());
+            $results = array(
+                'draw' => $draw,
+                'recordsTotal' => $recordsTotal,
+                'recordsFiltered' => $countByFilter,
+                'data' => $dados
+            );
+            $context['circular_reference_limit'] = 3;
+            $context['enable_max_depth'] = true;
+            $r = $serializer->normalize($results, 'json', $context);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException($e->getMessage(), 0, $e);
         }
-
-
-        $recordsTotal = $repo->count(array());
-
-        $results = array(
-            'draw' => $draw,
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $countByFilter,
-            'data' => $dados
-        );
-
-        $context['circular_reference_limit'] = 3;
-        $context['enable_max_depth'] = true;
-
-        $r = $serializer->normalize($results, 'json', $context);
 
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = array();
@@ -331,6 +327,73 @@ abstract class FormListController extends BaseController
         }
 
         return new JsonResponse($r);
+    }
+
+
+    /**
+     * Para listas que não utilizam o datatables.js
+     *
+     * @param Request $request
+     * @param null $defaultFilters
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws ViewException
+     */
+    public function doListSimpl(Request $request, array $params = []): Response
+    {
+        $this->checkAccess($this->crudParams['listRoute']);
+
+        if (isset($params['r']) && $params['r']) {
+            $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
+        }
+
+        $filterParams = [];
+        if ($request->get('filter')) {
+            $filterParams['filter'] = $request->get('filter');
+        } else {
+            $svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
+            $filterParams = $svi['filterParams'] ?? null;
+            if ($filterParams) {
+                return $this->redirectToRoute($this->crudParams['listRoute'], $filterParams);
+            }
+            // else
+            $filterParams = $params['defaultFilters'] ?? null;
+        }
+
+        if (isset($params['fixedFilters'])) {
+            $filterParams = array_replace_recursive($filterParams, $params['fixedFilters']);
+        }
+
+        $params['page_title'] = $this->crudParams['listPageTitle'];
+        if (isset($this->crudParams['list_PROGRAM_UUID'])) {
+            $params['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
+        }
+
+        /** @var FilterRepository $repo */
+        $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
+
+        // Inicializadores
+        $filterDatas = null;
+
+        if ($filterParams) {
+            $filterDatas = $this->getSomenteFilterDatasComValores($filterParams);
+        }
+
+        $params['orders'] = $params['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
+
+        $dados = $repo->findByFilters($filterDatas, $params['orders'], 0, null);
+
+        $this->handleDadosList($dados);
+
+        $params['dados'] = $dados;
+        $params['filter'] = $filterParams['filter'];
+
+        if ($filterDatas and count($filterDatas) > 0) {
+            $viewInfo = array();
+            $viewInfo['filterParams'] = $filterParams;
+            $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
+        }
+
+        return $this->render($this->crudParams['listView'], $params);
     }
 
     /**
@@ -400,7 +463,7 @@ abstract class FormListController extends BaseController
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
         $parameters = array_merge($this->crudParams, $parameters);
-        return parent::render($view, $parameters, $response);
+        return $this->doRender($view, $parameters, $response);
     }
 
 

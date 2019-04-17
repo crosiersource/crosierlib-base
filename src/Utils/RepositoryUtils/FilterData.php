@@ -35,6 +35,7 @@ class FilterData
         'NOT_LIKE' => 1,
         'BETWEEN' => 2,
         'BETWEEN_DATE' => 2,
+        'BETWEEN_MESANO' => 2,
         'BETWEEN_IDADE' => 2
     );
 

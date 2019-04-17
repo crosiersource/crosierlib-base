@@ -113,6 +113,7 @@ class WhereBuilder
                     case 'BETWEEN':
                     case 'BETWEEN_DATE':
                     case 'BETWEEN_IDADE':
+                    case 'BETWEEN_MESANO':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
                     default:
@@ -140,6 +141,7 @@ class WhereBuilder
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
                 case 'BETWEEN_IDADE':
+                case 'BETWEEN_MESANO':
                     if ($filter->val['i']) {
                         $qb->setParameter($fieldP . '_i', $filter->val['i']);
                     }
@@ -193,6 +195,7 @@ class WhereBuilder
     /**
      * @param FilterData $filter
      * @throws ViewException
+     * @throws \Exception
      */
     public static function parseVal(FilterData $filter): void
     {
@@ -241,6 +244,16 @@ class WhereBuilder
             } else {
                 $filter->val['i'] = null;
             }
+            return;
+        }
+        if ($filter->filterType === 'BETWEEN_MESANO') {
+            $dt = \DateTime::createFromFormat('dmY', '01' . $filter->val['mes'] . $filter->val['ano']);
+            $filter->val = null;
+            $ini = DateTimeUtils::getPrimeiroDiaMes($dt);
+            $filter->val['i'] = $ini->format('Y-m-d');
+            $fim = DateTimeUtils::getUltimoDiaMes($dt);
+            $fim->setTime(23, 59, 59, 999999);
+            $filter->val['f'] = $fim->format('Y-m-d');
             return;
         }
     }

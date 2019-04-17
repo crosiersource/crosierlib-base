@@ -16,8 +16,10 @@ class StringUtils
 
     const PATTERN_DATA = "@(?<data>\\d{2}/\\d{2}/\\d{4}|\\d{2}/\\d{2}/\\d{2}|\\d{2}/\\d{2}){1}@";
 
-    const PATTERN_MONEY = "@" .
-    "(?<money>(?:(?:\\+|\\-)?(?:[\w]?)(?:[\$]?)(?:\\s)?)(?:(?:(?:[1-9]{1}(?:[0-9]{0,2})?(?:\\.{1}[0-9]{3})+[,]{1}[0-9]{2})){1}|(?:(?:[1-9]{1}[0-9]*[,]{1}[0-9]{2}))|(?:(?:[0]{1},[0-9]{2}))){1}[\w]{0,1})@";
+    const PATTERN_MONEY =
+        "@" .
+        "(?<SINAL_I>\\+|\\-)?(?<Q>\\D*\\$?\\D*)(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-)?" .
+        "@";
 
     public static function parseFloat($formattedFloat, $clear = false)
     {

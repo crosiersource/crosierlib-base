@@ -3,8 +3,6 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-
 /**
  * Class DateTimeUtils.
  *
@@ -303,8 +301,9 @@ class DateTimeUtils
      * @param \DateTime $dt
      * @return bool|\DateTime
      */
-    public static function getPrimeiroDiaMes(\DateTime $dt)
+    public static function getPrimeiroDiaMes(\DateTime $dt = null)
     {
+        $dt = $dt ?: new \DateTime();
         $primeiroDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . '01');
         $primeiroDiaMes->setTime(0, 0);
         return $primeiroDiaMes;
@@ -316,8 +315,9 @@ class DateTimeUtils
      * @param \DateTime $dt
      * @return bool|\DateTime
      */
-    public static function getUltimoDiaMes(\DateTime $dt)
+    public static function getUltimoDiaMes(\DateTime $dt = null)
     {
+        $dt = $dt ?: new \DateTime();
         $ultimoDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . $dt->format('t'));
         $ultimoDiaMes->setTime(0, 0);
         return $ultimoDiaMes;

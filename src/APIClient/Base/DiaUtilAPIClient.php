@@ -24,7 +24,7 @@ class DiaUtilAPIClient extends CrosierAPIClient
      * @param int $id
      * @return string
      */
-    public function incPeriodo(\DateTime $ini, \DateTime $fim, bool $futuro)
+    public function incPeriodo(\DateTime $ini, \DateTime $fim, bool $futuro): array
     {
         $params = [
             'ini' => $ini->format('Y-m-d'),

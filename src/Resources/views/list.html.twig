@@ -13,18 +13,25 @@
                     <h3>{{ page_title }}</h3>
                 </div>
                 <div class="col-8 text-right">
-                    <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Novo registro"
-                            onclick="window.location.href='{{ url(formRoute) }}'">
-                        <i class="fas fa-file" aria-hidden="true"></i> Novo
-                    </button>
-                    <button type="button" class="btn btn-secondary"
-                            data-target="#pesquisarModal" data-toggle="modal">
-                        <i class="fas fa-search" aria-hidden="true"></i> Pesquisar
-                    </button>
-                    <button type="button" class="btn btn-secondary"
-                            onclick="window.location.href='{{ url(listRoute,{'r':'1'}) }}'">
-                        <i class="fas fa-sync" aria-hidden="true"></i> Recarregar
-                    </button>
+
+                    {% block btns %}
+
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                                title="Novo registro"
+                                onclick="window.location.href='{{ url(formRoute) }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                data-target="#pesquisarModal" data-toggle="modal">
+                            <i class="fas fa-search" aria-hidden="true"></i> Pesquisar
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url(listRoute,{'r':'1'}) }}'">
+                            <i class="fas fa-sync" aria-hidden="true"></i> Recarregar
+                        </button>
+
+                    {% endblock %}
+
                 </div>
             </div>
         </div>
@@ -50,7 +57,7 @@
                 <form action="{{ url(listRoute) }}" method="get" id="formPesquisar">
                     <div class="modal-body">
 
-                            <h5 class="modal-header">Pesquisar por...</h5>
+                        <h5 class="modal-header">Pesquisar por...</h5>
 
                         <div class="card">
                             <div class="card-body">
@@ -59,11 +66,11 @@
 
                                     {% block campos_pesquisar %}
 
-                                    <label for="p_filter_str"></label>
-                                    <input type="text"
-                                           class="form-control" id="filter[str]"
-                                           name="filter[str]"
-                                           value="{{ filter.str|default('') }}">
+                                        <label for="p_filter_str"></label>
+                                        <input type="text"
+                                               class="form-control" id="filter[str]"
+                                               name="filter[str]"
+                                               value="{{ filter.str|default('') }}">
 
                                     {% endblock %}
 

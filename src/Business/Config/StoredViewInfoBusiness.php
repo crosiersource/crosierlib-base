@@ -46,7 +46,7 @@ class StoredViewInfoBusiness
      * @param $viewInfo
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function store($viewName, $viewInfo): void
+    public function store(string $viewName, array $viewInfo): void
     {
         $serialized = json_encode($viewInfo);
 
@@ -67,12 +67,36 @@ class StoredViewInfoBusiness
     }
 
     /**
-     * @param $viewRoute
-     * @return null|object
+     * Adiciona ou altera apenas um valor no array de viewInfo.
+     *
+     * @param $viewName
+     * @param $val
      */
-    public function retrieve($viewRoute)
+    public function set(string $viewName, array $val): void {
+        $viewInfo = $this->retrieve($viewName);
+        array_merge($viewInfo, $val);
+        $this->store($viewName, $viewInfo);
+    }
+
+    /**
+     * Remove um valor no array de viewInfo.
+     *
+     * @param $viewName
+     * @param $val
+     */
+    public function remove(string $viewName, array $key): void {
+        $viewInfo = $this->retrieve($viewName);
+        unset($viewInfo[$key]);
+        $this->store($viewName, $viewInfo);
+    }
+
+    /**
+     * @param $viewRoute
+     * @return null|array
+     */
+    public function retrieve(string $viewName): ?array
     {
-        $params['viewName'] = $viewRoute;
+        $params['viewName'] = $viewName;
         $params['user'] = $this->security->getUser();
         if ($r = $this->doctrine->getRepository(StoredViewInfo::class)->findOneBy($params)) {
             $viewInfo = json_decode($r->getViewInfo(), true);
@@ -86,7 +110,7 @@ class StoredViewInfoBusiness
      * @param $viewRoute
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function clear($viewRoute): void
+    public function clear(string $viewName): void
     {
         $params['viewName'] = $viewRoute;
         $params['user'] = $this->security->getUser();

@@ -35,7 +35,7 @@ class BaseController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
         $session = new Session();
         // Caso não tenha sido passado o PROGRAM_UUID, utiliza o programa da Dashboard deste aplicativo

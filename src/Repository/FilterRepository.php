@@ -122,6 +122,9 @@ abstract class FilterRepository extends EntityRepository
         }
         if (is_array($orders)) {
             foreach ($orders as $col => $dir) {
+                if (strpos($col,'.') === FALSE) {
+                    $col = 'e.' . $col;
+                }
                 $qb->addOrderBy($col, $dir);
             }
         } else if (is_string($orders)) {
