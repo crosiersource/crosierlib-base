@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 
 /**
  * Cliente para consumir os serviços REST da DiaUtilAPI.
@@ -21,8 +22,10 @@ class DiaUtilAPIClient extends CrosierAPIClient
     }
 
     /**
-     * @param int $id
-     * @return string
+     * @param \DateTime $ini
+     * @param \DateTime $fim
+     * @param bool $futuro
+     * @return array
      */
     public function incPeriodo(\DateTime $ini, \DateTime $fim, bool $futuro): array
     {
@@ -62,16 +65,29 @@ class DiaUtilAPIClient extends CrosierAPIClient
     }
 
     /**
-     * @param \DateTime $mesano
-     * @return mixed
+     * @param \DateTime $dtIni
+     * @param int $ordinal
+     * @param bool $financeiro
+     * @param bool $comercial
+     * @return \DateTime|mixed
+     * @throws ViewException
      */
-    public function findDiasUteisFinanceirosByMesAno(\DateTime $mesano)
+    public function findEnesimoDiaUtil(\DateTime $dtIni, int $ordinal, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
     {
-        $params = [
-            'mesano' => $mesano->format('Y-m'),
-        ];
-        $r = json_decode($this->get('/findDiasUteisFinanceirosByMesAno/', $params));
-        return $r;
+        $params =
+            [
+                'dtIni' => $dtIni->format('Y-m-d'),
+                'ordinal' => $ordinal,
+                'financeiro' => $financeiro,
+                'comercial' => $comercial,
+            ];
+        $r = json_decode($this->get('/findEnesimoDiaUtil/', $params), true);
+
+        if (!isset($r['diaUtil'])) {
+            $this->handleErrorResponse($r);
+        }
+        $diaUtil = $r['diaUtil'];
+        return DateTimeUtils::parseDateStr($diaUtil);
     }
 
 

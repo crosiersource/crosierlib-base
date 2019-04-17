@@ -81,7 +81,7 @@ class BaseController extends AbstractController
         }
         $parameters = array_merge(['menu' => $menu], $parameters);
 
-        return parent::render($view, $parameters, $response);
+        return $this->render($view, $parameters, $response);
     }
 
 }

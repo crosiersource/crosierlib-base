@@ -45,8 +45,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
 
 
     /**
-     * @param Request $request
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
+     * @param int $id
+     * @return JsonResponse
      */
     public function findById(int $id): JsonResponse
     {

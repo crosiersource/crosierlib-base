@@ -135,7 +135,7 @@ abstract class FormListController extends BaseController
             $parameters['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
         }
         $this->crudParams['formView'] = isset($this->crudParams['formView']) ? $this->crudParams['formView'] : '@CrosierLibBase/form.html.twig';
-        return $this->render($this->crudParams['formView'], $parameters);
+        return $this->doRender($this->crudParams['formView'], $parameters);
     }
 
     /**
@@ -240,7 +240,7 @@ abstract class FormListController extends BaseController
         }
         $params = array_merge($params, $parameters);
 
-        return $this->render($this->crudParams['listView'], $params);
+        return $this->doRender($this->crudParams['listView'], $params);
     }
 
     /**
@@ -393,7 +393,7 @@ abstract class FormListController extends BaseController
             $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
         }
 
-        return $this->render($this->crudParams['listView'], $params);
+        return $this->doRender($this->crudParams['listView'], $params);
     }
 
     /**
@@ -460,10 +460,10 @@ abstract class FormListController extends BaseController
      * @return Response
      * @throws \Exception
      */
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
         $parameters = array_merge($this->crudParams, $parameters);
-        return $this->doRender($view, $parameters, $response);
+        return parent::doRender($view, $parameters, $response);
     }
 
 
