@@ -281,7 +281,7 @@ abstract class FormListController extends BaseController
             if (is_array($defaultFilters)) {
                 $formPesquisar = array_merge_recursive($formPesquisar, $defaultFilters);
             }
-            $filterDatas = $this->doGetFilterDatas($formPesquisar);
+            $filterDatas = $this->getSomenteFilterDatasComValores($formPesquisar);
         }
 
         $countByFilter = $repo->doCountByFilters($filterDatas);
@@ -388,7 +388,7 @@ abstract class FormListController extends BaseController
         $params['filter'] = $filterParams['filter'];
 
         if ($filterDatas and count($filterDatas) > 0) {
-            $viewInfo = array();
+            $viewInfo = [];
             $viewInfo['filterParams'] = $filterParams;
             $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
         }
