@@ -101,5 +101,7 @@
 
 
 {% block down_scripts %}
-
+    {% if listJS is defined %}
+        <script src="{{ asset('build/' ~ listJS) }}"></script>
+    {% endif %}
 {% endblock %}
