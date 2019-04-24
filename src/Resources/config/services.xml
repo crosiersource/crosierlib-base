@@ -122,6 +122,14 @@
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"/>
 
+        <!-- PropAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.prop_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient"
+                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.prop_api_client"/>
+
 
         <!-- KernelSubscriber -->
         <service id="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"

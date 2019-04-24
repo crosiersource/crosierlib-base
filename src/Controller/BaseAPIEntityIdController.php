@@ -77,7 +77,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
     abstract public function findByFilters(Request $request): JsonResponse;
 
     /**
-     * @param Request $request
+     * @param string $content
      * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
      */
     public function doFindByFilters(string $content): JsonResponse
@@ -87,8 +87,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $json = json_decode($content, true);
             $filtersArray = $json['filters'];
             $orders = isset($json['orders']) ? $json['orders'] : null;
-            $start = isset($json['start']) ? $json['start'] : null;
-            $limit = isset($json['start']) ? $json['limit'] : null;
+            $start = isset($json['start']) ? $json['start'] : 0;
+            $limit = isset($json['start']) ? $json['limit'] : 100;
             if (!$filtersArray) {
                 throw new \Exception('"filters" não definido');
             } else {
