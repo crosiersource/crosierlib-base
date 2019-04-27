@@ -22,10 +22,10 @@ abstract class CrosierAPIClient
     /**
      * @var Security
      */
-    private $security;
+    protected $security;
 
     /** @var LoggerInterface */
-    private $logger;
+    protected $logger;
 
     public function __construct(Security $security, LoggerInterface $logger)
     {

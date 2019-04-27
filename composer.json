@@ -33,7 +33,9 @@
         "symfony/var-dumper": "^3.3|^4.2",
         "symfony/form": "^4.2",
         "easycorp/easy-log-handler": "^1.0.2",
-        "sensiolabs/security-checker": "^5.0"
+        "sensiolabs/security-checker": "^5.0",
+        "symfony/http-foundation": "^4.2",
+        "symfony/cache": "^4.2"
     },
     "autoload": {
         "psr-4": {

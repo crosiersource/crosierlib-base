@@ -4,6 +4,8 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Base;
 
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Cliente para consumir os serviços REST da PropAPI.
@@ -32,22 +34,33 @@ class PropAPIClient extends CrosierAPIClient
     /**
      * @return array
      */
-    public function findGrades()
+    public function findGrades(): array
     {
-        $grades = json_decode($this->findByNome('GRADES')['valores'], true);
 
-        $rGrades = [];
+        $cache = new FilesystemAdapter();
 
-        foreach ($grades as $grade) {
-            $gradeId = $grade['gradeId'];
-            $tamanhosArr = [];
-            $tamanhos = $this->findTamanhosByGradeId($gradeId);
-            foreach ($tamanhos as $tamanho) {
-                $tamanhosArr[] = $tamanho['tamanho'];
+        $rGrades = $cache->get('grades', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+
+            $grades = json_decode($this->findByNome('GRADES')['valores'], true);
+
+            $rGrades = [];
+
+            foreach ($grades as $grade) {
+                $gradeId = $grade['gradeId'];
+                $tamanhosArr = [];
+                $tamanhos = $this->findTamanhosByGradeId($gradeId);
+                foreach ($tamanhos as $tamanho) {
+                    $tamanhosArr[] = $tamanho['tamanho'];
+                }
+                $tamanhosStr = str_pad($gradeId, 3, '0', STR_PAD_LEFT) . ' (' . implode('-', $tamanhosArr) . ')';
+                $rGrades[$gradeId] = $tamanhosStr;
             }
-            $tamanhosStr = str_pad($gradeId,3,'0',STR_PAD_LEFT) . ' (' . implode('-', $tamanhosArr) . ')';
-            $rGrades[$gradeId] = $tamanhosStr;
-        }
+
+            return $rGrades;
+        });
+
+
         return $rGrades;
     }
 
@@ -55,31 +68,111 @@ class PropAPIClient extends CrosierAPIClient
      * @param int $gradeId
      * @return array|null
      */
-    public function findTamanhosByGradeId(int $gradeId)
+    public function findTamanhosByGradeId(int $gradeId): ?array
     {
-        $grades = json_decode($this->findByNome('GRADES')['valores'], true);
+        $cache = new FilesystemAdapter();
 
-        foreach ($grades as $grade) {
-            if ($grade['gradeId'] === $gradeId) {
-                return $grade['tamanhos'];
+        $grades = $cache->get('findTamanhosByGradeId_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+            $item->expiresAfter(3600);
+
+            $grades = json_decode($this->findByNome('GRADES')['valores'], true);
+
+            foreach ($grades as $grade) {
+                if ($grade['gradeId'] === $gradeId) {
+                    return $grade['tamanhos'];
+                }
             }
-        }
-        return null;
+            return $grades;
+        });
+        return $grades;
     }
+
 
     /**
      * @param int $gradeId
+     * @param int $posicao
      * @return array|null
      */
-    public function findTamanhosByGradeIdAndOrdem(int $gradeId, int $ordem)
+    public function findTamanhoByGradeIdAndOrdem(int $gradeId, int $posicao): ?array
     {
-        $tamanhos = $this->findTamanhosByGradeId($gradeId);
-        foreach ($tamanhos as $tamanho) {
-            if ($tamanho['ordem'] === $ordem) {
-                return $tamanho;
+
+        $cache = new FilesystemAdapter();
+
+        $tamanho = $cache->get('findTamanhoByGradeIdAndPosicao_' . $gradeId . '-' . $posicao, function (ItemInterface $item) use ($gradeId, $posicao) {
+            $item->expiresAfter(3600);
+
+            $tamanhos = $this->findTamanhosByGradeId($gradeId);
+            foreach ($tamanhos as $tamanho) {
+                if ($tamanho['posicao'] === $posicao) {
+                    return $tamanho;
+                }
             }
-        }
-        return null;
+
+            return null;
+        });
+
+        return $tamanho;
+    }
+
+    /**
+     *
+     * @param int $gradeId
+     * @return array
+     */
+    public function buildGradesTamanhosByPosicaoArray(int $gradeId): array
+    {
+        $cache = new FilesystemAdapter();
+
+        $gradesTamanhosByPosicaoArray = $cache->get('buildGradesTamanhosByPosicaoArray_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+            $item->expiresAfter(3600);
+
+            $tamanhos = $this->findTamanhosByGradeId($gradeId);
+            $gradesTamanhosByPosicaoArray = [];
+
+            for ($i = 1; $i <= 15; $i++) {
+                foreach ($tamanhos as $tamanho) {
+                    $gradesTamanhosByPosicaoArray[$i] = '-';
+                    if ($i === $tamanho['posicao']) {
+                        $gradesTamanhosByPosicaoArray[$tamanho['posicao']] = $tamanho['tamanho'];
+                        break;
+                    }
+                }
+            }
+            return $gradesTamanhosByPosicaoArray;
+        });
+
+        return $gradesTamanhosByPosicaoArray;
+
+    }
+
+    /**
+     *
+     * @param int $gradeTamanhoId
+     * @return int
+     */
+    public function findPosicaoByGradeTamanhoId(int $gradeTamanhoId): int
+    {
+
+        $cache = new FilesystemAdapter();
+
+        $posicao = $cache->get('findPosicaoByGradeTamanhoId' . $gradeTamanhoId, function (ItemInterface $item) use ($gradeTamanhoId) {
+            $item->expiresAfter(3600);
+
+            $grades = json_decode($this->findByNome('GRADES')['valores'], true);
+
+            foreach ($grades as $grade) {
+                $gradeId = $grade['gradeId'];
+                $tamanhos = $this->findTamanhosByGradeId($gradeId);
+                foreach ($tamanhos as $tamanho) {
+                    if ($tamanho['id'] === $gradeTamanhoId) {
+                        return $tamanho['posicao'];
+                    }
+                }
+            }
+
+            return -1;
+        });
+        return $posicao;
     }
 
 
