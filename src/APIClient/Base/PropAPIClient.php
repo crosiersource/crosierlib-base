@@ -93,7 +93,7 @@ class PropAPIClient extends CrosierAPIClient
      * @param int $posicao
      * @return array|null
      */
-    public function findTamanhoByGradeIdAndOrdem(int $gradeId, int $posicao): ?array
+    public function findTamanhoByGradeIdAndPosicao(int $gradeId, int $posicao): ?array
     {
 
         $cache = new FilesystemAdapter();
@@ -113,6 +113,7 @@ class PropAPIClient extends CrosierAPIClient
 
         return $tamanho;
     }
+
 
     /**
      *

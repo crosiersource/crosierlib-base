@@ -30,7 +30,7 @@ class PropAPIClientTest extends KernelTestCase
         $r = $propAPIClient->findTamanhosByGradeId(1);
         $this->assertCount(7, $r);
 
-        $r = $propAPIClient->findTamanhoByGradeIdAndOrdem(1, 9);
+        $r = $propAPIClient->findTamanhoByGradeIdAndPosicao(1, 9);
         $this->assertEquals('P', $r['tamanho']);
 
         $r = $propAPIClient->findGrades();
