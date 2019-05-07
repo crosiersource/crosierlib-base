@@ -86,17 +86,18 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $this->logger->debug($content);
             $json = json_decode($content, true);
             $filtersArray = $json['filters'];
-            $orders = isset($json['orders']) ? $json['orders'] : null;
-            $start = isset($json['start']) ? $json['start'] : 0;
-            $limit = isset($json['start']) ? $json['limit'] : 100;
+            $orders = $json['orders'] ?? null;
+            $start = $json['start'] ?? 0;
+            $limit = $json['limit'] ?? 100;
             if (!$filtersArray) {
                 throw new \Exception('"filters" não definido');
-            } else {
-                $filterDatas = [];
-                foreach ($filtersArray as $filterArray) {
-                    $filterDatas[] = FilterData::fromArray($filterArray);
-                }
             }
+            // else
+            $filterDatas = [];
+            foreach ($filtersArray as $filterArray) {
+                $filterDatas[] = FilterData::fromArray($filterArray);
+            }
+            
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return (new APIProblem(

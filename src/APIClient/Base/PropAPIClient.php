@@ -177,4 +177,32 @@ class PropAPIClient extends CrosierAPIClient
     }
 
 
+    /**
+     * Encontra uma unidade por seu id no json UNIDADES.
+     *
+     * @param int $unidadeId
+     * @return array|null
+     */
+    public function findUnidadeById(int $unidadeId): ?array
+    {
+        $cache = new FilesystemAdapter();
+
+        $unidade = $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
+            $item->expiresAfter(3600);
+
+            $unidades = json_decode($this->findByNome('UNIDADES')['valores'], true);
+
+            foreach ($unidades as $unidade) {
+                if ($unidadeId === $unidade['id']) {
+                    return $unidade;
+                }
+
+            }
+
+            return null;
+        });
+        return $unidade;
+    }
+
+
 }

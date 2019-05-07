@@ -3,13 +3,6 @@
 namespace CrosierSource\CrosierLibBaseBundle\APIClient;
 
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
-
 /**
  * Class CrosierEntityIdAPIClient.
  * Classe padrão para interagir com classes BaseAPIEntityIdController.
@@ -22,22 +15,31 @@ abstract class CrosierEntityIdAPIClient extends CrosierAPIClient
 
     /**
      * @param int $id
-     * @return string
+     * @return null|array
      */
-    public function getById(int $id): string
+    public function findById(int $id): ?array
     {
-        return $this->post($this::getBaseUri() . '/findById/' . $id);
+        try {
+            $r = $this->post('/findById/' . $id);
+            $r = json_decode($r, true);
+            return $r['result'];
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
      * @param array $filters
-     * @return string
-     * @throws GuzzleException
-     * @throws ViewException
+     * @return null|array
      */
-    public function findByFilters(array $filters): string
+    public function findByFilters(array $filters): ?array
     {
-        return $this->post($this::getBaseUri() . '/findByFilters/', $filters);
+        try {
+            $r = $this->post('/findByFilters/', $filters);
+            return json_decode($r, true);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
 }

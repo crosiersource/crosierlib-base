@@ -27,11 +27,13 @@ abstract class CrosierAPIClient
     /** @var LoggerInterface */
     protected $logger;
 
+
     public function __construct(Security $security, LoggerInterface $logger)
     {
         $this->security = $security;
         $this->logger = $logger;
     }
+
 
     abstract public static function getBaseUri(): string;
 
@@ -57,9 +59,12 @@ abstract class CrosierAPIClient
      * @param bool $asQueryString
      * @return string
      */
-    public function doRequest($uri, $method, $params = null, $asQueryString = false)
+    public function doRequest($uri, $method, $params = null, $asQueryString = false): ?string
     {
         try {
+            if (!$this::getBaseUri()) {
+                throw new \RuntimeException('baseUri não definido');
+            }
             $uri = $this::getBaseUri() . $uri;
             $client = new Client();
             $key = $asQueryString ? 'query' : 'json';
@@ -112,9 +117,10 @@ abstract class CrosierAPIClient
         $this->logger->error(print_r($r, true));
         if (isset($r['status']) and $r['status'] === 400) {
             throw new ViewException($r['status'] . ' - ' . $r['title']);
-        } else {
-            throw new ViewException('API error');
         }
+        // else
+        throw new ViewException('API error');
+
     }
 
 }
