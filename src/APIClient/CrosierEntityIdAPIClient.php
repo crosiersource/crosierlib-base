@@ -21,7 +21,7 @@ abstract class CrosierEntityIdAPIClient extends CrosierAPIClient
     {
         try {
             $r = $this->post('/findById/' . $id);
-            $r = json_decode($r, true);
+            $r = json_decode($r, true)['result'];
             return $r['result'];
         } catch (\Exception $e) {
             return null;

@@ -1,9 +1,6 @@
 <?php
 
-
 namespace CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils;
-
-use NumberFormatter;
 
 /**
  * Class DecimalUtils
@@ -16,7 +13,7 @@ class DecimalUtils
 
     public static function parseStr($str)
     {
-        $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+        $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
         return $fmt->parse($str);
     }
 

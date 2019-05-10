@@ -3,6 +3,15 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class EntityIdUtils.
@@ -31,5 +40,44 @@ class EntityIdUtils
         }
         return $r;
     }
+
+    /**
+     * Serializa uma entidade para um json.
+     *
+     * @param EntityId $entityId
+     * @return array
+     */
+    public static function serialize(EntityId $entityId): array
+    {
+        try {
+            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
+            $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
+            return $serializer->normalize($entityId);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Erro ao serializar', 0, $e);
+        }
+    }
+
+    /**
+     * Deserializa um array de uma entidade para o tipo $type.
+     *
+     * @param array $entityArray
+     * @param string $type
+     * @return object
+     */
+    public static function unserialize(array $entityArray, string $type)
+    {
+        try {
+            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
+            $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
+            return $serializer->denormalize($entityArray, $type);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Erro ao deserializar', 0, $e);
+        }
+
+    }
+
 
 }

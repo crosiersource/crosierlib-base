@@ -2,6 +2,8 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+
 /**
  * Class ExceptionUtils.
  *
@@ -13,21 +15,40 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 class ExceptionUtils
 {
 
-    public static function treatException(\Exception $e)
+    /**
+     * Trata retornos de erro do MySQL.
+     *
+     * @param \Exception $e
+     * @return null|string
+     */
+    public static function treatException(\Exception $e): ?string
     {
         if ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
-            $message = $e->getMessage();
-            $code = $e->getErrorCode();
-
-            $regex = '/(?:.*)(?:SQLSTATE)(?:.*)(?:' . $code . ')(?<msg>.*)/';
-            preg_match($regex, $message, $matches);
-            if (isset($matches['msg'])) {
-                return $matches['msg'];
-            }
+            return self::treatDriverException($e);
         }
+        if ($e->getPrevious() instanceof \Doctrine\DBAL\Exception\DriverException) {
+            return self::treatDriverException($e->getPrevious());
+        }
+        if ($e instanceof ViewException) {
+            return $e->getMessage();
+        }
+        return null;
+    }
 
-        return $e->getMessage();
+    /**
+     * @param \Doctrine\DBAL\Exception\DriverException $e
+     * @return mixed
+     */
+    public static function treatDriverException(\Doctrine\DBAL\Exception\DriverException $e)
+    {
+        $message = $e->getMessage();
+        $code = $e->getErrorCode();
 
+        $regex = '/(?:.*)(?:SQLSTATE)(?:.*)(?:' . $code . ')(?<msg>.*)/';
+        preg_match($regex, $message, $matches);
+        if (isset($matches['msg'])) {
+            return $matches['msg'];
+        }
     }
 
 }

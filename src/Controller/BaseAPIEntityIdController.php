@@ -2,8 +2,11 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\APIProblem;
+use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Psr\Log\LoggerInterface;
@@ -28,6 +31,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /** @var LoggerInterface */
     protected $logger;
 
+    /** @var EntityHandler */
+    protected $entityHandler;
+
     /**
      * @required
      * @param LoggerInterface $logger
@@ -35,6 +41,14 @@ abstract class BaseAPIEntityIdController extends AbstractController
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return EntityHandler
+     */
+    public function getEntityHandler(): EntityHandler
+    {
+        return $this->entityHandler;
     }
 
 
@@ -45,10 +59,20 @@ abstract class BaseAPIEntityIdController extends AbstractController
 
 
     /**
+     * Por precisar declarar a rota como uma anotação, então a estratégia é este método ser abstrato e, por convenção,
+     * a chamada ser feita ao doFindById pelo filho no corpo do método.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    abstract public function findById(int $id): JsonResponse;
+
+
+    /**
      * @param int $id
      * @return JsonResponse
      */
-    public function findById(int $id): JsonResponse
+    public function doFindById(int $id): JsonResponse
     {
         try {
             /** @var FilterRepository $repo */
@@ -71,6 +95,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
 
 
     /**
+     * Por precisar declarar a rota como uma anotação, então a estratégia é este método ser abstrato e, por convenção,
+     * a chamada ser feita ao doFindByFilters pelo filho no corpo do método.
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -80,7 +107,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param string $content
      * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function doFindByFilters(string $content): JsonResponse
+    public function doFindByFilters(Request $request): JsonResponse
     {
         try {
             $this->logger->debug($content);
@@ -97,7 +124,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
             foreach ($filtersArray as $filterArray) {
                 $filterDatas[] = FilterData::fromArray($filterArray);
             }
-            
+
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return (new APIProblem(
@@ -123,6 +150,70 @@ abstract class BaseAPIEntityIdController extends AbstractController
                 ApiProblem::TYPE_INTERNAL_ERROR
             ))->toJsonResponse();
         }
+    }
+
+
+    /**
+     * Por precisar declarar a rota como uma anotação, então a estratégia é este método ser abstrato e, por convenção,
+     * a chamada ser feita ao doSave pelo filho no corpo do método.
+     *
+     * Não é definido como abstract pois o filho pode não necessitar do save().
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function save(Request $request): JsonResponse
+    {
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|APIProblem
+     */
+    public function doSave(Request $request): JsonResponse
+    {
+        try {
+            $json = json_decode($request->getContent(), true);
+            if (!$entityArray = $json['entity']) {
+                throw new \Exception('"entity" não definido');
+            }
+            $entity = EntityIdUtils::unserialize($entityArray, $this->getEntityClass());
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            return (new APIProblem(
+                400,
+                ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT
+            ))->toJsonResponse();
+        }
+
+        try {
+            $e = $this->getEntityHandler()->save($entity);
+            return new JsonResponse(EntityIdUtils::serialize($e));
+        } catch (\Throwable $e) {
+            $errorTratado = ExceptionUtils::treatException($e);
+            $apiProblem = new APIProblem(400, ApiProblem::TYPE_INTERNAL_ERROR);
+            $apiProblem->set('error', $errorTratado);
+            return $apiProblem->toJsonResponse();
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return null|JsonResponse
+     */
+    public function getNew(Request $request): ?JsonResponse
+    {
+        return null;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function doGetNew(): JsonResponse
+    {
+        $entityClass = $this->getEntityClass();
+        return new JsonResponse(['entity' => EntityIdUtils::serialize(new $entityClass)]);
     }
 
 

@@ -9,7 +9,7 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient;
  * @package CrosierSource\CrosierLibBaseBundle\APIClient\Base
  * @author Carlos Eduardo Pauluk
  */
-class GenericCrosierAPIClient extends CrosierAPIClient
+class GenericCrosierAPIClient extends CrosierEntityIdAPIClient
 {
     /** @var string */
     private static $baseUri;
@@ -25,9 +25,10 @@ class GenericCrosierAPIClient extends CrosierAPIClient
     /**
      * @param string $baseUri
      */
-    public function setBaseUri(string $baseUri): void
+    public function setBaseUri(string $baseUri): GenericCrosierAPIClient
     {
         self::$baseUri = $baseUri;
+        return self;
     }
 
 

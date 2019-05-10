@@ -29,6 +29,8 @@ trait EntityIdTrait
      * @ORM\Column(name="inserted", type="datetime", nullable=false)
      * @Assert\Type("\DateTime")
      * @Groups("entityId")
+     *
+     * @var null|\DateTime
      */
     private $inserted;
 
@@ -37,6 +39,7 @@ trait EntityIdTrait
      * @ORM\Column(name="updated", type="datetime", nullable=false)
      * @Assert\Type("\DateTime")
      * @Groups("entityId")
+     * 
      * @var null|\DateTime
      */
     private $updated;
@@ -169,15 +172,4 @@ trait EntityIdTrait
         return $this;
     }
 
-
-    function getJsonData()
-    {
-        $var = get_object_vars($this);
-        foreach ($var as &$value) {
-            if (is_object($value) && method_exists($value, 'getJsonData')) {
-                $value = $value->getJsonData();
-            }
-        }
-        return $var;
-    }
 }
