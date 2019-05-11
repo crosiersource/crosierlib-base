@@ -16,7 +16,7 @@ class EntMenuAPIClient extends CrosierAPIClient
 {
 
 
-    public static function getBaseUri(): string
+    public function getBaseURI(): string
     {
         return $_SERVER['CROSIERCORE_URL'] . '/api/cfg/entMenu';
     }

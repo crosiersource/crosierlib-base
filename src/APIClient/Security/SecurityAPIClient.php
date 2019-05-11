@@ -13,7 +13,7 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient;
 class SecurityAPIClient extends CrosierAPIClient
 {
 
-    public static function getBaseUri(): string
+    public function getBaseURI(): string
     {
         return $_SERVER['CROSIERCORE_URL'] . '/api/sec';
     }

@@ -19,9 +19,9 @@ class ExceptionUtils
      * Trata retornos de erro do MySQL.
      *
      * @param \Exception $e
-     * @return null|string
+     * @return string
      */
-    public static function treatException(\Exception $e): ?string
+    public static function treatException(\Exception $e): string
     {
         if ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
             return self::treatDriverException($e);
@@ -32,7 +32,7 @@ class ExceptionUtils
         if ($e instanceof ViewException) {
             return $e->getMessage();
         }
-        return null;
+        return '';
     }
 
     /**
@@ -49,6 +49,7 @@ class ExceptionUtils
         if (isset($matches['msg'])) {
             return $matches['msg'];
         }
+        return '';
     }
 
 }

@@ -53,7 +53,7 @@ class EntityIdUtils
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
-            return $serializer->normalize($entityId);
+            return $serializer->normalize($entityId, 'json', ['groups' => ['entity', 'entityId']]);
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro ao serializar', 0, $e);
         }
@@ -72,7 +72,7 @@ class EntityIdUtils
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
-            return $serializer->denormalize($entityArray, $type);
+            return $serializer->denormalize($entityArray, $type, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro ao deserializar', 0, $e);
         }

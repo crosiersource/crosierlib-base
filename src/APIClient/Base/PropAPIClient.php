@@ -16,7 +16,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 class PropAPIClient extends CrosierAPIClient
 {
 
-    public static function getBaseUri(): string
+    public function getBaseURI(): string
     {
         return $_SERVER['CROSIERCORE_URL'] . '/api/bse/prop';
     }

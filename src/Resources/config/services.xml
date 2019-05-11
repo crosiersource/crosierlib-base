@@ -90,14 +90,14 @@
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
 
-        <!-- GenericCrosierAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.generic_crosier_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\GenericCrosierAPIClient">
+        <!-- CrosierEntityIdAPIClient -->
+        <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"
+                 class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient">
             <argument type="service" id="security.helper"/>
             <argument type="service" id="monolog.logger"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\GenericCrosierAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.generic_crosier_api_client"/>
+        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient"
+                 alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"/>
 
         <!-- SecurityAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"

@@ -16,7 +16,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 class DiaUtilAPIClient extends CrosierAPIClient
 {
 
-    public static function getBaseUri(): string
+    public function getBaseURI(): string
     {
         return $_SERVER['CROSIERCORE_URL'] . '/api/bse/diaUtil';
     }

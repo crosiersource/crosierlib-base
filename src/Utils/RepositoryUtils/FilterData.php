@@ -2,6 +2,8 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+
 /**
  * Class FilterData
  *
@@ -19,7 +21,7 @@ class FilterData
 
     public $fieldType;
 
-    public $filterTypes = array(
+    public static $filterTypes = array(
         'EQ' => 1,
         'NEQ' => 1,
         'LT' => 1,
@@ -66,9 +68,9 @@ class FilterData
      */
     public static function fromArray(array $filter): FilterData
     {
-        $filterData = new FilterData($filter['field'], $filter['compar']);
-        $filterData->fieldType = $filter['fieldType'] ?? null;
-        $filterData->val = $filter['val'];
+        $filterData = new FilterData($filter[0], $filter[1]);
+        $filterData->fieldType = $filter[3] ?? null;
+        $filterData->val = $filter[2];
         return $filterData;
     }
 
@@ -93,7 +95,7 @@ class FilterData
      */
     public function setFilterType($filterType): FilterData
     {
-        if (!array_key_exists($filterType, $this->filterTypes)) {
+        if (!array_key_exists($filterType, self::$filterTypes)) {
             throw new \RuntimeException('FilterType não encontrado: ' . $filterType);
         }
         $this->filterType = $filterType;

@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Utils;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Campos padrão para endereços (no Brasil).
@@ -17,6 +18,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="cep", type="string", nullable=true, length=9)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $cep;
 
@@ -24,6 +27,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="logradouro", type="string", nullable=true, length=200)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $logradouro;
 
@@ -31,6 +36,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="numero", type="string", nullable=true, length=20)
      * @var integer|null
+     *
+     * @Groups("entity")
      */
     private $numero;
 
@@ -38,6 +45,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="complemento", type="string", nullable=true, length=120)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $complemento;
 
@@ -45,6 +54,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="bairro", type="string", nullable=true, length=120)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $bairro;
 
@@ -52,6 +63,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="cidade", type="string", nullable=true, length=120)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $cidade;
 
@@ -59,6 +72,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="estado", type="string", nullable=true, length=2)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $estado;
 
@@ -66,6 +81,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="tipo_endereco", type="string", nullable=true, length=100)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $tipoEndereco;
 
@@ -73,6 +90,8 @@ trait EnderecoTrait
      *
      * @ORM\Column(name="obs", type="string", nullable=true, length=3000)
      * @var string|null
+     *
+     * @Groups("entity")
      */
     private $obs;
 
@@ -202,6 +221,22 @@ trait EnderecoTrait
     public function setTipoEndereco(?string $tipoEndereco): void
     {
         $this->tipoEndereco = $tipoEndereco;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getObs(): ?string
+    {
+        return $this->obs;
+    }
+
+    /**
+     * @param null|string $obs
+     */
+    public function setObs(?string $obs)
+    {
+        $this->obs = $obs;
     }
 
 

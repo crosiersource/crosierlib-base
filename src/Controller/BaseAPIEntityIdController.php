@@ -104,24 +104,35 @@ abstract class BaseAPIEntityIdController extends AbstractController
     abstract public function findByFilters(Request $request): JsonResponse;
 
     /**
+     * Pode-se passar pelo body via post, ou via get com os atributos 'filters', 'start' e 'limit'.
+     *
      * @param string $content
      * @return JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse
      */
     public function doFindByFilters(Request $request): JsonResponse
     {
         try {
-            $this->logger->debug($content);
-            $json = json_decode($content, true);
-            $filtersArray = $json['filters'];
-            $orders = $json['orders'] ?? null;
-            $start = $json['start'] ?? 0;
-            $limit = $json['limit'] ?? 100;
-            if (!$filtersArray) {
+            $filters = null;
+            if ($request->query->has('filters')) {
+                $filters = json_decode(urldecode($request->query->get('filters')), true);
+                $start = $request->query->get('start') ?? 0;
+                $limit = $request->query->get('limit') ?? 100;
+                $orders = $request->query->get('orders') ?? null;
+            } else {
+                $json = json_decode($request->getContent(), true);
+                $filters = $json['filters'];
+                $start = $json['start'] ?? 0;
+                $limit = $json['limit'] ?? 100;
+                $orders = $json['orders'] ?? null;
+            }
+
+
+            if (!$filters) {
                 throw new \Exception('"filters" não definido');
             }
             // else
             $filterDatas = [];
-            foreach ($filtersArray as $filterArray) {
+            foreach ($filters as $filterArray) {
                 $filterDatas[] = FilterData::fromArray($filterArray);
             }
 
@@ -188,8 +199,10 @@ abstract class BaseAPIEntityIdController extends AbstractController
         }
 
         try {
+            $editando = $entity->getId();
             $e = $this->getEntityHandler()->save($entity);
-            return new JsonResponse(EntityIdUtils::serialize($e));
+            $codRet = $editando ? 200 : 201;
+            return new JsonResponse(EntityIdUtils::serialize($e), $codRet);
         } catch (\Throwable $e) {
             $errorTratado = ExceptionUtils::treatException($e);
             $apiProblem = new APIProblem(400, ApiProblem::TYPE_INTERNAL_ERROR);
@@ -199,10 +212,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @return null|JsonResponse
      */
-    public function getNew(Request $request): ?JsonResponse
+    public function getNew(): ?JsonResponse
     {
         return null;
     }
