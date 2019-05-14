@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -93,14 +94,10 @@ abstract class CrosierAPIClient
                 ]
             );
             return $response->getBody()->getContents();
-        } catch (GuzzleException $e) {
-            $this->logger->error('URI: ' . $uri);
-            $this->logger->error($e->getMessage());
-            return null;
         } catch (\Exception $e) {
             $this->logger->error('URI: ' . $uri);
             $this->logger->error($e->getMessage());
-            return null;
+            throw new \RuntimeException('Erro - ' . $uri, 0, $e);
         }
     }
 

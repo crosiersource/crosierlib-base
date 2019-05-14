@@ -73,7 +73,7 @@ class CrosierEntityIdAPIClient extends CrosierAPIClient
             }
             return null;
         } catch (\Exception $e) {
-            throw new \RuntimeException('Erro em findOneByFilters', 0, $e->getMessage());
+            throw new \RuntimeException('Erro em findOneByFilters', 0, $e);
         }
     }
 
@@ -84,7 +84,7 @@ class CrosierEntityIdAPIClient extends CrosierAPIClient
     public function getNew()
     {
         $r = $this->get('/getNew');
-        return json_decode($r, true);
+        return json_decode($r, true)['entity'];
     }
 
 
@@ -94,7 +94,7 @@ class CrosierEntityIdAPIClient extends CrosierAPIClient
      */
     public function save(array $objArray) {
         $r = $this->post('/save', ['entity' => $objArray]);
-        return json_decode($r);
+        return json_decode($r, true);
     }
 
 
