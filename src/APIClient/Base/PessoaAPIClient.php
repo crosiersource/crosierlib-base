@@ -21,19 +21,5 @@ class PessoaAPIClient extends CrosierEntityIdAPIClient
         return $_SERVER['CROSIERCORE_URL'] . '/api/bse/pessoa';
     }
 
-    public function findByCategEStr(string $categ, string $str = null, $limit = null)
-    {
-
-        $cache = new FilesystemAdapter();
-
-        $r = $cache->get('findByCategEStr_' . $categ . $str . $limit, function (ItemInterface $item) use ($categ, $str, $limit) {
-            $item->expiresAfter(3600);
-
-            return $this->get('/findByCategEStr', ['categ' => $categ, 'str' => $str, 'limit' => $limit]);
-        });
-
-        return json_decode($r, true);
-    }
-
-
+    
 }
