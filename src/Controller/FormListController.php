@@ -92,7 +92,10 @@ abstract class FormListController extends BaseController
      */
     public function doForm(Request $request, EntityId $entityId = null, $parameters = []): Response
     {
-        $this->checkAccess($this->crudParams['formRoute']);
+        if (!isset($this->crudParams['role_access'])) {
+            throw $this->createAccessDeniedException('Acesso negado.');
+        }
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
 
         if (!$entityId) {
             $entityName = $this->getEntityHandler()->getEntityClass();
@@ -195,18 +198,6 @@ abstract class FormListController extends BaseController
     }
 
     /**
-     * Verifica junto a CrosierSecurityAPI se o usuário logado tem acesso a rota requisitada.
-     *
-     * @param string $route
-     * @return bool
-     */
-    public function checkAccess(string $route): bool
-    {
-        // FIXME: implementar.
-        return true;
-    }
-
-    /**
      * @param Request $request
      * @param array $parameters
      * @return \Symfony\Component\HttpFoundation\Response
@@ -214,7 +205,10 @@ abstract class FormListController extends BaseController
      */
     public function doList(Request $request, $parameters = array()): Response
     {
-        $this->checkAccess($this->crudParams['listRoute']);
+        if (!isset($this->crudParams['role_access'])) {
+            throw $this->createAccessDeniedException('Acesso negado.');
+        }
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
 
         $params = $request->query->all();
         if (!array_key_exists('filter', $params)) {
@@ -251,7 +245,10 @@ abstract class FormListController extends BaseController
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
     {
-        $this->checkAccess($this->crudParams['listRoute']);
+        if (!isset($this->crudParams['role_access'])) {
+            throw $this->createAccessDeniedException('Acesso negado.');
+        }
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
 
         /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
@@ -340,7 +337,10 @@ abstract class FormListController extends BaseController
      */
     public function doListSimpl(Request $request, array $params = []): Response
     {
-        $this->checkAccess($this->crudParams['listRoute']);
+        if (!isset($this->crudParams['role_access'])) {
+            throw $this->createAccessDeniedException('Acesso negado.');
+        }
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
 
         if (isset($params['r']) && $params['r']) {
             $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
@@ -413,7 +413,11 @@ abstract class FormListController extends BaseController
      */
     public function doDelete(Request $request, EntityId $entityId): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $this->checkAccess($this->crudParams['deleteRoute']);
+        if (!isset($this->crudParams['role_delete'])) {
+            throw $this->createAccessDeniedException('Acesso negado.');
+        }
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_delete']]);
+        
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
