@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
@@ -122,7 +123,7 @@ abstract class FilterRepository extends EntityRepository
         }
         if (is_array($orders)) {
             foreach ($orders as $col => $dir) {
-                if (strpos($col,'.') === FALSE) {
+                if (strpos($col, '.') === FALSE) {
                     $col = 'e.' . $col;
                 }
                 $qb->addOrderBy($col, $dir);
@@ -139,6 +140,30 @@ abstract class FilterRepository extends EntityRepository
             $query->setMaxResults($limit);
         }
         return $query->getResult();
+    }
+
+
+    /**
+     * @param string $field
+     * @return mixed
+     */
+    public function findProx($field = 'id')
+    {
+        $prox = null;
+
+        try {
+            $tableName = $this->getEntityManager()->getClassMetadata($this->getEntityClass())->getTableName();
+            $sql = 'SELECT (max(' . $field . ') + 1) as prox FROM ' . $tableName;
+            $rsm = new ResultSetMapping();
+            $rsm->addScalarResult('prox', 'prox');
+            $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+            $rs = $query->getResult();
+            $prox = $rs[0]['prox'];
+        } catch (\Exception $e) {
+            $this->logger->error('Erro ao buscar o próximo "' . $field . '" em ' . $this->getEntityClass());
+        }
+
+        return $prox;
     }
 
 }

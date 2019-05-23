@@ -112,7 +112,7 @@ class StoredViewInfoBusiness
      */
     public function clear(string $viewName): void
     {
-        $params['viewName'] = $viewRoute;
+        $params['viewName'] = $viewName;
         $params['user'] = $this->security->getUser();
 
         $storedViewInfo = $this->doctrine->getRepository(StoredViewInfo::class)->findOneBy($params);

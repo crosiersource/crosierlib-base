@@ -114,7 +114,7 @@ abstract class FormListController extends BaseController
                     $entity = $form->getData();
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectTo($request, $entity, $parameters);
+                    return $this->redirectTo($request, $entity); // , $parameters);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
