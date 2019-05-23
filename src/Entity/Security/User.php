@@ -152,10 +152,10 @@ class User implements EntityId, UserInterface, \Serializable
 
     /**
      *
-     * @return Collection|Role[]
+     * @return null|Collection|Role[]
      *
      */
-    public function getUserRoles(): Collection
+    public function getUserRoles(): ?Collection
     {
         return $this->userRoles;
     }
