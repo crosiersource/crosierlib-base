@@ -78,6 +78,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
             /** @var FilterRepository $repo */
             $repo = $this->getDoctrine()->getRepository($this->getEntityClass());
             $r = $repo->find($id);
+            $this->handleFindById($r);
 
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
@@ -91,6 +92,16 @@ abstract class BaseAPIEntityIdController extends AbstractController
                 ApiProblem::TYPE_INTERNAL_ERROR
             ))->toJsonResponse();
         }
+    }
+
+    /**
+     * A ser sobreescrito.
+     * Chamado após o retorno do resultado pelo findById.
+     * @param array $results
+     */
+    public function handleFindById($result): void
+    {
+
     }
 
 
@@ -165,6 +176,11 @@ abstract class BaseAPIEntityIdController extends AbstractController
     }
 
 
+    /**
+     * A ser sobreescrito.
+     * Chamado após o retorno dos resultados pelo findByFilters.
+     * @param array $results
+     */
     public function handleFindByFilters(array $results): void
     {
 
