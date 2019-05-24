@@ -148,6 +148,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
             /** @var FilterRepository $repo */
             $repo = $this->getDoctrine()->getRepository($this->getEntityClass());
             $r = $repo->findByFilters($filterDatas, $orders, $start, $limit);
+            $this->handleFindByFilters($r);
 
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
@@ -164,6 +165,12 @@ abstract class BaseAPIEntityIdController extends AbstractController
     }
 
 
+    public function handleFindByFilters(array $results): void
+    {
+
+    }
+
+
     /**
      * Por precisar declarar a rota como uma anotação, então a estratégia é este método ser abstrato e, por convenção,
      * a chamada ser feita ao doSave pelo filho no corpo do método.
@@ -173,7 +180,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function save(Request $request): JsonResponse
+    public
+    function save(Request $request): JsonResponse
     {
 
     }
@@ -182,7 +190,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param Request $request
      * @return JsonResponse|APIProblem
      */
-    public function doSave(Request $request): JsonResponse
+    public
+    function doSave(Request $request): JsonResponse
     {
         try {
             $json = json_decode($request->getContent(), true);
@@ -214,7 +223,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /**
      * @return null|JsonResponse
      */
-    public function getNew(): ?JsonResponse
+    public
+    function getNew(): ?JsonResponse
     {
         return null;
     }
@@ -222,7 +232,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /**
      * @return JsonResponse
      */
-    public function doGetNew(): JsonResponse
+    public
+    function doGetNew(): JsonResponse
     {
         $entityClass = $this->getEntityClass();
         return new JsonResponse(['entity' => EntityIdUtils::serialize(new $entityClass)]);
