@@ -87,6 +87,32 @@ class PropAPIClient extends CrosierAPIClient
         return $grades;
     }
 
+    /**
+     * @param int $gradeId
+     * @return array|null
+     */
+    public function findGradeTamanhoById(int $id): ?array
+    {
+        $cache = new FilesystemAdapter();
+
+        $tamanho = $cache->get('findGradeTamanhoById_' . $id, function (ItemInterface $item) use ($id) {
+            $item->expiresAfter(3600);
+
+            $grades = json_decode($this->findByNome('GRADES')['valores'], true);
+
+            foreach ($grades as $grade) {
+                foreach ($grade['tamanhos'] as $tamanho) {
+                    if ($tamanho['id'] === $id) {
+                        return $tamanho;
+                    }
+                }
+            }
+
+            return null;
+        });
+        return $tamanho;
+    }
+
 
     /**
      * @param int $gradeId
