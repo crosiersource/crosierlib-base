@@ -102,8 +102,6 @@ abstract class FormListController extends BaseController
             $entityId = new $entityName();
         }
 
-        $this->handleReferer($request);
-
         $form = $this->createForm($this->crudParams['typeClass'], $entityId);
 
         $form->handleRequest($request);
@@ -114,6 +112,7 @@ abstract class FormListController extends BaseController
                     $entity = $form->getData();
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
+                    $this->afterSave($entity);
                     return $this->redirectTo($request, $entity); // , $parameters);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
@@ -130,6 +129,8 @@ abstract class FormListController extends BaseController
             }
         }
 
+        $this->handleReferer($request);
+
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
         $parameters['page_title'] = $this->crudParams['formPageTitle'];
@@ -142,6 +143,35 @@ abstract class FormListController extends BaseController
     }
 
     /**
+     * A ser sobreescrito.
+     *
+     * @param EntityId $entityId
+     */
+    public function afterSave(EntityId $entityId)
+    {
+
+    }
+
+    /**
+     * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar
+     * após um save no form dentro do 'refstoback'.
+     *
+     * ** Atenção para a diferença entre reftoback (na querystring) e refstoback (na session).
+     *
+     * @param Request $request
+     */
+    public function handleReferer(Request $request): void
+    {
+        $to = $request->getSession()->get('refstoback') ?? [];
+        if ($request->get('reftoback')) {
+            $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
+        } else {
+            $to[$this->crudParams['formRoute']] = null;
+        }
+        $request->getSession()->set('refstoback', $to);
+    }
+
+    /**
      * Verifica para onde deve ser redirecionado após o save.
      *
      * @param Request $request
@@ -150,7 +180,7 @@ abstract class FormListController extends BaseController
      */
     public function redirectTo(Request $request, EntityId $entityId, array $parameters = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
-        if ($request->getSession()->has('refstoback') and
+        if ($request->getSession()->has('refstoback') &&
             $request->getSession()->get('refstoback')[$this->crudParams['formRoute']]) {
 
             $tos = $request->getSession()->get('refstoback');
@@ -417,7 +447,7 @@ abstract class FormListController extends BaseController
             throw $this->createAccessDeniedException('Acesso negado.');
         }
         $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_delete']]);
-        
+
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -433,26 +463,6 @@ abstract class FormListController extends BaseController
         }
 
         return $this->redirectToRoute($this->crudParams['listRoute']);
-    }
-
-    /**
-     * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar após um save no form.
-     * @param Request $request
-     */
-    public function handleReferer(Request $request): void
-    {
-        if ($request->get('reftoback')) {
-            $to = $request->getSession()->get('refstoback');
-            // Se já estiver setado, então não reseta (para não acontecer se setar para a própria formRoute no submit do form).
-            if (!$to || !isset($to[$this->crudParams['formRoute']]) || !$to[$this->crudParams['formRoute']]) {
-                // se já tiver na sessão, adiciona dentro do existente.
-                if ($request->getSession()->has('refstoback')) {
-                    $to = $request->getSession()->get('refstoback');
-                }
-                $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
-                $request->getSession()->set('refstoback', $to);
-            }
-        }
     }
 
     /**
