@@ -196,8 +196,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public
-    function save(Request $request): JsonResponse
+    public function save(Request $request): JsonResponse
     {
 
     }
@@ -206,8 +205,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * @param Request $request
      * @return JsonResponse|APIProblem
      */
-    public
-    function doSave(Request $request): JsonResponse
+    public function doSave(Request $request): JsonResponse
     {
         try {
             $json = json_decode($request->getContent(), true);
@@ -217,10 +215,12 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $entity = EntityIdUtils::unserialize($entityArray, $this->getEntityClass());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            return (new APIProblem(
+            $apiProblem = (new APIProblem(
                 400,
                 ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT
             ))->toJsonResponse();
+            $apiProblem->set('msg', $e->getMessage());
+            return $apiProblem->toJsonResponse();
         }
 
         try {
@@ -239,8 +239,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /**
      * @return null|JsonResponse
      */
-    public
-    function getNew(): ?JsonResponse
+    public function getNew(): ?JsonResponse
     {
         return null;
     }
@@ -248,8 +247,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /**
      * @return JsonResponse
      */
-    public
-    function doGetNew(): JsonResponse
+    public function doGetNew(): JsonResponse
     {
         $entityClass = $this->getEntityClass();
         return new JsonResponse(['entity' => EntityIdUtils::serialize(new $entityClass)]);
