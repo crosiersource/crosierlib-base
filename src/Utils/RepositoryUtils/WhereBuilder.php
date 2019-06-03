@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -28,6 +29,7 @@ class WhereBuilder
         if (!$filters) {
             return null;
         }
+
         $andX = $qb->expr()->andX();
 
         $filtrando = false;
@@ -203,11 +205,11 @@ class WhereBuilder
             if (!is_array($filter->val)) {
                 $filter->val = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val);
             } else {
-                if ($filter->val['i']) {
-                    $filter->val['i'] = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val['i']);
+                if ($filter->val['i'] && !is_numeric($filter->val['i'])) {
+                    $filter->val['i'] = DecimalUtils::parseStr($filter->val['i']);
                 }
-                if ($filter->val['f']) {
-                    $filter->val['f'] = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val['f']);
+                if ($filter->val['f'] && !is_numeric($filter->val['f'])) {
+                    $filter->val['f'] = DecimalUtils::parseStr($filter->val['f']);
                 }
             }
             return;
