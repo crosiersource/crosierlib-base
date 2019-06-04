@@ -31,7 +31,7 @@ abstract class FormListController extends BaseController
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /** @var EntityHandler */
     protected $entityHandler;

@@ -108,6 +108,16 @@ class FilterData
      */
     public function setVal($val): FilterData
     {
+        if (self::$filterTypes[$this->filterType] === 2) {
+            if (isset($val[0])) {
+                $val['i'] = $val[0];
+                unset($val[0]);
+            }
+            if (isset($val[1])) {
+                $val['f'] = $val[1];
+                unset($val[1]);
+            }
+        }
         $this->val = $val;
         return $this;
     }
