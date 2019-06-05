@@ -137,12 +137,10 @@ trait EnderecoTrait
 
     /**
      * @param null|string $numero
-     * @return EnderecoTrait
      */
-    public function setNumero(?string $numero): EnderecoTrait
+    public function setNumero(?string $numero): void
     {
         $this->numero = $numero;
-        return $this;
     }
 
     /**
