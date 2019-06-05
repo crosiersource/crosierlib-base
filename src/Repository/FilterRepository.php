@@ -137,7 +137,7 @@ abstract class FilterRepository extends EntityRepository
 //        $sql = $qb->getQuery()->getSQL();
         $query = $qb->getQuery();
         $query->setFirstResult($start);
-        if ($limit) {
+        if ($limit > 0) {
             $query->setMaxResults($limit);
         }
         return $query->getResult();
