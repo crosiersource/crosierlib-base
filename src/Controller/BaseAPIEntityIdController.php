@@ -62,7 +62,6 @@ abstract class BaseAPIEntityIdController extends AbstractController
      * Por precisar declarar a rota como uma anotação, então a estratégia é este método ser abstrato e, por convenção,
      * a chamada ser feita ao doFindById pelo filho no corpo do método.
      *
-     * @param Request $request
      * @return JsonResponse
      */
     abstract public function findById(int $id): JsonResponse;
