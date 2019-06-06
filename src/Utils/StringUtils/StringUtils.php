@@ -18,9 +18,9 @@ class StringUtils
 
     const PATTERN_MONEY =
         "@" .
-        "(?<SINAL_I>\\+|\\-)?(?<Q>\\D*\\$?\\D*)(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-)?" .
+        "(?<SINAL_I>\\+|\\-)?(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-)?" .
         "@";
-
+    
     public static function parseFloat($formattedFloat, $clear = false)
     {
         $formattedFloat = str_replace(' ', '', $formattedFloat);
@@ -30,7 +30,7 @@ class StringUtils
         }
         // Se pedir pra remover caracteres estranhos...
         if ($clear) {
-            $formattedFloat = preg_replace("@[^0-9\\.\\,]@", "", $formattedFloat);
+            $formattedFloat = preg_replace("@[^0-9\\-\\.\\,]@", "", $formattedFloat);
         }
         $fmt = new NumberFormatter('pt-BR', NumberFormatter::DECIMAL);
         $float = $fmt->parse($formattedFloat);
