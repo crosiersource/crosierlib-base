@@ -126,7 +126,7 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
             $this->afterSave($entityId);
         } catch (\Exception $e) {
-            throw new ViewException('Erro ao salvar', 0, $e);
+            throw new ViewException('Erro ao salvar (' . $e->getMessage() . ')', 0, $e);
         }
         return $entityId;
     }

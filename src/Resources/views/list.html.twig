@@ -41,7 +41,7 @@
 
                 <table class="table table-striped table-hover crsr-datatable display compact" id="{{ listId }}"
                        data-listajaxurl="{{ url(listRouteAjax) }}"
-                       data-routeedit="{{ url(formRoute) }}"
+                       data-routeedit="{{ formRouteEdit is defined ? formRouteEdit : formRoute }}"
                        data-routedelete="{{ (deleteRoute is defined) ? deleteRoute : '' }}"
                        data-crsf-token-delete="{{ csrf_token('delete') }}">
                 </table>
