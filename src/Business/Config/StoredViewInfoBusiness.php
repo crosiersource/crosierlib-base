@@ -72,9 +72,10 @@ class StoredViewInfoBusiness
      * @param $viewName
      * @param $val
      */
-    public function set(string $viewName, array $val): void {
-        $viewInfo = $this->retrieve($viewName);
-        array_merge($viewInfo, $val);
+    public function set(string $viewName, array $val): void
+    {
+        $viewInfo = $this->retrieve($viewName) ?? [];
+        $viewInfo = array_merge($viewInfo, $val);
         $this->store($viewName, $viewInfo);
     }
 
@@ -84,10 +85,13 @@ class StoredViewInfoBusiness
      * @param $viewName
      * @param $val
      */
-    public function remove(string $viewName, array $key): void {
+    public function remove(string $viewName, array $key): void
+    {
         $viewInfo = $this->retrieve($viewName);
-        unset($viewInfo[$key]);
-        $this->store($viewName, $viewInfo);
+        if ($viewInfo && isset($viewInfo[$key])) {
+            unset($viewInfo[$key]);
+            $this->store($viewName, $viewInfo);
+        }
     }
 
     /**

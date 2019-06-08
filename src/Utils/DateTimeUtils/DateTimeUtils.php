@@ -323,4 +323,30 @@ class DateTimeUtils
         return $ultimoDiaMes;
     }
 
+
+    /**
+     * Retorna um array com todos os Datetime para o mês/ano passado.
+     *
+     * @param string $mesano
+     * @return array
+     * @throws \Exception
+     */
+    public static function getDiasMesAno(string $mesano): array
+    {
+        $dt = \DateTime::createFromFormat('Ymd', $mesano . '01');
+        $dt->setTime(0, 0, 0, 0);
+        $ultimoDia = self::getUltimoDiaMes($dt)->format('d/m/Y');
+        $dts = [];
+        $aux = clone $dt;
+        while (true) {
+            $dts[] = clone $aux;
+            $aux->add(new \DateInterval('P1D'));
+            if ($aux->format('d/m/Y') === $ultimoDia) {
+                $dts[] = clone $aux;
+                break;
+            }
+        }
+        return $dts;
+    }
+
 }

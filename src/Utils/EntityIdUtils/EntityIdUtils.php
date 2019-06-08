@@ -53,7 +53,12 @@ class EntityIdUtils
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
-            return $serializer->normalize($entityId, 'json', ['groups' => ['entity', 'entityId']]);
+            return $serializer->normalize($entityId, 'json',
+                [
+                    'groups' => ['entity', 'entityId'],
+                    'circular_reference_limit' => 3,
+                    'enable_max_depth' => true
+                ]);
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro ao serializar', 0, $e);
         }
@@ -71,8 +76,14 @@ class EntityIdUtils
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
-            $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
-            return $serializer->denormalize($entityArray, $type, 'json', [ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
+            $serializer = new Serializer([new DateTimeNormalizer(), new ArrayDenormalizer(), $normalizer]);
+            return $serializer->denormalize($entityArray, $type, 'json',
+                [
+                    ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                    'groups' => ['entity', 'entityId'],
+                    'circular_reference_limit' => 3,
+                    'enable_max_depth' => true
+                ]);
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro ao deserializar', 0, $e);
         }

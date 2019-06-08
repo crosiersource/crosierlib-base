@@ -35,7 +35,7 @@ trait EnderecoTrait
     /**
      *
      * @ORM\Column(name="numero", type="string", nullable=true, length=20)
-     * @var integer|null
+     * @var string|null
      *
      * @Groups("entity")
      */
@@ -128,17 +128,17 @@ trait EnderecoTrait
     }
 
     /**
-     * @return int|null
+     * @return null|string
      */
-    public function getNumero(): ?int
+    public function getNumero(): ?string
     {
         return $this->numero;
     }
 
     /**
-     * @param int|null $numero
+     * @param null|string $numero
      */
-    public function setNumero(?int $numero): void
+    public function setNumero(?string $numero): void
     {
         $this->numero = $numero;
     }

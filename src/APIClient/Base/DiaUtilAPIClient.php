@@ -27,12 +27,14 @@ class DiaUtilAPIClient extends CrosierAPIClient
      * @param bool $futuro
      * @return array
      */
-    public function incPeriodo(\DateTime $ini, \DateTime $fim, bool $futuro): array
+    public function incPeriodo(\DateTime $ini, \DateTime $fim, bool $futuro, bool $comercial = null, bool $financeiro = null): array
     {
         $params = [
             'ini' => $ini->format('Y-m-d'),
             'fim' => $fim->format('Y-m-d'),
-            'futuro' => $futuro
+            'futuro' => $futuro,
+            'comercial' => $comercial,
+            'financeiro' => $financeiro
         ];
         $contents = $this->get('/incPeriodo/', $params, true);
         return json_decode($contents, true);

@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -136,10 +137,32 @@ abstract class FilterRepository extends EntityRepository
 //        $sql = $qb->getQuery()->getSQL();
         $query = $qb->getQuery();
         $query->setFirstResult($start);
-        if ($limit) {
+        if ($limit > 0) {
             $query->setMaxResults($limit);
         }
         return $query->getResult();
+    }
+
+
+    /**
+     *
+     *
+     * @param array $filtersSimpl
+     * @param null $orders (no padrão do datatables.js)
+     * @param int $start
+     * @param int $limit
+     * @return mixed
+     * @throws ViewException
+     */
+    public function findByFiltersSimpl(array $filtersSimpl, $orders = null, $start = 0, $limit = 10)
+    {
+        $filters = [];
+        foreach ($filtersSimpl as $filterSimpl) {
+            $filter = new FilterData($filterSimpl[0], $filterSimpl[1]);
+            $filter->setVal($filterSimpl[2]);
+            $filters[] = $filter;
+        }
+        return $this->findByFilters($filters, $orders, $start, $limit);
     }
 
 

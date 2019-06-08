@@ -18,7 +18,7 @@ class Select2JsUtils
      * função passada como argumento.
      * Ex.:
      *
-     * $select2Data = Select2JsUtils::toSelect2Data($array, function ($e) {
+     * $select2Data = Select2JsUtils::toSelect2DataFn($array, function ($e) {
      *   return $e->getGroupname() . ' (' . $e->getInserted()->format('d/m/Y') . ')';
      *  });
      *
