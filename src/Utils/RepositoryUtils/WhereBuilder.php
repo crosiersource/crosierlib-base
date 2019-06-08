@@ -203,10 +203,10 @@ class WhereBuilder
             if (!is_array($filter->val)) {
                 $filter->val = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val);
             } else {
-                if ($filter->val['i']) {
+                if ($filter->val['i'] && !is_numeric($filter->val['i'])) {
                     $filter->val['i'] = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val['i']);
                 }
-                if ($filter->val['f']) {
+                if ($filter->val['f'] && !is_numeric($filter->val['f'])) {
                     $filter->val['f'] = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val['f']);
                 }
             }
