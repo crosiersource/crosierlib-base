@@ -127,13 +127,18 @@ abstract class BaseAPIEntityIdController extends AbstractController
                 $filters = json_decode(urldecode($request->query->get('filters')), true);
                 $start = $request->query->get('start') ?? 0;
                 $limit = $request->query->get('limit') ?? 100;
-                $orders = $request->query->get('orders') ?? null;
+                $orders = json_decode(urldecode($request->query->get('orders')), true) ?? null;
             } else {
-                $json = json_decode($request->getContent(), true);
-                $filters = $json['filters'];
-                $start = $json['start'] ?? 0;
-                $limit = $json['limit'] ?? 100;
-                $orders = $json['orders'] ?? null;
+//                $json = json_decode($request->getContent(), true);
+//                $filters = $json['filters'];
+//                $start = $json['start'] ?? 0;
+//                $limit = $json['limit'] ?? 100;
+//                $orders = $json['orders'] ?? null;
+                $filters = $request->get('filters');
+                $start = $request->get('start') ?? 0;
+                $limit = $request->get('limit') ?? 100;
+                $orders = $request->get('orders') ?? null;
+
             }
 
 

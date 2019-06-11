@@ -23,6 +23,7 @@ class FilterData
 
     public static $filterTypes = array(
         'EQ' => 1,
+        'EQ_BOOL' => 1,
         'NEQ' => 1,
         'LT' => 1,
         'LTE' => 1,

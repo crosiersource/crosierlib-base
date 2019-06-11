@@ -53,10 +53,13 @@ class DiaUtilAPIClient extends CrosierAPIClient
         $params =
             [
                 'dt' => $dt->format('Y-m-d'),
-                'prox' => $prox,
                 'financeiro' => $financeiro,
                 'comercial' => $comercial,
             ];
+        if ($prox !== null) {
+            // Por algum motivo se mandar o false booleano ele recebe como null
+            $params['prox'] = $prox ? 'true' : 'false';
+        }
         $r = json_decode($this->get('/findDiaUtil/', $params), true);
 
         if (!isset($r['diaUtil'])) {
