@@ -101,7 +101,8 @@ class WhereBuilder
                             ->in($field, $fieldP));
                         break;
                     case 'NOT_IN':
-                        // $exprs[] = $qb->expr()->isNotNull($field, $val);
+                        $orX->add($qb->expr()
+                            ->notIn($field, $fieldP));
                         break;
                     case 'LIKE':
                     case 'LIKE_ONLY':

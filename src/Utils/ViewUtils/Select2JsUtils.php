@@ -27,14 +27,16 @@ class Select2JsUtils
      * @return array
      * @throws \Exception
      */
-    public static function toSelect2DataFn(array $entities, \Closure $fn) {
+    public static function toSelect2DataFn(array $entities, \Closure $fn, ?array $entitiesIdsSelecteds = [])
+    {
         $select2Data = [];
         foreach ($entities as $entity) {
             $text = $fn($entity);
             if ($entity instanceof EntityId) {
                 $select2Data[] = [
                     'id' => $entity->getId(),
-                    'text' => $text
+                    'text' => $text,
+                    'selected' => $entitiesIdsSelecteds ? in_array($entity->getId(), $entitiesIdsSelecteds, false) : false
                 ];
             } else {
                 if (!isset($entity['id'])) {
@@ -42,7 +44,8 @@ class Select2JsUtils
                 }
                 $select2Data[] = [
                     'id' => $entity['id'],
-                    'text' => $text
+                    'text' => $text,
+                    'selected' => $entitiesIdsSelecteds ? in_array($entity['id'], $entitiesIdsSelecteds, false) : false
                 ];
             }
         }
@@ -59,12 +62,13 @@ class Select2JsUtils
      * @return array
      * @throws \Exception
      */
-    public static function toSelect2Data(array $entities, string $vsprintfFormat, array $atributos) {
+    public static function toSelect2Data(array $entities, string $vsprintfFormat, array $atributos)
+    {
         return Select2JsUtils::toSelect2DataFn($entities, function ($e) use ($vsprintfFormat, $atributos) {
             $args = [];
             foreach ($atributos as $atributo) {
                 if ($e instanceof EntityId) {
-                    $p = (new \ReflectionProperty($e,$atributo));
+                    $p = (new \ReflectionProperty($e, $atributo));
                     $p->setAccessible(true);
                     $args[] = $p->getValue($e);
                 } else {

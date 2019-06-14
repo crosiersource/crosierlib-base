@@ -90,7 +90,7 @@ abstract class FormListController extends BaseController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function doForm(Request $request, EntityId $entityId = null, $parameters = []): Response
+    public function doForm(Request $request, EntityId $entityId = null, $parameters = [], $preventSubmit = false): Response
     {
         if (!isset($this->crudParams['role_access'])) {
             throw $this->createAccessDeniedException('Acesso negado.');
@@ -106,7 +106,7 @@ abstract class FormListController extends BaseController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if (!$preventSubmit && $form->isSubmitted()) {
             if ($form->isValid()) {
                 try {
                     $entity = $form->getData();
