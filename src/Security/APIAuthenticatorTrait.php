@@ -60,15 +60,14 @@ trait APIAuthenticatorTrait
     public function getCredentials(Request $request)
     {
         $this->logger->info('APIAuthenticator getCredentials()');
-        // Lógica para poder liberar acesso em ambiente de dev.
         $this->logger->info('pathInfo: "' . $request->getPathInfo() . '"');
+        // Lógica para poder liberar acesso em ambiente de dev.
         if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
             $this->logger->info('APP_ENV = dev');
             return 1;
         } else {
             $authorizationHeader = $request->headers->get('X-Authorization');
             $this->logger->info('....................... authorizationHeader = "' . $authorizationHeader . '"');
-            // skip beyond "Bearer "
             return $authorizationHeader ? substr($authorizationHeader, 7) : '';
         }
     }
