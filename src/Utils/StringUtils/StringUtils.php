@@ -18,7 +18,7 @@ class StringUtils
 
     const PATTERN_MONEY =
         "@" .
-        "(?<SINAL_I>\\+|\\-)?(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-)?" .
+        "(?<SINAL_I>\\+|\\-)?(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-|C|D)?" .
         "@";
     
     public static function parseFloat($formattedFloat, $clear = false)

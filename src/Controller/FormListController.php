@@ -318,6 +318,7 @@ abstract class FormListController extends BaseController
 
         // Para que possa acessar todas os atributos de dentro do getDatatablesColumns() no DatatablesJs
         $dadosE = [];
+
         foreach ($dados as $dado) {
             $dadosE[]['e'] = $dado;
         }
