@@ -248,8 +248,7 @@ abstract class FormListController extends BaseController
             if (isset($params['r']) and $params['r']) {
                 $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
             } else {
-                $svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
-                if ($svi) {
+                if ($svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute'])) {
                     $formPesquisar = $svi['formPesquisar'] ?? null;
                     if ($formPesquisar and $formPesquisar !== $params) {
                         return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
