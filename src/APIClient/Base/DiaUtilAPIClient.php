@@ -48,7 +48,7 @@ class DiaUtilAPIClient extends CrosierAPIClient
      * @return \DateTime|mixed
      * @throws ViewException
      */
-    public function findDiaUtil(\DateTime $dt, bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
+    public function findDiaUtil(\DateTime $dt, ?bool $prox = true, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
     {
         $params =
             [
