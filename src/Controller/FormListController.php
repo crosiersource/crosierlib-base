@@ -240,30 +240,30 @@ abstract class FormListController extends BaseController
         }
         $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
 
-        $params = $request->query->all();
-        if (!array_key_exists('filter', $params)) {
+        $queryParams = $request->query->all();
+        if (!array_key_exists('filter', $queryParams)) {
             // inicializa para evitar o erro
-            $params['filter'] = null;
+            $queryParams['filter'] = null;
 
-            if (isset($params['r']) and $params['r']) {
+            if (isset($queryParams['r']) and $queryParams['r']) {
                 $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
             } else {
                 if ($svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute'])) {
                     $formPesquisar = $svi['formPesquisar'] ?? null;
-                    if ($formPesquisar and $formPesquisar !== $params) {
+                    if ($formPesquisar and $formPesquisar !== $queryParams) {
                         return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
                     }
                 }
             }
         }
 
-        $params['page_title'] = $this->crudParams['listPageTitle'];
+        $queryParams['page_title'] = $this->crudParams['listPageTitle'];
         if (isset($this->crudParams['list_PROGRAM_UUID'])) {
-            $params['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
+            $queryParams['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
         }
-        $params = array_merge($params, $parameters);
+        $queryParams = array_replace_recursive($queryParams, $parameters);
 
-        return $this->doRender($this->crudParams['listView'], $params);
+        return $this->doRender($this->crudParams['listView'], $queryParams);
     }
 
     /**
@@ -311,6 +311,9 @@ abstract class FormListController extends BaseController
         }
 
         $countByFilter = $repo->doCountByFilters($filterDatas);
+        if ($countByFilter < $start) {
+            $start = 0;
+        }
         $dados = $repo->findByFilters($filterDatas, $orders, $start, $limit);
 
         $this->handleDadosList($dados);
