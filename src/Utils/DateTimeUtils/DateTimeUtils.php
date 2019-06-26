@@ -12,6 +12,8 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 class DateTimeUtils
 {
 
+    public static $DATAHORACOMPLETAPATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
+
     /**
      * @param $dateStr
      * @return null|\DateTime
@@ -44,6 +46,14 @@ class DateTimeUtils
             }
             $dt->setTime(12, 0);
             return $dt;
+        }
+
+        if (preg_match(self::$DATAHORACOMPLETAPATTERN, $dateStr, $matches)) {
+            $pattern = 'd/m/';
+            $pattern .= strlen($matches['Y']) === 2 ? 'y' : 'Y';
+            $pattern .= isset($matches['H']) ? ' H:i' : '';
+            $pattern .= isset($matches['s']) ? ':s' : '';
+            return \DateTime::createFromFormat($pattern, $dateStr);
         }
 
         if (strlen($dateStr) === 16) { // dd/mm/YYYY 12:34
