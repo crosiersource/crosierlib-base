@@ -1,0 +1,17 @@
+
+{% for flashMessage in app.flashes('success') %}
+    <div class="alert alert-success" role="alert"><i class="fas fa-check-circle"></i> {{ flashMessage|raw }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('info') %}
+    <div class="alert alert-primary" role="alert"><i class="fas fa-info-circle"></i> {{ flashMessage|raw }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('error') %}
+    <div class="alert alert-danger" role="alert"><i class="fas fa-minus-circle"></i> {{ flashMessage|raw }}</div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('warn') %}
+    <div class="alert alert-warning" role="alert"><i class="fas fa-exclamation-triangle"></i> {{ flashMessage|raw }}</div>
+{% endfor %}
+
