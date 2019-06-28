@@ -159,7 +159,9 @@ abstract class FilterRepository extends EntityRepository
         $filters = [];
         foreach ($filtersSimpl as $filterSimpl) {
             $filter = new FilterData($filterSimpl[0], $filterSimpl[1]);
-            $filter->setVal($filterSimpl[2]);
+            if (isset($filterSimpl[2])) {
+                $filter->setVal($filterSimpl[2]);
+            }
             $filters[] = $filter;
         }
         return $this->findByFilters($filters, $orders, $start, $limit);
