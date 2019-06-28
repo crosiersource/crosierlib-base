@@ -32,6 +32,9 @@ class ExceptionUtils
         if ($e instanceof ViewException) {
             return $e->getMessage();
         }
+        if ($e->getPrevious() instanceof ViewException) {
+            return $e->getPrevious()->getMessage();
+        }
         return '';
     }
 
