@@ -16,7 +16,7 @@
             {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
             <main class="main">
-
+                <div id="ulid" data-value="{{ app.user.id|default('') }}">
                 {% block page_content %}
 
                 {% endblock %}

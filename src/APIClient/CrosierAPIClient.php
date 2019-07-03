@@ -6,8 +6,6 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -77,6 +75,7 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function doRequest($uri, $method, $params = null, $asQueryString = false): ?string
     {
@@ -85,7 +84,11 @@ abstract class CrosierAPIClient
                 throw new \RuntimeException('baseURI não definido');
             }
             $uri = $this->getBaseURI() . $uri;
-            $client = new Client();
+            $cParams = [];
+            if ($_SERVER['CROSIERCORE_SELFSIGNEDCERT']) {
+                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
+            }
+            $client = new Client($cParams);
             $key = $asQueryString ? 'query' : 'json';
             $response = $client->request($method, $uri,
                 [
@@ -106,6 +109,7 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return null|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function post($uri, $params = null, $asQueryString = false): ?string
     {
@@ -117,6 +121,7 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return null|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function get($uri, $params = null, $asQueryString = true): ?string
     {

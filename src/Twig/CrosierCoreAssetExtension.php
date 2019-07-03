@@ -2,7 +2,6 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Twig;
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
@@ -47,10 +46,14 @@ class CrosierCoreAssetExtension extends AbstractExtension
             }
 
             $this->logger->info($base_uri);
-            $client = new Client([
+            $cParams = [
                 'base_uri' => $base_uri,
                 'timeout' => 10.0,
-            ]);
+            ];
+            if ($_SERVER['CROSIERCORE_SELFSIGNEDCERT']) {
+                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
+            }
+            $client = new Client($cParams);
             $uri = $base_uri . '/getCrosierAssetUrl?asset=' . urlencode($asset);
             $this->logger->debug('request uri="' . $uri . '"');
             $response = $client->request('GET', $uri);

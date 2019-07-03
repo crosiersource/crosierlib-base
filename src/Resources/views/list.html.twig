@@ -18,11 +18,13 @@
 
                     {% block btns %}
 
+                        {% if formRoute is defined %}
                         <button type="button" class="btn btn-primary ml-1" data-toggle="tooltip" data-placement="top"
                                 title="Novo registro"
                                 onclick="window.location.href='{{ url(formRoute) }}'">
                             <i class="fas fa-file" aria-hidden="true"></i>
                         </button>
+                        {% endif %}
                         <button type="button" class="btn btn-secondary ml-1"
                                 title="Pesquisar"
                                 data-target="#pesquisarModal" data-toggle="modal">
@@ -45,7 +47,7 @@
 
                 <table class="table table-striped table-hover crsr-datatable display compact" id="{{ listId }}"
                        data-listajaxurl="{{ url(listRouteAjax) }}"
-                       data-routeedit="{{ formRouteEdit is defined ? formRouteEdit : formRoute }}"
+                       data-routeedit="{{ formRouteEdit is defined ? formRouteEdit : (formRoute is defined ? formRoute : '') }}"
                        data-routedelete="{{ (deleteRoute is defined) ? deleteRoute : '' }}"
                        data-crsf-token-delete="{{ csrf_token('delete') }}">
                 </table>
