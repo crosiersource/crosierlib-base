@@ -85,7 +85,7 @@ abstract class CrosierAPIClient
             }
             $uri = $this->getBaseURI() . $uri;
             $cParams = [];
-            if ($_SERVER['CROSIERCORE_SELFSIGNEDCERT']) {
+            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
                 $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
             }
             $client = new Client($cParams);
