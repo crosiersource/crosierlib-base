@@ -50,7 +50,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
                 'base_uri' => $base_uri,
                 'timeout' => 10.0,
             ];
-            if ($_SERVER['CROSIERCORE_SELFSIGNEDCERT']) {
+            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
                 $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
             }
             $client = new Client($cParams);
