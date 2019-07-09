@@ -219,10 +219,10 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $entity = EntityIdUtils::unserialize($entityArray, $this->getEntityClass());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            $apiProblem = (new APIProblem(
+            $apiProblem = new APIProblem(
                 400,
                 ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT
-            ))->toJsonResponse();
+            );
             $apiProblem->set('msg', $e->getMessage());
             return $apiProblem->toJsonResponse();
         }

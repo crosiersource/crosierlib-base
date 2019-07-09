@@ -8,8 +8,14 @@
 
     <script src="{{ asset('build/runtime.js') }}"></script>
 
-
-    <script data-pace-options='{ "document": true }' src="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace.min.js"></script>
+    <script>
+        paceOptions = {
+            ajax: true, // disabled
+            document: true, // enabled
+            eventLag: false // disabled
+        };
+    </script>
+    <script src="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace.min.js"></script>
     <script>
         window.onbeforeunload = function (e) {
             document.getElementById('preloader').style.display = '';

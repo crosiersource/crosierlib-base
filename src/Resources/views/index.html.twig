@@ -16,13 +16,13 @@
             {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
             <main class="main">
-                <div id="ulid" data-value="{{ app.user.id|default('') }}">
+                <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}">
 
                 {% block page_content %}
 
                 {% endblock %}
 
-                    <div id="hubUrl" data-value="{{ getEnv('MERCURE_PUBLISH_URL') }}">
+
 
             </main>
 
