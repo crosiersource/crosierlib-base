@@ -9,26 +9,27 @@
 
 
 
-        {{ include('@CrosierLibBase/header.html.twig') }}
+    {{ include('@CrosierLibBase/header.html.twig') }}
 
-        <div class="app-body blur-on-pace">
+    <div class="app-body blur-on-pace">
 
-            {{ include('@CrosierLibBase/menuLateral.html.twig') }}
+        {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
-            <main class="main">
-                <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}">
+        <main class="main">
+            <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}"></div>
 
-                {% block page_content %}
+            {% block page_content %}
 
-                {% endblock %}
-
-
-
-            </main>
+            {% endblock %}
 
 
-        </div>
-        {{ include('@CrosierLibBase/footer.html.twig') }}
+            <div id="ulid" data-value="{{ app.user.id|default('') }}">
+            <div id="at" data-value="{{ app.user.apiToken }}"></div>
+        </main>
+
+
+    </div>
+    {{ include('@CrosierLibBase/footer.html.twig') }}
 
 
 
