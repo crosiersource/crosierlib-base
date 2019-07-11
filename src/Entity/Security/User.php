@@ -85,6 +85,14 @@ class User implements EntityId, UserInterface, \Serializable
      */
     private $apiTokenExpiresAt;
 
+
+    /**
+     *
+     * @ORM\Column(name="session_id", type="string", length=200, nullable=true)
+     */
+    private $sessionId;
+
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -230,6 +238,24 @@ class User implements EntityId, UserInterface, \Serializable
     public function setApiTokenExpiresAt($apiTokenExpiresAt): void
     {
         $this->apiTokenExpiresAt = $apiTokenExpiresAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * @param mixed $sessionId
+     * @return User
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+        return $this;
     }
 
 
