@@ -20,6 +20,7 @@ class DateTimeUtils
      */
     public static function parseDateStr($dateStr): ?\DateTime
     {
+        $dateStr = trim($dateStr);
         if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
             $dt->setTime(12, 0);
