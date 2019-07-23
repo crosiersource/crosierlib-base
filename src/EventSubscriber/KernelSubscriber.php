@@ -3,11 +3,10 @@
 namespace CrosierSource\CrosierLibBaseBundle\EventSubscriber;
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -54,39 +53,34 @@ class KernelSubscriber implements EventSubscriberInterface
     /**
      * Executa a verificação junto a api do CrosierCore se o app ainda está logado.
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
-        // Só é ativado para apps
-        if (isset($_SERVER['CROSIERAPP_ID']) && (isset($_SERVER['CROSIERAPP_LOGINBYCORE']) && filter_var($_SERVER['CROSIERAPP_LOGINBYCORE'], FILTER_VALIDATE_BOOLEAN) === true)) {
-            try {
-                $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> App KernelSubscriber onRequest checkLoginState()');
-                if (!$this->securityAPIClient->checkLoginState()) {
-                    throw new \Exception('null');
-                }
-                $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> OK');
-            } catch (\Exception $e) {
-                $this->logger->info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERRO');
-                if ($e->getPrevious() instanceof \GuzzleHttp\Exception\ClientException) {
-                    $exception = $e->getPrevious();
-                    if ($exception->getCode() === 401) {
-                        $event->setResponse(
-                            new RedirectResponse(
-                                $_SERVER['CROSIERCORE_URL'] . '/reauthApp/' . getenv('APP_ID')
-                            )
-                        );
-                    }
-                } else {
-                    $event->setResponse(
-                        new RedirectResponse(
-                            $_SERVER['CROSIERCORE_URL']
-                        )
-                    );
-                }
-            }
-        }
-
-
+//        // Não ativa para chamadas a APIs
+//        if (strpos($event->getRequest()->getPathInfo(), '/api/') !== 0 &&
+//            strpos($event->getRequest()->getPathInfo(), '/login') !== 0 &&
+//            strpos($event->getRequest()->getPathInfo(), '/logout') !== 0) {
+//
+////            if (isset($_SERVER['CROSIERAPP_ID']) && (isset($_SERVER['CROSIERAPP_LOGINBYCORE']) && filter_var($_SERVER['CROSIERAPP_LOGINBYCORE'], FILTER_VALIDATE_BOOLEAN) === true)) {
+//            $loginState = null;
+//            try {
+//                $loginState = $this->securityAPIClient->checkLoginState();
+//                if ($loginState && isset($loginState['hasApiToken']) && $loginState['hasApiToken']) {
+//                    return; // OK
+//                }
+//            } catch (\Throwable $e) {
+//                $this->logger->error('onKernelRequest error (loginState)');
+//                $this->logger->error(print_r($loginState, true));
+//            }
+//            // problema com o loginState... manda para o logout (que por sua vez mandará para o login)
+//            $event->setResponse(
+//                new RedirectResponse(
+//                    $_SERVER['CROSIERCORE_URL'] . '/logout'
+//                )
+//            );
+//
+//        }
     }
 }

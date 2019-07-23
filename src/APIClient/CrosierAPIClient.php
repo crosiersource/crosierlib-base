@@ -37,34 +37,15 @@ abstract class CrosierAPIClient
     }
 
     /**
-     * @return string
+     * @param $uri
+     * @param null $params
+     * @param bool $asQueryString
+     * @return null|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getBaseURI(): string
+    public function post($uri, $params = null, $asQueryString = false): ?string
     {
-        return $this->baseURI;
-    }
-
-    /**
-     * @param string $baseURI
-     * @return CrosierAPIClient
-     */
-    public function setBaseURI(string $baseURI)
-    {
-        $this->baseURI = $baseURI;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
-    public function getAuthHeader()
-    {
-        /** @var User $user */
-        $user = $this->security->getUser();
-        $apiToken = $user && $user->getApiToken() ? $user->getApiToken() : ' ???';
-        $authHeader['X-Authorization'] = 'Bearer ' . $apiToken;
-        return $authHeader;
+        return $this->doRequest($uri, 'post', $params, $asQueryString);
     }
 
     /**
@@ -80,6 +61,7 @@ abstract class CrosierAPIClient
     public function doRequest($uri, $method, $params = null, $asQueryString = false): ?string
     {
         try {
+            $authHeader = $this->getAuthHeader();
             if (!$this->getBaseURI()) {
                 throw new \RuntimeException('baseURI não definido');
             }
@@ -92,7 +74,7 @@ abstract class CrosierAPIClient
             $key = $asQueryString ? 'query' : 'json';
             $response = $client->request($method, $uri,
                 [
-                    'headers' => array_merge($this->getAuthHeader(), ['XDEBUG_SESSION' => 'blabla']),
+                    'headers' => $authHeader,
                     $key => $params
                 ]
             );
@@ -105,15 +87,38 @@ abstract class CrosierAPIClient
     }
 
     /**
-     * @param $uri
-     * @param null $params
-     * @param bool $asQueryString
-     * @return null|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed
+     * @throws \Exception
      */
-    public function post($uri, $params = null, $asQueryString = false): ?string
+    public function getAuthHeader()
     {
-        return $this->doRequest($uri, 'post', $params, $asQueryString);
+        /** @var User $user */
+        $user = $this->security->getUser();
+        if (!$user->getApiToken()) {
+            $this->logger->error('user sem apiToken');
+            throw new \RuntimeException('user sem apiToken');
+        }
+        $apiToken = $user && $user->getApiToken() ? $user->getApiToken() : ' ???';
+        $authHeader['X-Authorization'] = 'Bearer ' . $apiToken;
+        return $authHeader;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseURI(): string
+    {
+        return $this->baseURI;
+    }
+
+    /**
+     * @param string $baseURI
+     * @return CrosierAPIClient
+     */
+    public function setBaseURI(string $baseURI)
+    {
+        $this->baseURI = $baseURI;
+        return $this;
     }
 
     /**

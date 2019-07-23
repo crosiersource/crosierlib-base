@@ -20,10 +20,11 @@ class SecurityAPIClient extends CrosierAPIClient
 
     /**
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkLoginState()
     {
-        return json_decode($this->get('/checkLoginState/'));
+        return json_decode($this->get('/checkLoginState/'), true);
     }
 
 }
