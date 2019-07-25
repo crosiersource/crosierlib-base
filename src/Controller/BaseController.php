@@ -51,7 +51,7 @@ class BaseController extends AbstractController
      */
     protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
-        try {
+//        try {
             $session = new Session();
             // Caso não tenha sido passado o PROGRAM_UUID, utiliza o programa da Dashboard deste aplicativo
             if (!isset($parameters['PROGRAM_UUID']) || !$parameters['PROGRAM_UUID']) {
@@ -101,11 +101,11 @@ class BaseController extends AbstractController
             return $this->render($view, $parameters, $response);
 
 
-        } catch (\Exception $e) {
-            $this->logger->error('doRender - error');
-            $this->logger->error($e->getMessage());
-            return new RedirectResponse($_SERVER['CROSIERCORE_URL'] . '/logout');
-        }
+//        } catch (\Exception $e) {
+//            $this->logger->error('doRender - error');
+//            $this->logger->error($e->getMessage());
+//            return new RedirectResponse($_SERVER['CROSIERCORE_URL'] . '/logout');
+//        }
     }
 
 }
