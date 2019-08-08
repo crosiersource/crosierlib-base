@@ -291,7 +291,7 @@ abstract class FormListController extends BaseController
             $draw = (int)$rParams['draw'];
             parse_str($rParams['formPesquisar'], $formPesquisar);
             if (is_array($defaultFilters)) {
-                $formPesquisar = array_merge_recursive($formPesquisar, $defaultFilters);
+                $formPesquisar['filter'] = array_replace_recursive($formPesquisar['filter'], $defaultFilters['filter']);
             }
             $filterDatas = $this->getSomenteFilterDatasComValores($formPesquisar);
         }
