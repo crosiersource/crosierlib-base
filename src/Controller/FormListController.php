@@ -63,15 +63,6 @@ abstract class FormListController extends BaseController
     }
 
     /**
-     * Neste caso é necessário o getter pois (??)
-     * @return EntityHandler
-     */
-    public function getEntityHandler(): EntityHandler
-    {
-        return $this->entityHandler;
-    }
-
-    /**
      * @required
      * @param StoredViewInfoBusiness $storedViewInfoBusiness
      */
@@ -79,7 +70,6 @@ abstract class FormListController extends BaseController
     {
         $this->storedViewInfoBusiness = $storedViewInfoBusiness;
     }
-
 
     /**
      * Monta o formulário, faz as validações, manda salvar, trata erros, etc.
@@ -143,6 +133,15 @@ abstract class FormListController extends BaseController
     }
 
     /**
+     * Neste caso é necessário o getter pois (??)
+     * @return EntityHandler
+     */
+    public function getEntityHandler(): EntityHandler
+    {
+        return $this->entityHandler;
+    }
+
+    /**
      * A ser sobreescrito.
      *
      * @param EntityId $entityId
@@ -150,25 +149,6 @@ abstract class FormListController extends BaseController
     public function afterSave(EntityId $entityId)
     {
 
-    }
-
-    /**
-     * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar
-     * após um save no form dentro do 'refstoback'.
-     *
-     * ** Atenção para a diferença entre reftoback (na querystring) e refstoback (na session).
-     *
-     * @param Request $request
-     */
-    public function handleReferer(Request $request): void
-    {
-        $to = $request->getSession()->get('refstoback') ?? [];
-        if ($request->get('reftoback')) {
-            $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
-        } else {
-            $to[$this->crudParams['formRoute']] = null;
-        }
-        $request->getSession()->set('refstoback', $to);
     }
 
     /**
@@ -197,34 +177,37 @@ abstract class FormListController extends BaseController
     }
 
     /**
-     * Se existir filtro na tela, sobreescrever.
+     * Se for passado o parâmetro 'reftoback', então seta na sessão o referer para onde deve voltar
+     * após um save no form dentro do 'refstoback'.
      *
-     * @param array $params
-     * @return array|null
+     * ** Atenção para a diferença entre reftoback (na querystring) e refstoback (na session).
+     *
+     * @param Request $request
      */
-    public function getFilterDatas(array $params): ?array
+    public function handleReferer(Request $request): void
     {
-        return null;
+        $to = $request->getSession()->get('refstoback') ?? [];
+        if ($request->get('reftoback')) {
+            $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
+        } else {
+            $to[$this->crudParams['formRoute']] = null;
+        }
+        $request->getSession()->set('refstoback', $to);
     }
 
     /**
-     * Filtra os filterDatas por somente aqueles que contenham valores.
+     * Sobreescreve o parent::render com atributos padrão para CRUD.
      *
-     * @param $params
-     * @return array
+     * @param string $view
+     * @param array $parameters
+     * @param Response|null $response
+     * @return Response
+     * @throws \Exception
      */
-    public function getSomenteFilterDatasComValores($params): array
+    protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
-        $filterDatas = $this->getFilterDatas($params);
-        $filterDatasComValores = [];
-        if ($filterDatas && count($filterDatas) > 0) {
-            foreach ($filterDatas as $filterData) {
-                if ($filterData->val) {
-                    $filterDatasComValores[] = $filterData;
-                }
-            }
-        }
-        return $filterDatasComValores;
+        $parameters = array_merge($this->crudParams, $parameters);
+        return parent::doRender($view, $parameters, $response);
     }
 
     /**
@@ -269,10 +252,12 @@ abstract class FormListController extends BaseController
     /**
      * @param Request $request
      * @param null $defaultFilters
+     * @param array|null $dadosProntos
+     * @param int|null $countByFilter
      * @return Response
      * @throws ViewException
      */
-    public function doDatatablesJsList(Request $request, $defaultFilters = null): Response
+    public function doDatatablesJsList(Request $request, $defaultFilters = null, ?array $dadosProntos = null, ?int $countByFilter = null): Response
     {
         if (!isset($this->crudParams['role_access'])) {
             throw $this->createAccessDeniedException('Acesso negado.');
@@ -283,6 +268,7 @@ abstract class FormListController extends BaseController
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
 
         $rParams = $request->request->all();
+
 
         // Inicializadores
         $filterDatas = null;
@@ -310,11 +296,16 @@ abstract class FormListController extends BaseController
             $filterDatas = $this->getSomenteFilterDatasComValores($formPesquisar);
         }
 
-        $countByFilter = $repo->doCountByFilters($filterDatas);
-        if ($countByFilter < $start) {
-            $start = 0;
+        // Caso os dados já tenham sido passados, não refaz a busca...
+        if (!$dadosProntos) {
+            $countByFilter = $repo->doCountByFilters($filterDatas);
+            if ($countByFilter < $start) {
+                $start = 0;
+            }
+            $dados = $repo->findByFilters($filterDatas, $orders, $start, $limit);
+        } else {
+            $dados = $dadosProntos;
         }
-        $dados = $repo->findByFilters($filterDatas, $orders, $start, $limit);
 
         $this->handleDadosList($dados);
 
@@ -350,15 +341,57 @@ abstract class FormListController extends BaseController
             throw new \RuntimeException($e->getMessage(), 0, $e);
         }
 
-        if ($filterDatas and count($filterDatas) > 0) {
-            $viewInfo = array();
-            $viewInfo['formPesquisar'] = $formPesquisar;
-            $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
+        if ($filterDatas ?? null) {
+            if (count($filterDatas) > 0) {
+                $viewInfo = array();
+                $viewInfo['formPesquisar'] = $formPesquisar;
+                $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
+            }
         }
 
         return new JsonResponse($r);
     }
 
+    /**
+     * Filtra os filterDatas por somente aqueles que contenham valores.
+     *
+     * @param $params
+     * @return array
+     */
+    public function getSomenteFilterDatasComValores($params): array
+    {
+        $filterDatas = $this->getFilterDatas($params);
+        $filterDatasComValores = [];
+        if ($filterDatas && count($filterDatas) > 0) {
+            foreach ($filterDatas as $filterData) {
+                if ($filterData->val) {
+                    $filterDatasComValores[] = $filterData;
+                }
+            }
+        }
+        return $filterDatasComValores;
+    }
+
+    /**
+     * Se existir filtro na tela, sobreescrever.
+     *
+     * @param array $params
+     * @return array|null
+     */
+    public function getFilterDatas(array $params): ?array
+    {
+        return null;
+    }
+
+    /**
+     * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados retornados da pesquisa.
+     *
+     * @param array $dados
+     */
+    public function handleDadosList(array &$dados)
+    {
+
+    }
 
     /**
      * Para listas que não utilizam o datatables.js
@@ -430,16 +463,6 @@ abstract class FormListController extends BaseController
     }
 
     /**
-     * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados retornados da pesquisa.
-     *
-     * @param array $dados
-     */
-    public function handleDadosList(array &$dados)
-    {
-
-    }
-
-    /**
      * @param Request $request
      * @param EntityId $entityId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -466,21 +489,6 @@ abstract class FormListController extends BaseController
         }
 
         return $this->redirectToRoute($this->crudParams['listRoute']);
-    }
-
-    /**
-     * Sobreescreve o parent::render com atributos padrão para CRUD.
-     *
-     * @param string $view
-     * @param array $parameters
-     * @param Response|null $response
-     * @return Response
-     * @throws \Exception
-     */
-    protected function doRender(string $view, array $parameters = [], Response $response = null): Response
-    {
-        $parameters = array_merge($this->crudParams, $parameters);
-        return parent::doRender($view, $parameters, $response);
     }
 
 
