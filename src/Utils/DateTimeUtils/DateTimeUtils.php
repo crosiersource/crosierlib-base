@@ -16,9 +16,9 @@ class DateTimeUtils
 
     /**
      * @param $dateStr
-     * @return null|\DateTime
+     * @return \DateTime
      */
-    public static function parseDateStr($dateStr): ?\DateTime
+    public static function parseDateStr($dateStr): \DateTime
     {
         $dateStr = trim($dateStr);
         if (strlen($dateStr) === 5) { // dd/mm
@@ -71,7 +71,7 @@ class DateTimeUtils
             return $dt;
         }
 
-        return null;
+        throw new \RuntimeException('Impossível parse na data (' . $dateStr . ')');
     }
 
     /**
