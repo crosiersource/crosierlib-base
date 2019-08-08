@@ -272,11 +272,11 @@ class WhereBuilder
         }
         if (is_array($filter->val)) {
             foreach ($filter->val as $val) {
-                if ($val) {
+                if ($val !== null && $val !== '') {
                     return true;
                 }
             }
-        } else if ($filter->val) {
+        } else if ($filter->val !== null && $filter->val !== '') {
             return true;
         }
         return false;

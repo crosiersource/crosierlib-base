@@ -364,7 +364,7 @@ abstract class FormListController extends BaseController
         $filterDatasComValores = [];
         if ($filterDatas && count($filterDatas) > 0) {
             foreach ($filterDatas as $filterData) {
-                if ($filterData->val) {
+                if ($filterData->val !== null && $filterData->val !== '') {
                     $filterDatasComValores[] = $filterData;
                 }
             }
