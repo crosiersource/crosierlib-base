@@ -3,9 +3,11 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" href="{{ getEnv('CROSIERCORE_URL') }}">
-        <img class="navbar-brand-full ml-4" src="{{ getEnv('CROSIER_LOGO') }}" width="80" height="18" alt="Crosier Logo">
+        <img class="navbar-brand-full ml-4" src="{{ getEnv('CROSIER_LOGO') }}" width="160" height="36"
+             alt="Crosier Logo">
     </a>
-    <button style="margin-left: 40px" class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+    <button style="margin-left: 40px" class="navbar-toggler sidebar-toggler d-md-down-none" type="button"
+            data-toggle="sidebar-lg-show">
         <span class="navbar-toggler-icon"></span>
     </button>
     <ul class="nav navbar-nav d-md-down-none">
@@ -16,7 +18,10 @@
     <ul class="nav navbar-nav ml-auto">
 
         <li class="nav-item dropdown">
-            <img src="{{ crosierAsset('build/static/images/CROSIER_400x89.png') }}" width="80" height="18" alt="Crosier Logo" class="d-none d-md-block">
+            <a href="{{ getEnv('CROSIERCORE_URL') }}">
+                <img src="{{ crosierAsset('build/static/images/CROSIER_400x89.png') }}" width="80" height="18"
+                     alt="Crosier Logo" class="d-none d-md-block">
+            </a>
         </li>
 
         <li class="nav-item dropdown ml-4">
@@ -66,7 +71,9 @@
         </li>
         <li class="nav-item d-md-down-none">
             <button type="button" class="btn btn-success mr-2 ml-2"
-                    onclick="window.location.href = '{{ getEnv('CROSIERCORE_URL') }}/logout'"><i class="fas fa-sign-out-alt"></i> Sair</button>
+                    onclick="window.location.href = '{{ getEnv('CROSIERCORE_URL') }}/logout'"><i
+                        class="fas fa-sign-out-alt"></i> Sair
+            </button>
         </li>
     </ul>
 
