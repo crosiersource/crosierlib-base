@@ -70,6 +70,10 @@ class DateTimeUtils
             }
             return $dt;
         }
+        // 2019-04-30T18:15:02-03:00
+        if (strlen($dateStr) === 25) { // dd/mm/YYYY 12:34
+            return \DateTime::createFromFormat('Y-m-d\TH:i:sP', $dateStr);
+        }
 
         throw new \RuntimeException('Impossível parse na data (' . $dateStr . ')');
     }

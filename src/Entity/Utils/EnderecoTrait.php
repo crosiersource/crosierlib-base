@@ -34,7 +34,7 @@ trait EnderecoTrait
 
     /**
      *
-     * @ORM\Column(name="numero", type="string", nullable=true, length=20)
+     * @ORM\Column(name="numero", type="string", nullable=true, length=200)
      * @var string|null
      *
      * @Groups("entity")
