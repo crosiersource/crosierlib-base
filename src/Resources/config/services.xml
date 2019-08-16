@@ -191,5 +191,23 @@
                  alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"/>
 
 
+
+        <!-- EntityIdUtils -->
+        <service id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"
+                 class="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils"
+                 alias="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
+
+        <!-- EntityNormalizer -->
+        <service id="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"
+                 class="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer"
+                 alias="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"/>
+
+
     </services>
 </container>

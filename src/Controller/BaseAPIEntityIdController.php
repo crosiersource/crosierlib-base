@@ -34,6 +34,9 @@ abstract class BaseAPIEntityIdController extends AbstractController
     /** @var EntityHandler */
     protected $entityHandler;
 
+    /** @var EntityIdUtils */
+    protected $entityIdUtils;
+
     /**
      * @required
      * @param LoggerInterface $logger
@@ -49,6 +52,15 @@ abstract class BaseAPIEntityIdController extends AbstractController
     public function getEntityHandler(): EntityHandler
     {
         return $this->entityHandler;
+    }
+
+    /**
+     * @required
+     * @param EntityIdUtils $entityIdUtils
+     */
+    public function setEntityIdUtils(EntityIdUtils $entityIdUtils): void
+    {
+        $this->entityIdUtils = $entityIdUtils;
     }
 
 
@@ -216,7 +228,8 @@ abstract class BaseAPIEntityIdController extends AbstractController
             if (!$entityArray = $json['entity']) {
                 throw new \Exception('"entity" não definido');
             }
-            $entity = EntityIdUtils::unserialize($entityArray, $this->getEntityClass());
+            $entity = $this->entityIdUtils->unserialize($entityArray, $this->getEntityClass());
+            $this->prepareEntity($entity);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $apiProblem = new APIProblem(
@@ -238,6 +251,16 @@ abstract class BaseAPIEntityIdController extends AbstractController
             $apiProblem->set('error', $errorTratado);
             return $apiProblem->toJsonResponse();
         }
+    }
+
+
+    /**
+     * Utilizar caso seja necessário algum procedimento antes de salvar a entidade.
+     * 
+     * @param $entity
+     */
+    public function prepareEntity(&$entity): void {
+
     }
 
     /**

@@ -3,9 +3,11 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
@@ -21,6 +23,15 @@ use Symfony\Component\Serializer\Serializer;
  */
 class EntityIdUtils
 {
+
+    /** @var EntityManagerInterface */
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
 
     /**
      * Constrói um array de entidades sendo as chaves as ids.
@@ -71,12 +82,13 @@ class EntityIdUtils
      * @param string $type
      * @return object
      */
-    public static function unserialize(array $entityArray, string $type)
+    public function unserialize(array $entityArray, string $type)
     {
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
-            $serializer = new Serializer([new DateTimeNormalizer(), new ArrayDenormalizer(), $normalizer]);
+            $entityNormalizer = new EntityNormalizer($this->em);
+            $serializer = new Serializer([new DateTimeNormalizer(), new ArrayDenormalizer(), $entityNormalizer, $normalizer]);
             return $serializer->denormalize($entityArray, $type, 'json',
                 [
                     ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
