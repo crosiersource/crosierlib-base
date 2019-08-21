@@ -30,6 +30,7 @@ class FilterData
         'GT' => 1,
         'GTE' => 1,
         'IS_NULL' => 0,
+        'IS_EMPTY' => 0,
         'IS_NOT_NULL' => 0,
         'IN' => 999,
         'NOT_IN' => 999,

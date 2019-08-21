@@ -61,6 +61,7 @@ class WhereBuilder
 
                 switch ($filter->filterType) {
                     case 'EQ':
+                    case 'IS_EMPTY':
                         $orX->add($qb->expr()
                             ->eq($field, $fieldP));
                         break;
@@ -156,6 +157,7 @@ class WhereBuilder
                     $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
                     break;
                 case 'LIKE_ONLY':
+                case 'NOT_LIKE':
                     $qb->setParameter($fieldP, $filter->val);
                     break;
                 case 'EQ_BOOL':
@@ -259,6 +261,11 @@ class WhereBuilder
             $filter->val['f'] = $fim->format('Y-m-d');
             return;
         }
+
+        if ($filter->filterType === 'IS_EMPTY') {
+            $filter->val = '';
+            return;
+        }
     }
 
     /**
@@ -267,7 +274,7 @@ class WhereBuilder
      */
     private static function checkHasVal(FilterData $filter): bool
     {
-        if ($filter->filterType === 'IS_NULL' || $filter->filterType === 'IS_NOT_NULL') {
+        if ($filter->filterType === 'IS_NULL' || $filter->filterType === 'IS_NOT_NULL' || $filter->filterType === 'IS_EMPTY') {
             return true;
         }
         if (is_array($filter->val)) {
