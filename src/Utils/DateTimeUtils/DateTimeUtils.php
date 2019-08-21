@@ -74,6 +74,9 @@ class DateTimeUtils
         if (strlen($dateStr) === 25) { // dd/mm/YYYY 12:34
             return \DateTime::createFromFormat('Y-m-d\TH:i:sP', $dateStr);
         }
+        if (strlen($dateStr) === 26) { // dd/mm/YYYY 12:34
+            return \DateTime::createFromFormat('Y-m-d H:i:s.u', $dateStr);
+        }
 
         throw new \RuntimeException('Impossível parse na data (' . $dateStr . ')');
     }
