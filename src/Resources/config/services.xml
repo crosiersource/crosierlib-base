@@ -81,6 +81,50 @@
                  alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"/>
 
 
+
+
+        <!-- AppEntityHandler -->
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.app_entity_handler"
+                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
+                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
+                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.app_entity_handler"/>
+
+        <!-- AppConfigEntityHandler -->
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.app_config_entity_handler"
+                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
+                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
+                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.app_config_entity_handler"/>
+
+
+        <!-- AppRepository -->
+        <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
+                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
+                 alias="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"/>
+
+        <!-- AppConfigRepository -->
+        <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
+                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
+                 alias="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"/>
+
+
         <!-- CrosierAPIClient -->
         <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"
                  class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
@@ -155,6 +199,7 @@
         <!-- BaseController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
+            <!-- como que funciona sem os arguments?? -->
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Controller\BaseController"
                  alias="crosier_source.crosier_lib_base_bundle.controller.base_controller"/>
