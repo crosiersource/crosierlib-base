@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Entidade 'User'.
@@ -26,6 +27,7 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      * @NotUppercase()
      * @ORM\Column(name="username", type="string", length=90, unique=true)
+     * @Groups("entity")
      */
     private $username;
 
@@ -38,18 +40,21 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      * @NotUppercase()
      * @ORM\Column(name="email", type="string", length=90, unique=true)
+     * @Groups("entity")
      */
     private $email;
 
     /**
      *
      * @ORM\Column(name="nome", type="string", length=90, unique=true)
+     * @Groups("entity")
      */
     private $nome;
 
     /**
      *
      * @ORM\Column(name="ativo", type="boolean")
+     * @Groups("entity")
      */
     private $isActive;
 
@@ -59,6 +64,7 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\JoinColumn(name="group_id", nullable=false)
      *
      * @var $group Group
+     * @Groups("entity")
      */
     private $group;
 
@@ -84,6 +90,9 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\Column(name="api_token_expires_at", type="datetime", length=255)
      */
     private $apiTokenExpiresAt;
+    
+    
+    
 
     public function __construct()
     {

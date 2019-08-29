@@ -17,7 +17,6 @@ use Symfony\Component\Serializer\Serializer;
  * Este arquivo json é utilizado nos eventos de PrePersist e PreUpdate das classes filhas de EntityId para colocar
  * em uppercase todos os campos de caracteres.
  *
- * @package App\Command\Base
  * @author Carlos Eduardo Pauluk
  */
 class UppercaseFieldsJsonBuilderCommand extends Command

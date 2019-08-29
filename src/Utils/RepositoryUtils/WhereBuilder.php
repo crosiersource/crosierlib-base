@@ -70,6 +70,7 @@ class WhereBuilder
                             ->eq($field, $fieldP));
                         break;
                     case 'NEQ':
+                    case 'IS_NOT_EMPTY':
                         $orX->add($qb->expr()
                             ->neq($field, $fieldP));
                         break;
@@ -262,7 +263,7 @@ class WhereBuilder
             return;
         }
 
-        if ($filter->filterType === 'IS_EMPTY') {
+        if ($filter->filterType === 'IS_EMPTY' || $filter->filterType === 'IS_NOT_EMPTY' ) {
             $filter->val = '';
             return;
         }
@@ -274,7 +275,7 @@ class WhereBuilder
      */
     private static function checkHasVal(FilterData $filter): bool
     {
-        if ($filter->filterType === 'IS_NULL' || $filter->filterType === 'IS_NOT_NULL' || $filter->filterType === 'IS_EMPTY') {
+        if ($filter->filterType === 'IS_NULL' || $filter->filterType === 'IS_NOT_NULL' || $filter->filterType === 'IS_EMPTY' || $filter->filterType === 'IS_NOT_EMPTY') {
             return true;
         }
         if (is_array($filter->val)) {

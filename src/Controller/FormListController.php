@@ -28,30 +28,15 @@ use Symfony\Component\Serializer\Serializer;
 abstract class FormListController extends BaseController
 {
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     protected $logger;
 
     /** @var EntityHandler */
+    // deve ser setado a partir do setEntityHandler da subclasse com '@required'
     protected $entityHandler;
 
     /** @var StoredViewInfoBusiness */
     protected $storedViewInfoBusiness;
-
-    protected $crudParams =
-        [
-            'typeClass' => '',
-            'formView' => '',
-            'formRoute' => '',
-            'formPageTitle' => '',
-            'listView' => '',
-            'listRoute' => '',
-            'listRouteAjax' => '',
-            'listPageTitle' => '',
-            'listId',
-            'deleteRoute' => '',
-        ];
 
     /**
      * @required
@@ -82,17 +67,15 @@ abstract class FormListController extends BaseController
      */
     public function doForm(Request $request, EntityId $entityId = null, $parameters = [], $preventSubmit = false): Response
     {
-        if (!isset($this->crudParams['role_access'])) {
-            throw $this->createAccessDeniedException('Acesso negado.');
+        if (!isset($parameters['typeClass'])) {
+            throw new ViewException('typeClass não informado');
         }
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
-
         if (!$entityId) {
             $entityName = $this->getEntityHandler()->getEntityClass();
             $entityId = new $entityName();
         }
 
-        $form = $this->createForm($this->crudParams['typeClass'], $entityId);
+        $form = $this->createForm($parameters['typeClass'], $entityId);
 
         $form->handleRequest($request);
 
@@ -119,17 +102,17 @@ abstract class FormListController extends BaseController
             }
         }
 
-        $this->handleReferer($request);
+        $this->handleReferer($request, $parameters);
 
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
-        $parameters['page_title'] = $this->crudParams['formPageTitle'];
+        $parameters['page_title'] = $parameters['formPageTitle'];
         $parameters['e'] = $entityId;
-        if (!isset($parameters['PROGRAM_UUID']) && isset($this->crudParams['form_PROGRAM_UUID'])) {
-            $parameters['PROGRAM_UUID'] = $this->crudParams['form_PROGRAM_UUID'];
+        if (!isset($parameters['PROGRAM_UUID']) && isset($parameters['form_PROGRAM_UUID'])) {
+            $parameters['PROGRAM_UUID'] = $parameters['form_PROGRAM_UUID'];
         }
-        $this->crudParams['formView'] = isset($this->crudParams['formView']) ? $this->crudParams['formView'] : '@CrosierLibBase/form.html.twig';
-        return $this->doRender($this->crudParams['formView'], $parameters);
+        $parameters['formView'] = isset($parameters['formView']) ? $parameters['formView'] : '@CrosierLibBase/form.html.twig';
+        return $this->doRender($parameters['formView'], $parameters);
     }
 
     /**
@@ -161,19 +144,19 @@ abstract class FormListController extends BaseController
     public function redirectTo(Request $request, EntityId $entityId, array $parameters = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($request->getSession()->has('refstoback') &&
-            $request->getSession()->get('refstoback')[$this->crudParams['formRoute']]) {
+            $request->getSession()->get('refstoback')[$parameters['formRoute']]) {
 
             $tos = $request->getSession()->get('refstoback');
-            $url = $tos[$this->crudParams['formRoute']];
+            $url = $tos[$parameters['formRoute']];
             // limpo apenas o que já será utilizado no redirect
-            $tos[$this->crudParams['formRoute']] = null;
+            $tos[$parameters['formRoute']] = null;
             $request->getSession()->set('refstoback', $tos);
 
             return $this->redirect($url);
 
         }
 
-        return $this->redirectToRoute($this->crudParams['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
+        return $this->redirectToRoute($parameters['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
     }
 
     /**
@@ -183,14 +166,15 @@ abstract class FormListController extends BaseController
      * ** Atenção para a diferença entre reftoback (na querystring) e refstoback (na session).
      *
      * @param Request $request
+     * @param array $parameters
      */
-    public function handleReferer(Request $request): void
+    public function handleReferer(Request $request, array $parameters): void
     {
         $to = $request->getSession()->get('refstoback') ?? [];
         if ($request->get('reftoback')) {
-            $to[$this->crudParams['formRoute']] = $request->server->get('HTTP_REFERER');
+            $to[$parameters['formRoute']] = $request->server->get('HTTP_REFERER');
         } else {
-            $to[$this->crudParams['formRoute']] = null;
+            $to[$parameters['formRoute']] = null;
         }
         $request->getSession()->set('refstoback', $to);
     }
@@ -206,7 +190,7 @@ abstract class FormListController extends BaseController
      */
     protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
-        $parameters = array_merge($this->crudParams, $parameters);
+        $parameters = array_merge($parameters, $parameters);
         return parent::doRender($view, $parameters, $response);
     }
 
@@ -216,37 +200,36 @@ abstract class FormListController extends BaseController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function doList(Request $request, $parameters = array()): Response
+    public function doList(Request $request, $parameters = []): Response
     {
-        if (!isset($this->crudParams['role_access'])) {
-            throw $this->createAccessDeniedException('Acesso negado.');
+        if (!isset($parameters['listRoute'])) {
+            throw new ViewException('listRoute não informado');
         }
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
-
         $queryParams = $request->query->all();
         if (!array_key_exists('filter', $queryParams)) {
             // inicializa para evitar o erro
             $queryParams['filter'] = null;
 
             if (isset($queryParams['r']) and $queryParams['r']) {
-                $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
+                $this->storedViewInfoBusiness->clear($parameters['listRoute']);
             } else {
-                if ($svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute'])) {
-                    $formPesquisar = $svi['formPesquisar'] ?? null;
-                    if ($formPesquisar and $formPesquisar !== $queryParams) {
-                        return $this->redirectToRoute($this->crudParams['listRoute'], $formPesquisar);
+                if ($svi = $this->storedViewInfoBusiness->retrieve($parameters['listRoute'])) {
+                    $filter = $svi['filter'] ?? null;
+                    if ($filter) {
+                        return $this->redirectToRoute($parameters['listRoute'], ['filter' => $filter]);
                     }
                 }
             }
         }
 
-        $queryParams['page_title'] = $this->crudParams['listPageTitle'];
-        if (isset($this->crudParams['list_PROGRAM_UUID'])) {
-            $queryParams['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
-        }
+        $queryParams['page_title'] = $parameters['listPageTitle'] ?? '';
         $queryParams = array_replace_recursive($queryParams, $parameters);
 
-        return $this->doRender($this->crudParams['listView'], $queryParams);
+        if (($queryParams['filter'] ?? null) && (count($queryParams['filter']) > 0)) {
+            $this->storedViewInfoBusiness->store($parameters['listRoute'], ['filter' => $queryParams['filter']]);
+        }
+
+        return $this->doRender($parameters['listView'], $queryParams);
     }
 
     /**
@@ -259,16 +242,10 @@ abstract class FormListController extends BaseController
      */
     public function doDatatablesJsList(Request $request, $defaultFilters = null, ?array $dadosProntos = null, ?int $countByFilter = null): Response
     {
-        if (!isset($this->crudParams['role_access'])) {
-            throw $this->createAccessDeniedException('Acesso negado.');
-        }
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
-
         /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
 
         $rParams = $request->request->all();
-
 
         // Inicializadores
         $filterDatas = null;
@@ -317,16 +294,10 @@ abstract class FormListController extends BaseController
         }
         $dados = $dadosE;
 
-
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-            $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);// se foi passado uma lista de atributos da entidade, utiliza
-            if (isset($this->crudParams['normalizedAttrib'])) {
-                $context['attributes'] = $this->crudParams['normalizedAttrib'];
-            } else {
-                // caso contrário, tenta serializar pelos grupos setados no @Groups
-                $context['groups'] = ['entityId', 'entity'];
-            }
+            $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
+            $context['groups'] = ['entityId', 'entity'];
             $recordsTotal = $repo->count(array());
             $results = array(
                 'draw' => $draw,
@@ -339,14 +310,6 @@ abstract class FormListController extends BaseController
             $r = $serializer->normalize($results, 'json', $context);
         } catch (\Throwable $e) {
             throw new \RuntimeException($e->getMessage(), 0, $e);
-        }
-
-        if ($filterDatas ?? null) {
-            if (count($filterDatas) > 0) {
-                $viewInfo = array();
-                $viewInfo['formPesquisar'] = $formPesquisar;
-                $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
-            }
         }
 
         return new JsonResponse($r);
@@ -401,37 +364,32 @@ abstract class FormListController extends BaseController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws ViewException
      */
-    public function doListSimpl(Request $request, array $params = []): Response
+    public function doListSimpl(Request $request, array $parameters = []): Response
     {
-        if (!isset($this->crudParams['role_access'])) {
-            throw $this->createAccessDeniedException('Acesso negado.');
-        }
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_access']]);
-
-        if (isset($params['r']) && $params['r']) {
-            $this->storedViewInfoBusiness->clear($this->crudParams['listRoute']);
+        if (isset($parameters['r']) && $parameters['r']) {
+            $this->storedViewInfoBusiness->clear($parameters['listRoute']);
         }
 
         $filterParams = [];
         if ($request->get('filter')) {
             $filterParams['filter'] = $request->get('filter');
         } else {
-            $svi = $this->storedViewInfoBusiness->retrieve($this->crudParams['listRoute']);
+            $svi = $this->storedViewInfoBusiness->retrieve($parameters['listRoute']);
             $filterParams = $svi['filterParams'] ?? null;
             if ($filterParams) {
-                return $this->redirectToRoute($this->crudParams['listRoute'], $filterParams);
+                return $this->redirectToRoute($parameters['listRoute'], $filterParams);
             }
             // else
-            $filterParams = $params['defaultFilters'] ?? null;
+            $filterParams = $parameters['defaultFilters'] ?? null;
         }
 
-        if (isset($params['fixedFilters'])) {
-            $filterParams = array_replace_recursive($filterParams, $params['fixedFilters']);
+        if (isset($parameters['fixedFilters'])) {
+            $filterParams = array_replace_recursive($filterParams, $parameters['fixedFilters']);
         }
 
-        $params['page_title'] = $this->crudParams['listPageTitle'];
-        if (isset($this->crudParams['list_PROGRAM_UUID'])) {
-            $params['PROGRAM_UUID'] = $this->crudParams['list_PROGRAM_UUID'];
+        $parameters['page_title'] = $parameters['listPageTitle'];
+        if (isset($parameters['list_PROGRAM_UUID'])) {
+            $parameters['PROGRAM_UUID'] = $parameters['list_PROGRAM_UUID'];
         }
 
         /** @var FilterRepository $repo */
@@ -444,22 +402,22 @@ abstract class FormListController extends BaseController
             $filterDatas = $this->getSomenteFilterDatasComValores($filterParams);
         }
 
-        $params['orders'] = $params['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
+        $parameters['orders'] = $parameters['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
 
-        $dados = $repo->findByFilters($filterDatas, $params['orders'], 0, null);
+        $dados = $repo->findByFilters($filterDatas, $parameters['orders'], 0, null);
 
         $this->handleDadosList($dados);
 
-        $params['dados'] = $dados;
-        $params['filter'] = $filterParams['filter'];
+        $parameters['dados'] = $dados;
+        $parameters['filter'] = $filterParams['filter'];
 
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = [];
             $viewInfo['filterParams'] = $filterParams;
-            $this->storedViewInfoBusiness->store($this->crudParams['listRoute'], $viewInfo);
+            $this->storedViewInfoBusiness->store($parameters['listRoute'], $viewInfo);
         }
 
-        return $this->doRender($this->crudParams['listView'], $params);
+        return $this->doRender($parameters['listView'], $parameters);
     }
 
     /**
@@ -469,11 +427,6 @@ abstract class FormListController extends BaseController
      */
     public function doDelete(Request $request, EntityId $entityId): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        if (!isset($this->crudParams['role_delete'])) {
-            throw $this->createAccessDeniedException('Acesso negado.');
-        }
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', $this->crudParams['role_delete']]);
-
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -488,7 +441,7 @@ abstract class FormListController extends BaseController
             return $this->redirect($request->server->get('HTTP_REFERER'));
         }
 
-        return $this->redirectToRoute($this->crudParams['listRoute']);
+        return $this->redirectToRoute($parameters['listRoute']);
     }
 
 

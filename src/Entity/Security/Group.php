@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Entidade 'Group'.
@@ -24,6 +25,7 @@ class Group implements EntityId
      *
      * @ORM\Column(name="groupname", type="string", length=90, unique=true)
      * @var null|string
+     * @Groups("entity")
      */
     private $groupname;
 

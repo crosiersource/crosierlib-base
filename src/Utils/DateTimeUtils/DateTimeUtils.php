@@ -6,7 +6,6 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 /**
  * Class DateTimeUtils.
  *
- * @package App\Utils
  * @author Carlos Eduardo Pauluk
  */
 class DateTimeUtils

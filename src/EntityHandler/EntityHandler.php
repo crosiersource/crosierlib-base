@@ -14,7 +14,6 @@ use Symfony\Component\Security\Core\Security;
 /**
  * Classe abstrata responsável pela lógica ao salvar ou deletar entidades na base de dados.
  *
- * @package App\EntityHandler
  * @author Carlos Eduardo Pauluk
  */
 abstract class EntityHandler implements EntityHandlerInterface

@@ -9,7 +9,6 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
  *
  * Tratamento de mensagem de exceçção do Doctrine.
  *
- * @package App\Utils
  * @author Carlos Eduardo Pauluk
  */
 class ExceptionUtils

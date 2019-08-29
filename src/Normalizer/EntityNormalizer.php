@@ -23,7 +23,7 @@ class EntityNormalizer implements DenormalizerInterface
      */
     public function supportsDenormalization($data, $type, $format = null)
     {
-        return strpos($type, 'App\\Entity\\') === 0 && (is_numeric($data));
+        return strpos($type, '\\Entity\\') === 0 && (is_numeric($data));
     }
 
     /**

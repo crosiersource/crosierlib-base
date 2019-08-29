@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Entity\Security;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Entidade 'Role'.
@@ -22,12 +23,14 @@ class Role implements EntityId
     /**
      *
      * @ORM\Column(name="role", type="string", length=90, unique=true)
+     * @Groups("entity")
      */
     private $role;
 
     /**
      *
      * @ORM\Column(name="descricao", type="string", length=90)
+     * @Groups("entity")
      */
     private $descricao;
 

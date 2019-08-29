@@ -11,7 +11,6 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  *
  * Classe base para fornecer recursos padrão a todos os Business comuns.
  *
- * @package App\Business
  * @author Carlos Eduardo Pauluk
  */
 class BaseBusiness
