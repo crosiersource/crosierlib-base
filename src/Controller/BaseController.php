@@ -98,7 +98,7 @@ class BaseController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error('doRender - error');
             $this->logger->error($e->getMessage());
-            throw new \RuntimeException('Erro ao renderizar a view');
+            throw $e;
         }
     }
 
