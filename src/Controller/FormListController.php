@@ -70,6 +70,10 @@ abstract class FormListController extends BaseController
         if (!isset($parameters['typeClass'])) {
             throw new ViewException('typeClass não informado');
         }
+        if (!isset($parameters['formRoute'])) {
+            throw new ViewException('formRoute não informado');
+        }
+        
         if (!$entityId) {
             $entityName = $this->getEntityHandler()->getEntityClass();
             $entityId = new $entityName();
@@ -86,7 +90,7 @@ abstract class FormListController extends BaseController
                     $this->getEntityHandler()->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     $this->afterSave($entity);
-                    return $this->redirectTo($request, $entity); // , $parameters);
+                    return $this->redirectTo($request, $entity, $parameters['formRoute']); // , $parameters);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -139,24 +143,24 @@ abstract class FormListController extends BaseController
      *
      * @param Request $request
      * @param EntityId $entityId
+     * @param string $formRoute
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function redirectTo(Request $request, EntityId $entityId, array $parameters = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirectTo(Request $request, EntityId $entityId, string $formRoute): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($request->getSession()->has('refstoback') &&
-            $request->getSession()->get('refstoback')[$parameters['formRoute']]) {
+            $request->getSession()->get('refstoback')[$formRoute]) {
 
             $tos = $request->getSession()->get('refstoback');
-            $url = $tos[$parameters['formRoute']];
+            $url = $tos[$formRoute];
             // limpo apenas o que já será utilizado no redirect
-            $tos[$parameters['formRoute']] = null;
+            $tos[$formRoute] = null;
             $request->getSession()->set('refstoback', $tos);
 
             return $this->redirect($url);
-
         }
 
-        return $this->redirectToRoute($parameters['formRoute'], array_merge($parameters, ['id' => $entityId->getId()]));
+        return $this->redirectToRoute($formRoute, ['id' => $entityId->getId()]);
     }
 
     /**

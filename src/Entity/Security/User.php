@@ -71,7 +71,7 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
      *
-     * @ORM\ManyToMany(targetEntity="Role")
+     * @ORM\ManyToMany(targetEntity="Role",cascade={"persist"})
      * @ORM\JoinTable(name="sec_user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
@@ -90,13 +90,12 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\Column(name="api_token_expires_at", type="datetime", length=255)
      */
     private $apiTokenExpiresAt;
-    
-    
-    
+
 
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
     }
 
     public function getUsername()
@@ -169,6 +168,10 @@ class User implements EntityId, UserInterface, \Serializable
         return $this->userRoles;
     }
 
+    public function setUserRoles($userRoles)
+    {
+        $this->roles = $userRoles;
+    }
 
     public function getRoles()
     {
@@ -177,11 +180,6 @@ class User implements EntityId, UserInterface, \Serializable
             $roles[] = $role->getRole();
         }
         return $roles;
-    }
-
-    public function setUserRoles($userRoles)
-    {
-        $this->roles = $userRoles;
     }
 
     public function serialize()
