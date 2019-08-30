@@ -4,7 +4,10 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class UserEntityHandler
@@ -15,32 +18,30 @@ class UserEntityHandler extends EntityHandler
 {
 
     /** @var UserPasswordEncoderInterface */
-    private $encoder;
-
-
-    /**
-     * @return mixed
-     */
-    public function getEncoder()
-    {
-        return $this->encoder;
-    }
+    private $passwordEncoder;
 
     /**
-     * @required
-     * @param mixed $encoder
+     * UserEntityHandler constructor.
+     * @param RegistryInterface $doctrine
+     * @param Security $security
+     * @param ParameterBagInterface $parameterBag
+     * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function setEncoder(UserPasswordEncoderInterface $encoder): void
+    public function __construct(RegistryInterface $doctrine, Security $security, ParameterBagInterface $parameterBag, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->encoder = $encoder;
+        $this->doctrine = $doctrine;
+        $this->security = $security;
+        $this->parameterBag = $parameterBag;
+        $this->passwordEncoder = $passwordEncoder;
+        parent::__construct($doctrine, $security, $parameterBag);
+        
     }
-
 
     public function beforeSave($user)
     {
         /** @var User $user */
         if ($user->getPassword() && strlen($user->getPassword()) < 53) {
-            $encoded = $this->encoder->encodePassword($user, $user->getPassword());
+            $encoded = $this->passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($encoded);
         } elseif ($user->getId() && !$user->getPassword()) {
             $savedPassword = $this->doctrine->getRepository(User::class)->getPassword($user);
