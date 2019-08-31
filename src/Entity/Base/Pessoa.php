@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Entity\Base;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -62,7 +63,6 @@ class Pessoa implements EntityId
      */
     private $categorias;
 
-
     /**
      *
      * @ORM\Column(name="nome_fantasia", type="string", nullable=true, length=255)
@@ -70,13 +70,6 @@ class Pessoa implements EntityId
      * @Groups("entity")
      */
     private $nomeFantasia;
-
-    /**
-     * Transient.
-     * @Groups("entity")
-     * @var string
-     */
-    private $nomeMontado;
 
     /**
      *
@@ -215,24 +208,28 @@ class Pessoa implements EntityId
 
     /**
      * @return string
+     * @Groups("entity")
      */
-    public function getNomeMontado(): string
+    public function getNomeMontadoComDocumento(): string
     {
-        if (!$this->nomeMontado) {
-            $this->nomeMontado = $this->nome . ($this->nomeFantasia ? ' (' . $this->nomeFantasia . ')' : '');
+        $r = $this->getDocumentoMascarado() . ' - ';
+        if ($this->nomeFantasia) {
+            $r .= $this->nomeFantasia . ' (' . $this->nome . ')';
+        } else {
+            $r .= $this->nome;
         }
-        return $this->nomeMontado;
+        return $r;
     }
 
     /**
-     * @param string $nomeMontado
-     * @return Pessoa
+     * @return null|string
+     * @Groups("entity")
      */
-    public function setNomeMontado(string $nomeMontado): Pessoa
+    public function getDocumentoMascarado(): ?string
     {
-        $this->nomeMontado = $nomeMontado;
-        return $this;
+        return $this->documento ? StringUtils::mascararCnpjCpf($this->documento) : null;
     }
+
 
     /**
      * @return null|string
@@ -289,6 +286,14 @@ class Pessoa implements EntityId
     }
 
     /**
+     * @return null|CategoriaPessoa[]|array|Collection
+     */
+    public function getCategorias(): ?Collection
+    {
+        return $this->categorias;
+    }
+
+    /**
      * @param CategoriaPessoa[]|array|Collection|null $categorias
      * @return Pessoa
      */
@@ -299,11 +304,11 @@ class Pessoa implements EntityId
     }
 
     /**
-     * @return null|CategoriaPessoa[]|array|Collection
+     * @return PessoaEndereco[]|ArrayCollection
      */
-    public function getCategorias(): ?Collection
+    public function getEnderecos(): ?Collection
     {
-        return $this->categorias;
+        return $this->enderecos;
     }
 
     /**
@@ -314,14 +319,6 @@ class Pessoa implements EntityId
     {
         $this->enderecos = $enderecos;
         return $this;
-    }
-
-    /**
-     * @return PessoaEndereco[]|ArrayCollection
-     */
-    public function getEnderecos(): ?Collection
-    {
-        return $this->enderecos;
     }
 
     public function addEndereco(PessoaEndereco $endereco): Pessoa
@@ -341,6 +338,14 @@ class Pessoa implements EntityId
     }
 
     /**
+     * @return PessoaContato[]|ArrayCollection
+     */
+    public function getContatos(): ?Collection
+    {
+        return $this->contatos;
+    }
+
+    /**
      * @param PessoaContato[]|ArrayCollection $contatos
      * @return Pessoa
      */
@@ -348,14 +353,6 @@ class Pessoa implements EntityId
     {
         $this->contatos = $contatos;
         return $this;
-    }
-
-    /**
-     * @return PessoaContato[]|ArrayCollection
-     */
-    public function getContatos(): ?Collection
-    {
-        return $this->contatos;
     }
 
     public function addContato(PessoaContato $contato): Pessoa

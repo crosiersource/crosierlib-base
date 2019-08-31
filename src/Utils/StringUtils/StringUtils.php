@@ -20,7 +20,7 @@ class StringUtils
         "@" .
         "(?<SINAL_I>\\+|\\-)?(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-|C|D)?" .
         "@";
-    
+
     public static function parseFloat($formattedFloat, $clear = false)
     {
         $formattedFloat = str_replace(' ', '', $formattedFloat);
@@ -118,6 +118,22 @@ class StringUtils
             trim(
                 preg_replace('~[^0-9a-z]+~i', '-', preg_replace('~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1',
                     htmlentities($str, ENT_QUOTES, 'UTF-8'))), ' ');
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function mascararCnpjCpf(string $value): string
+    {
+        $cnpj_cpf = preg_replace("/\D/", '', $value);
+
+        if (strlen($cnpj_cpf) === 11) {
+            return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $cnpj_cpf);
+        } elseif (strlen($cnpj_cpf) === 14) {
+            return preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
+        }
+        return $value;
     }
 
 

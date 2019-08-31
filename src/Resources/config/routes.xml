@@ -4,7 +4,34 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <!-- DiaUtilController -->
+    <route id="dia_util_controller_findDiaUtil"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findDiaUtil"
+           path="/base/diaUtil/findDiaUtil/" >
+    </route>
 
+    <route id="dia_util_controller_incPeriodo"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::incPeriodo"
+           path="/base/diaUtil/incPeriodo/" >
+    </route>
+
+    <route id="dia_util_controller_findEnesimoDiaUtil"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findEnesimoDiaUtil"
+           path="/base/diaUtil/findEnesimoDiaUtil/" >
+    </route>
+
+
+
+    <!-- PessoaController -->
+    <route id="pessoa_controller_findById"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findById"
+           path="/base/pessoa/findById/" >
+    </route>
+
+    <route id="pessoa_controller_findByStr"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
+           path="/base/pessoa/findByStr/" >
+    </route>
 
 
 </routes>

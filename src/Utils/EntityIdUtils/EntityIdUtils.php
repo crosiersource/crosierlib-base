@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
@@ -53,12 +52,25 @@ class EntityIdUtils
     }
 
     /**
+     * @param array $entities
+     * @return array
+     */
+    public function serializeAll(array $entities): array
+    {
+        $a = [];
+        foreach ($entities as $e) {
+            $a[] = $this->serialize($e);
+        }
+        return $a;
+    }
+
+    /**
      * Serializa uma entidade para um json.
      *
      * @param EntityId $entityId
      * @return array
      */
-    public static function serialize(EntityId $entityId): array
+    public function serialize(EntityId $entityId): array
     {
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));

@@ -17,10 +17,12 @@
                                 onclick="window.location.href='{{ url(formRoute) }}'">
                             <i class="fas fa-file" aria-hidden="true"></i> Novo
                         </button>
+                        {% if listRoute is defined %}
                         <button type="button" class="btn btn-secondary"
                                 onclick="window.location.href='{{ url(listRoute) }}'">
                             <i class="fas fa-sync" aria-hidden="true"></i> Listar
                         </button>
+                        {% endif %}
                     </div>
                 </div>
 

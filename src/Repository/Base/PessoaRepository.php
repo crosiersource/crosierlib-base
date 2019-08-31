@@ -17,6 +17,12 @@ use Doctrine\ORM\QueryBuilder;
 class PessoaRepository extends FilterRepository
 {
 
+    public function handleFrombyFilters(QueryBuilder $qb)
+    {
+        return $qb->from($this->getEntityClass(), 'e')
+            ->leftJoin(CategoriaPessoa::class, 'categ', 'WITH', 'categ MEMBER OF e.categorias');
+    }
+
     /**
      * @return string
      */
@@ -25,17 +31,26 @@ class PessoaRepository extends FilterRepository
         return Pessoa::class;
     }
 
-    public function handleFrombyFilters(QueryBuilder $qb)
+    /**
+     * @param string $str
+     * @param int $maxResults
+     * @return mixed
+     */
+    public function findPessoaByStr(string $str, int $maxResults = 30)
     {
-        return $qb->from($this->getEntityClass(), 'e')
-            ->leftJoin(CategoriaPessoa::class, 'categ', 'WITH', 'categ MEMBER OF e.categorias');
+        $dql = 'SELECT p FROM CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa p WHERE p.documento LIKE :str OR p.nome LIKE :str OR p.nomeFantasia LIKE :str ORDER BY p.nome';
+        $qry = $this->getEntityManager()->createQuery($dql);
+        $qry->setParameter('str', '%' . $str . '%');
+        $qry->setMaxResults($maxResults);
+        return $qry->getResult();
     }
 
     /**
      * Na bse_pessoa o documento não é UNIQUE. Este método retorna o registro com mais dados dentre os encontrados.
      * @param string $documento
      */
-    public function findPessoaMaisCompletaPorDocumento(string $documento) {
+    public function findPessoaMaisCompletaPorDocumento(string $documento)
+    {
         $documento = preg_replace("/[^0-9]/", '', $documento);
         $pessoas = $this->findBy(['documento' => $documento]);
 
@@ -77,9 +92,9 @@ class PessoaRepository extends FilterRepository
 
         /** @var PessoaContatoRepository $repoContatos */
         $repoContatos = $this->getEntityManager()->getRepository(PessoaContato::class);
-        $fones = $repoContatos->findByFiltersSimpl([['pessoa','EQ',$pessoaMaisCompleta],['tipo','LIKE','%FONE%'],['valor', 'IS_NOT_EMPTY']]);
+        $fones = $repoContatos->findByFiltersSimpl([['pessoa', 'EQ', $pessoaMaisCompleta], ['tipo', 'LIKE', '%FONE%'], ['valor', 'IS_NOT_EMPTY']]);
         $fone1 = $fones ? $fones[0]->getValor() : null;
-        $emails = $repoContatos->findByFiltersSimpl([['pessoa','EQ',$pessoaMaisCompleta],['tipo','LIKE','%MAIL%'], ['valor', 'IS_NOT_EMPTY']]);
+        $emails = $repoContatos->findByFiltersSimpl([['pessoa', 'EQ', $pessoaMaisCompleta], ['tipo', 'LIKE', '%MAIL%'], ['valor', 'IS_NOT_EMPTY']]);
         $email1 = $emails ? $emails[0]->getValor() : null;
 
         $p['fone'] = $fone1;

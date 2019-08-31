@@ -53,15 +53,12 @@
                  alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
 
 
-
         <!-- AccessDeniedHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"
                  class="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler">
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler"
                  alias="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"/>
-
-
 
 
         <!-- FilterRepository -->
@@ -366,9 +363,6 @@
                  alias="crosier_source.crosier_lib_base_bundle.repository.base.prop_repository"/>
 
 
-
-
-
         <!-- ConfigEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.config_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ConfigEntityHandler"
@@ -388,7 +382,6 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\ConfigRepository"
                  alias="crosier_source.crosier_lib_base_bundle.repository.config.config_repository"/>
-
 
 
         <!-- EntMenuEntityHandler -->
@@ -465,10 +458,6 @@
                  alias="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"/>
 
 
-
-
-
-
         <!-- RoleEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
@@ -531,6 +520,16 @@
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository"
                  alias="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"/>
 
+        <!-- DiaUtilController -->
+        <service id="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller"
+                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\DiaUtilController" public="true">
+        </service>
+
+        <!-- PessoaController -->
+        <service id="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller"
+                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\PessoaController" public="true">
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
+        </service>
 
 
     </services>
