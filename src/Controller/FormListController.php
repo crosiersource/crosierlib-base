@@ -110,7 +110,7 @@ abstract class FormListController extends BaseController
 
         // Pode ou não ter vindo algo no $parameters. Independentemente disto, só adiciono form e foi-se.
         $parameters['form'] = $form->createView();
-        $parameters['page_title'] = $parameters['formPageTitle'];
+        $parameters['page_title'] = $parameters['formPageTitle'] ?? '';
         $parameters['e'] = $entityId;
         if (!isset($parameters['PROGRAM_UUID']) && isset($parameters['form_PROGRAM_UUID'])) {
             $parameters['PROGRAM_UUID'] = $parameters['form_PROGRAM_UUID'];

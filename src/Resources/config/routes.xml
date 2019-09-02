@@ -5,17 +5,17 @@
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <!-- DiaUtilController -->
-    <route id="dia_util_controller_findDiaUtil"
+    <route id="base_diaUtil_findDiaUtil"
            controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findDiaUtil"
            path="/base/diaUtil/findDiaUtil/" >
     </route>
 
-    <route id="dia_util_controller_incPeriodo"
+    <route id="base_diaUtil_incPeriodo"
            controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::incPeriodo"
            path="/base/diaUtil/incPeriodo/" >
     </route>
 
-    <route id="dia_util_controller_findEnesimoDiaUtil"
+    <route id="base_diaUtil_findEnesimoDiaUtil"
            controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findEnesimoDiaUtil"
            path="/base/diaUtil/findEnesimoDiaUtil/" >
     </route>
@@ -23,12 +23,12 @@
 
 
     <!-- PessoaController -->
-    <route id="pessoa_controller_findById"
+    <route id="base_pessoa_findById"
            controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findById"
            path="/base/pessoa/findById/" >
     </route>
 
-    <route id="pessoa_controller_findByStr"
+    <route id="base_pessoa_findByStr"
            controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
            path="/base/pessoa/findByStr/" >
     </route>
