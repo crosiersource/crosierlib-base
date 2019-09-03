@@ -46,6 +46,27 @@ class PessoaRepository extends FilterRepository
     }
 
     /**
+     * @param string $str
+     * @param string $categ
+     * @param int $maxResults
+     * @return mixed
+     */
+    public function findPessoaByStrECateg(string $str, string $categ, int $maxResults = 30)
+    {
+        $dql = 'SELECT p FROM 
+            CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa p JOIN 
+             CrosierSource\CrosierLibBaseBundle\Entity\Base\CategoriaPessoa categ WITH categ MEMBER OF p.categorias
+             WHERE
+             categ.descricao LIKE :categ AND  
+             (p.documento LIKE :str OR p.nome LIKE :str OR p.nomeFantasia LIKE :str) ORDER BY p.nome';
+        $qry = $this->getEntityManager()->createQuery($dql);
+        $qry->setParameter('str', '%' . $str . '%');
+        $qry->setParameter('categ', $categ);
+        $qry->setMaxResults($maxResults);
+        return $qry->getResult();
+    }
+
+    /**
      * Na bse_pessoa o documento não é UNIQUE. Este método retorna o registro com mais dados dentre os encontrados.
      * @param string $documento
      */

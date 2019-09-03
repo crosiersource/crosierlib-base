@@ -40,7 +40,7 @@ class PessoaController extends AbstractController
             /** @var Pessoa $pessoa */
             $pessoa = $repoPessoa->find($id);
             if ($pessoa) {
-                return new JsonResponse($this->entityIdUtils->serialize($pessoa));
+                return new JsonResponse(['pessoa' => $this->entityIdUtils->serialize($pessoa)]);
             }
             return new JsonResponse(null);
         } catch (\Throwable $e) {
@@ -55,14 +55,20 @@ class PessoaController extends AbstractController
     public function findByStr(Request $request): ?JsonResponse
     {
         $str = $request->get('term');
+        $categ = $request->get('categ') ?? null;
         $maxResults = $request->get('maxResults') ?? 30;
         /** @var PessoaRepository $repoPessoa */
         $repoPessoa = $this->getDoctrine()->getRepository(Pessoa::class);
-        $pessoas = $repoPessoa->findPessoaByStr($str, (int)$maxResults);
+        if ($categ) {
+            $pessoas = $repoPessoa->findPessoaByStrECateg($str, $categ, (int)$maxResults);
+        } else {
+            $pessoas = $repoPessoa->findPessoaByStr($str, (int)$maxResults);
+        }
         if ($pessoas) {
             return new JsonResponse(['results' => $this->entityIdUtils->serializeAll($pessoas)]);
         }
         return null;
     }
+
 
 }

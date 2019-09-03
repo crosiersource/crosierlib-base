@@ -212,12 +212,7 @@ class Pessoa implements EntityId
      */
     public function getNomeMontado(): string
     {
-        if ($this->nomeFantasia) {
-            $r .= $this->nomeFantasia . ' (' . $this->nome . ')';
-        } else {
-            $r .= $this->nome;
-        }
-        return $r;
+        return $this->nomeFantasia ? $this->nomeFantasia . ' (' . $this->nome . ')' : $this->nome;
     }
 
     /**

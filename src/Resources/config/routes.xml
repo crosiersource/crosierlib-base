@@ -33,5 +33,10 @@
            path="/base/pessoa/findByStr/" >
     </route>
 
+    <route id="base_pessoa_findByStrECateg"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
+           path="/base/pessoa/findByStr/" >
+    </route>
+
 
 </routes>
