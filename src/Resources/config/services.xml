@@ -531,6 +531,12 @@
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
         </service>
 
+        <!-- MunicipioController -->
+        <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
+                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
+        </service>
+
 
     </services>
 </container>

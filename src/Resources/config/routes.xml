@@ -39,4 +39,12 @@
     </route>
 
 
+
+    <!-- MunicipioController -->
+    <route id="base_municipio_findEnderecoByCEP"
+           controller="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller::findEnderecoByCEP"
+           path="/base/municipio/findEnderecoByCEP/" >
+    </route>
+
+
 </routes>

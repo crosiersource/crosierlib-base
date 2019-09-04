@@ -10,8 +10,11 @@
 
             <div class="d-flex flex-wrap align-items-center">
 
-                <div class="d-sm-flex text-nowrap mr-1">
+                <div class="mr-1">
                     <h3>{{ page_title }}</h3>
+                    {% if page_subTitle is defined %}
+                        <h6>{{ page_subTitle }}</h6>
+                    {% endif %}
                 </div>
 
                 <div class="d-sm-flex flex-nowrap ml-auto">
