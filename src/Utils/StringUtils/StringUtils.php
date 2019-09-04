@@ -121,10 +121,10 @@ class StringUtils
     }
 
     /**
-     * @param string $value
-     * @return string
+     * @param null|string $value
+     * @return null|string
      */
-    public static function mascararCnpjCpf(string $value): string
+    public static function mascararCnpjCpf(?string $value = null): ?string
     {
         $cnpj_cpf = preg_replace("/\D/", '', $value);
 
