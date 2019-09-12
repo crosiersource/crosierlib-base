@@ -75,11 +75,13 @@ abstract class FormListController extends BaseController
         }
         
         if (!$entityId) {
-            $entityName = $this->getEntityHandler()->getEntityClass();
+            $entityName = $parameters['entityClass'] ?? $this->getEntityHandler()->getEntityClass();
             $entityId = new $entityName();
         }
 
         $form = $this->createForm($parameters['typeClass'], $entityId);
+
+        $entityHandler = $parameters['entityHandler'] ?? $this->getEntityHandler();
 
         $form->handleRequest($request);
 
@@ -87,10 +89,11 @@ abstract class FormListController extends BaseController
             if ($form->isValid()) {
                 try {
                     $entity = $form->getData();
-                    $this->getEntityHandler()->save($entity);
+                    $this->handleRequestOnValid($request, $entity);
+                    $entityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     $this->afterSave($entity);
-                    return $this->redirectTo($request, $entity, $parameters['formRoute']); // , $parameters);
+                    return $this->redirectTo($request, $entity, $parameters['formRoute'], $parameters['routeParams'] ?? []); // , $parameters);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -116,7 +119,22 @@ abstract class FormListController extends BaseController
             $parameters['PROGRAM_UUID'] = $parameters['form_PROGRAM_UUID'];
         }
         $parameters['formView'] = isset($parameters['formView']) ? $parameters['formView'] : '@CrosierLibBase/form.html.twig';
+
+        // unset nos parâmetros que não tem utilidade para o 'twig'
+        $parameters['entityClass'] = null;
+        $parameters['typeClass'] = null;
+        $parameters['entityHandler'] = null;
+
         return $this->doRender($parameters['formView'], $parameters);
+    }
+
+    /**
+     * Caso seja necessário alterar alguma coisa na entity parseada após uma submissão válida do formulário.
+     * @param Request $request
+     * @param $entity
+     */
+    public function handleRequestOnValid(Request $request, $entity): void {
+
     }
 
     /**
@@ -144,9 +162,10 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param EntityId $entityId
      * @param string $formRoute
+     * @param array|null $formRouteParams
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function redirectTo(Request $request, EntityId $entityId, string $formRoute): ?\Symfony\Component\HttpFoundation\RedirectResponse
+    public function redirectTo(Request $request, EntityId $entityId, string $formRoute, ?array $formRouteParams = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($request->getSession()->has('refstoback') &&
             $request->getSession()->get('refstoback')[$formRoute]) {
@@ -160,7 +179,8 @@ abstract class FormListController extends BaseController
             return $this->redirect($url);
         }
 
-        return $this->redirectToRoute($formRoute, ['id' => $entityId->getId()]);
+        $redirectParams = array_merge($formRouteParams, ['id' => $entityId->getId()]);
+        return $this->redirectToRoute($formRoute, $redirectParams);
     }
 
     /**
@@ -194,7 +214,7 @@ abstract class FormListController extends BaseController
      */
     protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
-        $parameters = array_merge($parameters, $parameters);
+        // $parameters = array_merge($parameters, $parameters);  ??????
         return parent::doRender($view, $parameters, $response);
     }
 
@@ -220,7 +240,12 @@ abstract class FormListController extends BaseController
                 if ($svi = $this->storedViewInfoBusiness->retrieve($parameters['listRoute'])) {
                     $filter = $svi['filter'] ?? null;
                     if ($filter) {
-                        return $this->redirectToRoute($parameters['listRoute'], ['filter' => $filter]);
+                        $redirectParams = ['filter' => $filter];
+                        // Caso a route do list tenha algum parâmetro obrigatório, precisa ser repassado aqui
+                        if (isset($parameters['routeParams'])) {
+                            $redirectParams = array_merge($redirectParams, $parameters['routeParams']);
+                        }
+                        return $this->redirectToRoute($parameters['listRoute'], $redirectParams);
                     }
                 }
             }

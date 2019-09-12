@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
 
+    
+
     <script src="{{ asset('build/runtime.js') }}"></script>
 
     <script>
@@ -45,6 +47,7 @@
     <title>{{ page_title is defined ? page_title ~ ' - Crosier v.0.0.1' : 'Crosier v.0.0.1' }} </title>
 
     {% block stylesheets %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
         <link rel="stylesheet" href="{{ crosierAsset('build/crosier/layout.css') }}">
 
     {% endblock %}

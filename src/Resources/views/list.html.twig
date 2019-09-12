@@ -34,9 +34,10 @@
                                 data-target="#pesquisarModal" data-toggle="modal">
                             <i class="fas fa-search" aria-hidden="true"></i>
                         </button>
+                        {% set listRouteParamsRecarregar = {'r':'1'}|merge(routeParams|default([])) %}
                         <button type="button" class="btn btn-info ml-1"
                                 title="Recarregar"
-                                onclick="window.location.href='{{ url(listRoute,{'r':'1'}) }}'">
+                                onclick="window.location.href='{{ url(listRoute,listRouteParamsRecarregar) }}'">
                             <i class="fas fa-sync" aria-hidden="true"></i>
                         </button>
 
@@ -70,7 +71,7 @@
     <div class="modal fade" id="pesquisarModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ url(listRoute) }}" method="get" id="formPesquisar">
+                <form action="{{ url(listRoute,routeParams|default([])) }}" method="get" id="formPesquisar">
                     <div class="modal-body">
 
                         <h5 class="modal-header">Pesquisar por...</h5>

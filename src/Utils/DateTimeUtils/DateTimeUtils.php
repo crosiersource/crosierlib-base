@@ -15,11 +15,14 @@ class DateTimeUtils
 
     /**
      * @param $dateStr
-     * @return \DateTime
+     * @return null|\DateTime
      */
-    public static function parseDateStr($dateStr): \DateTime
+    public static function parseDateStr($dateStr): ?\DateTime
     {
         $dateStr = trim($dateStr);
+        if (!$dateStr) {
+            return null;
+        }
         if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
             $dt->setTime(12, 0);
