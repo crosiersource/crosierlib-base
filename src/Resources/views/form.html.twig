@@ -11,10 +11,13 @@
                 <div class="row">
                     <div class="col-8">
                         <h3>{{ formPageTitle }}</h3>
+                        {% if formPageSubTitle is defined %}
+                            <h6>{{ formPageSubTitle }}</h6>
+                        {% endif %}
                     </div>
                     <div class="col-4 text-right">
                         <button type="button" class="btn btn-secondary"
-                                onclick="window.location.href='{{ url(formRoute) }}'">
+                                onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
                             <i class="fas fa-file" aria-hidden="true"></i> Novo
                         </button>
                         {% if listRoute is defined %}
