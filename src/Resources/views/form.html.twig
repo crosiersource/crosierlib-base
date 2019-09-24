@@ -16,16 +16,22 @@
                         {% endif %}
                     </div>
                     <div class="col-4 text-right">
-                        <button type="button" class="btn btn-secondary"
-                                onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
-                            <i class="fas fa-file" aria-hidden="true"></i> Novo
-                        </button>
-                        {% if listRoute is defined %}
-                        <button type="button" class="btn btn-secondary"
-                                onclick="window.location.href='{{ url(listRoute) }}'">
-                            <i class="fas fa-sync" aria-hidden="true"></i> Listar
-                        </button>
-                        {% endif %}
+
+                        {% block btns %}
+
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
+                                <i class="fas fa-file" aria-hidden="true"></i> Novo
+                            </button>
+                            {% if listRoute is defined %}
+                                <button type="button" class="btn btn-secondary"
+                                        onclick="window.location.href='{{ url(listRoute) }}'">
+                                    <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                                </button>
+                            {% endif %}
+
+                        {% endblock %}
+
                     </div>
                 </div>
 

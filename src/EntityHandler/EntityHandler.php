@@ -91,13 +91,13 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
         } else {
             if (!$entityId->getEstabelecimentoId()) {
-                $entityId->setEstabelecimentoId(0);
+                $entityId->setEstabelecimentoId(1);
             }
             if (!$entityId->getUserInsertedId()) {
-                $entityId->setUserInsertedId(0);
+                $entityId->setUserInsertedId(1);
             }
             if (!$entityId->getUserUpdatedId()) {
-                $entityId->setUserUpdatedId(0);
+                $entityId->setUserUpdatedId(1);
             }
         }
     }
