@@ -98,7 +98,7 @@ class BaseController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error('doRender - error');
             $this->logger->error($e->getMessage());
-            throw $e;
+            throw new \RuntimeException($e->getMessage(), 0, $e);
         }
     }
 

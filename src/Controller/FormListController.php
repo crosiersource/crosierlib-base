@@ -63,7 +63,6 @@ abstract class FormListController extends BaseController
      * @param EntityId|null $entityId
      * @param array $parameters
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
      */
     public function doForm(Request $request, EntityId $entityId = null, $parameters = [], $preventSubmit = false): Response
     {
@@ -73,7 +72,7 @@ abstract class FormListController extends BaseController
         if (!isset($parameters['formRoute'])) {
             throw new ViewException('formRoute não informado');
         }
-        
+
         if (!$entityId) {
             $entityName = $parameters['entityClass'] ?? $this->getEntityHandler()->getEntityClass();
             $entityId = new $entityName();
@@ -133,7 +132,8 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param $entity
      */
-    public function handleRequestOnValid(Request $request, $entity): void {
+    public function handleRequestOnValid(Request $request, $entity): void
+    {
 
     }
 
@@ -210,7 +210,6 @@ abstract class FormListController extends BaseController
      * @param array $parameters
      * @param Response|null $response
      * @return Response
-     * @throws \Exception
      */
     protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
@@ -222,7 +221,6 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param array $parameters
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
      */
     public function doList(Request $request, $parameters = []): Response
     {
