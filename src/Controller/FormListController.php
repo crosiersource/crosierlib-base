@@ -62,7 +62,9 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param EntityId|null $entityId
      * @param array $parameters
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param bool $preventSubmit
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws ViewException
      */
     public function doForm(Request $request, EntityId $entityId = null, $parameters = [], $preventSubmit = false): Response
     {
@@ -220,7 +222,7 @@ abstract class FormListController extends BaseController
     /**
      * @param Request $request
      * @param array $parameters
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function doList(Request $request, $parameters = []): Response
     {
@@ -388,7 +390,7 @@ abstract class FormListController extends BaseController
      *
      * @param Request $request
      * @param null $defaultFilters
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws ViewException
      */
     public function doListSimpl(Request $request, array $parameters = []): Response
