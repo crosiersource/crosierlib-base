@@ -70,7 +70,7 @@ class EntityIdUtils
      * @param EntityId $entityId
      * @return array
      */
-    public function serialize(EntityId $entityId): array
+    public static function serialize(EntityId $entityId): array
     {
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
