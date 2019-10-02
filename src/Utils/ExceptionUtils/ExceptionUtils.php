@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class ExceptionUtils.
@@ -32,6 +33,9 @@ class ExceptionUtils
             return $e->getMessage();
         }
         if ($e->getPrevious() instanceof ViewException) {
+            return $e->getPrevious()->getMessage();
+        }
+        if ($e->getPrevious() instanceof ClientException) {
             return $e->getPrevious()->getMessage();
         }
         return '';
