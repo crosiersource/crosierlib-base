@@ -407,8 +407,6 @@
         <!-- EntMenuBusiness -->
         <service id="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"
                  class="CrosierSource\CrosierLibBaseBundle\Business\Config\EntMenuBusiness">
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="doctrine"/>
             <argument type="service"
                       id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"/>
         </service>

@@ -38,7 +38,7 @@ class EntMenuRepository extends FilterRepository
      */
     public function getMenusPaisOuDropdowns(): array
     {
-        $dql = "SELECT e FROM App\Entity\Config\EntMenu e WHERE e.paiUUID IS NULL OR e.tipo = :tipo ORDER BY e.label";
+        $dql = "SELECT e FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e WHERE e.paiUUID IS NULL OR e.tipo = :tipo ORDER BY e.label";
         $qry = $this->getEntityManager()->createQuery($dql);
         $qry->setParameter('tipo', 'DROPDOWN');
         return $qry->getResult();
@@ -229,7 +229,7 @@ class EntMenuRepository extends FilterRepository
      */
     public function makeTree(EntMenu $entMenuPai): array
     {
-        $ql = "SELECT e FROM App\Entity\Config\EntMenu e WHERE e.paiUUID = :entMenuPaiUUID ORDER BY e.ordem";
+        $ql = "SELECT e FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e WHERE e.paiUUID = :entMenuPaiUUID ORDER BY e.ordem";
         $qry = $this->getEntityManager()->createQuery($ql);
         $qry->setParameter('entMenuPaiUUID', $entMenuPai->getUUID());
 
