@@ -44,7 +44,6 @@ class BaseController extends AbstractController
      * @param array $parameters
      * @param Response|null $response
      * @return Response
-     * @throws \Exception
      */
     protected function doRender(string $view, array $parameters = [], Response $response = null): Response
     {
