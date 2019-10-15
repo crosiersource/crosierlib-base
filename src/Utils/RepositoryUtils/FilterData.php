@@ -36,6 +36,8 @@ class FilterData
         'IN' => 999,
         'NOT_IN' => 999,
         'LIKE' => 1,
+        'LIKE_START' => 1,
+        'LIKE_END' => 1,
         'LIKE_ONLY' => 1,
         'NOT_LIKE' => 1,
         'BETWEEN' => 2,

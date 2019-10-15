@@ -69,6 +69,8 @@ class PessoaRepository extends FilterRepository
     /**
      * Na bse_pessoa o documento não é UNIQUE. Este método retorna o registro com mais dados dentre os encontrados.
      * @param string $documento
+     * @return mixed
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
     public function findPessoaMaisCompletaPorDocumento(string $documento)
     {
@@ -89,11 +91,13 @@ class PessoaRepository extends FilterRepository
 
         $enderecoMaisCompleto = null;
         $lMaisCompleto = 0;
-        foreach ($pessoaMaisCompleta->getEnderecos() as $endereco) {
-            $l = strlen($endereco->getLogradouro() . $endereco->getNumero() . $endereco->getComplemento() . $endereco->getCep() . $endereco->getBairro() . $endereco->getCidade() . $endereco->getEstado());
-            if ($lMaisCompleto <= $l) {
-                $enderecoMaisCompleto = $endereco;
-                $lMaisCompleto = $l;
+        foreach ($pessoas as $pessoa) {
+            foreach ($pessoa->getEnderecos() as $endereco) {
+                $l = strlen($endereco->getLogradouro() . $endereco->getNumero() . $endereco->getComplemento() . $endereco->getCep() . $endereco->getBairro() . $endereco->getCidade() . $endereco->getEstado());
+                if ($lMaisCompleto <= $l) {
+                    $enderecoMaisCompleto = $endereco;
+                    $lMaisCompleto = $l;
+                }
             }
         }
 
@@ -102,22 +106,34 @@ class PessoaRepository extends FilterRepository
         $p['nome'] = $pessoaMaisCompleta->getNome();
         $p['nomeFantasia'] = $pessoaMaisCompleta->getNomeFantasia();
         $p['ie'] = $pessoaMaisCompleta->getInscricaoEstadual();
-        $p['rg'] = $pessoaMaisCompleta->getRg();
-        $p['logradouro'] = $enderecoMaisCompleto->getLogradouro();
-        $p['numero'] = $enderecoMaisCompleto->getNumero();
-        $p['complemento'] = $enderecoMaisCompleto->getComplemento();
-        $p['bairro'] = $enderecoMaisCompleto->getBairro();
-        $p['cidade'] = $enderecoMaisCompleto->getCidade();
-        $p['estado'] = $enderecoMaisCompleto->getEstado();
-        $p['cep'] = $enderecoMaisCompleto->getCep();
+        if ($enderecoMaisCompleto) {
+            $p['logradouro'] = $enderecoMaisCompleto->getLogradouro();
+            $p['numero'] = $enderecoMaisCompleto->getNumero();
+            $p['complemento'] = $enderecoMaisCompleto->getComplemento();
+            $p['bairro'] = $enderecoMaisCompleto->getBairro();
+            $p['cidade'] = $enderecoMaisCompleto->getCidade();
+            $p['estado'] = $enderecoMaisCompleto->getEstado();
+            $p['cep'] = $enderecoMaisCompleto->getCep();
+        } else {
+            $p['logradouro'] = '';
+            $p['numero'] = '';
+            $p['complemento'] = '';
+            $p['bairro'] = '';
+            $p['cidade'] = '';
+            $p['estado'] = '';
+            $p['cep'] = '';
+        }
 
         /** @var PessoaContatoRepository $repoContatos */
         $repoContatos = $this->getEntityManager()->getRepository(PessoaContato::class);
-        $fones = $repoContatos->findByFiltersSimpl([['pessoa', 'EQ', $pessoaMaisCompleta], ['tipo', 'LIKE', '%FONE%'], ['valor', 'IS_NOT_EMPTY']]);
-        $fone1 = $fones ? $fones[0]->getValor() : null;
-        $emails = $repoContatos->findByFiltersSimpl([['pessoa', 'EQ', $pessoaMaisCompleta], ['tipo', 'LIKE', '%MAIL%'], ['valor', 'IS_NOT_EMPTY']]);
-        $email1 = $emails ? $emails[0]->getValor() : null;
-
+        $fone1 = '';
+        $email1 = '';
+        foreach ($pessoas as $pessoa) {
+            $fones = $repoContatos->findOneByFiltersSimpl([['pessoa', 'EQ', $pessoa], ['tipo', 'LIKE', '%FONE%'], ['valor', 'IS_NOT_EMPTY']]);
+            $fone1 = $fones ? $fones->getValor() : null;
+            $emails = $repoContatos->findByFiltersSimpl([['pessoa', 'EQ', $pessoa], ['tipo', 'LIKE', '%MAIL%'], ['valor', 'IS_NOT_EMPTY']]);
+            $email1 = $emails ? $emails->getValor() : null;
+        }
         $p['fone'] = $fone1;
         $p['email'] = $email1;
 

@@ -107,6 +107,8 @@ class WhereBuilder
                             ->notIn($field, $fieldP));
                         break;
                     case 'LIKE':
+                    case 'LIKE_START':
+                    case 'LIKE_END':
                     case 'LIKE_ONLY':
                         $orX->add($qb->expr()
                             ->like($qb->expr()->lower($field), $fieldP));
@@ -156,6 +158,12 @@ class WhereBuilder
                     break;
                 case 'LIKE':
                     $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
+                    break;
+                case 'LIKE_START':
+                    $qb->setParameter($fieldP, strtolower($filter->val) . '%');
+                    break;
+                case 'LIKE_END':
+                    $qb->setParameter($fieldP, '%' . strtolower($filter->val));
                     break;
                 case 'LIKE_ONLY':
                 case 'NOT_LIKE':

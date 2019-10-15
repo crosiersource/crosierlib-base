@@ -26,9 +26,10 @@ class ValidaCPFCNPJ
         $documento = preg_replace("/[\D]/", '', $documento);
         if (strlen($documento) === 11) {
             return self::validaCPF($documento);
-        }
-        if (strlen($documento) === 14) {
+        } else if (strlen($documento) === 14) {
             return self::validaCNPJ($documento);
+        } else {
+            return false;
         }
     }
 
