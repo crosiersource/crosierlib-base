@@ -42,7 +42,8 @@ trait EnderecoTypeTrait
         $builder->add('cep', TextType::class, array(
             'label' => 'CEP',
             'attr' => array(
-                'class' => 'cep'
+                'class' => 'cepComBtnConsulta',
+                'data-prefixodoscampos' => 'endereco_'
             ),
             'required' => false
         ));
