@@ -80,7 +80,6 @@ class EntMenuRepository extends FilterRepository
     private function entMenuInJson(EntMenu $entMenu): array
     {
         $this->fillTransients($entMenu);
-
         /** @var AppRepository $repoApp */
         $repoApp = $this->getEntityManager()->getRepository(App::class);
         /** @var App $app */
@@ -97,6 +96,7 @@ class EntMenuRepository extends FilterRepository
             'cssStyle' => $entMenu->getCssStyle(),
             'url' => $urlBase . $entMenu->getUrl(),
             'roles' => $entMenu->getRoles(),
+            'nivel' => $entMenu->getNivel(),
             'pai' => [
                 'id' => $entMenu->getPai() ? $entMenu->getPai()->getId() : null,
                 'tipo' => $entMenu->getPai() ? $entMenu->getPai()->getTipo() : null,
@@ -113,6 +113,7 @@ class EntMenuRepository extends FilterRepository
      */
     public function fillTransients(EntMenu $entMenu): void
     {
+        $nivel = 0;
         if ($entMenu->getPaiUUID()) {
             if (!$entMenu->getPai()) {
                 $pai = $this->findOneBy(['UUID' => $entMenu->getPaiUUID()]);
@@ -124,11 +125,14 @@ class EntMenuRepository extends FilterRepository
                 $entMenu->setFilhos($filhos);
             }
             $superPai = $entMenu->getPai();
+
             while ($superPai->getPaiUUID()) {
+                $nivel++;
                 $superPai = $this->findOneBy(['UUID' => $superPai->getPaiUUID()]);
             }
             $entMenu->setSuperPai($superPai);
         }
+        $entMenu->setNivel($nivel);
     }
 
     /**
@@ -139,7 +143,6 @@ class EntMenuRepository extends FilterRepository
      */
     private function addFilhosInJson(EntMenu $entMenu, array &$json, User $user): array
     {
-        $this->fillTransients($entMenu);
         if ($entMenu->getFilhos() && count($entMenu->getFilhos()) > 0) {
             foreach ($entMenu->getFilhos() as $filho) {
                 $temPermissao = true;
@@ -202,7 +205,6 @@ class EntMenuRepository extends FilterRepository
      */
     private function getFilhos(EntMenu $pai, &$tree): void
     {
-        $this->fillTransients($pai);
         if ($pai->getFilhos()) {
             $filhos = $pai->getFilhos();
             foreach ($filhos as $filho) {

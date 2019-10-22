@@ -135,6 +135,12 @@ class EntMenu implements EntityId
      */
     private $filhos;
 
+    /**
+     * TRANSIENT.
+     * @var int
+     */
+    private $nivel;
+
 
     public function __construct()
     {
@@ -372,6 +378,24 @@ class EntMenu implements EntityId
     public function setFilhos($filhos)
     {
         $this->filhos = $filhos;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNivel(): int
+    {
+        return $this->nivel;
+    }
+
+    /**
+     * @param int $nivel
+     * @return EntMenu
+     */
+    public function setNivel(int $nivel): EntMenu
+    {
+        $this->nivel = $nivel;
         return $this;
     }
 
