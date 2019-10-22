@@ -7,7 +7,6 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Repository para a entidade EntMenu.
@@ -59,7 +58,7 @@ class EntMenuRepository extends FilterRepository
         foreach ($entsMenu as $entMenu) {
             $temPermissao = true;
             if ($entMenu->getRoles()) {
-                $roles = explode(',',$entMenu->getRoles());
+                $roles = explode(',', $entMenu->getRoles());
                 if (!array_intersect($user->getRoles(), $roles)) {
                     $temPermissao = false;
                 }
@@ -70,14 +69,7 @@ class EntMenuRepository extends FilterRepository
                 $rs[] = $entMenuInJson;
             }
         }
-        // Limpa os DROPDOWN que não tenham filhos (por falta de permissão ou outra coisa)
-        foreach ($rs as $key => $r) {
-            if ($r['tipo'] === 'DROPDOWN') {
-                if (!isset($r['filhos']) || count($r['filhos']) < 1) {
-                    unset($rs[$key]);
-                }
-            }
-        }
+        $this->limparPaisSemFilhos($rs);
         return $rs;
     }
 
@@ -152,7 +144,7 @@ class EntMenuRepository extends FilterRepository
             foreach ($entMenu->getFilhos() as $filho) {
                 $temPermissao = true;
                 if ($filho->getRoles()) {
-                    $roles = explode(',',$filho->getRoles());
+                    $roles = explode(',', $filho->getRoles());
                     if (!array_intersect($user->getRoles(), $roles)) {
                         $temPermissao = false;
                     }
@@ -165,6 +157,20 @@ class EntMenuRepository extends FilterRepository
             }
         }
         return $json;
+    }
+
+    private function limparPaisSemFilhos(array &$rs)
+    {
+        // Limpa os DROPDOWN que não tenham filhos (por falta de permissão ou outra coisa)
+        foreach ($rs as $key => $r) {
+            if ($r['tipo'] === 'DROPDOWN') {
+                if (!isset($r['filhos']) || count($r['filhos']) < 1) {
+                    unset($rs[$key]);
+                } else {
+                    $this->limparPaisSemFilhos($r['filhos']);
+                }
+            }
+        }
     }
 
     /**

@@ -4,19 +4,18 @@
 
             {% for ent in menu %}
 
-                {% if ent.tipo == 'CROSIERCORE_APPENT' %}
-                    <li class="nav-item" style="{{ ent.cssStyle != null ? ent.cssStyle : 'background-color: darkblue' }};">
-                        <a class="nav-link" href="{{ ent.url is defined ? ent.url : '' }}">
-                            <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
-                {% elseif ent.tipo == 'ENT' %}
+
+                {% if ent.tipo == 'ENT' %}
                     <li class="nav-item" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
                         <a class="nav-link" href="{{ ent.url is defined ? ent.url : '' }}">
                             <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
+
                 {% elseif ent.tipo == 'hr' %}
                     <li class="nav-item" style="height: 10px; background-color: white">
-                    <hr/>
+                        <hr/>
                     </li>
-                {% else %}
+
+                {% elseif ent.tipo == 'DROPDOWN' %}
                     <li class="nav-item nav-dropdown" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
                         <a class="nav-link nav-dropdown-toggle" href="#">
                             <i class="nav-icon {{ ent.icon }}"></i>
@@ -25,23 +24,80 @@
 
                         {% if ent.filhos is defined %}
                             <ul class="nav-dropdown-items" style="background-color: black">
+
                                 {% for filho in ent.filhos %}
+
                                     {% if filho.tipo == 'ENT' %}
                                         <li class="nav-item"
                                             style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
                                             <a class="nav-link"
                                                href="{{ filho.url is defined ? filho.url : '' }}">
                                                 <i class="nav-icon {{ filho.icon }}"></i>{{ filho.label }}</a></li>
-                                    {% else %}
+
+                                    {% elseif ent.tipo == 'hr' %}
+                                        <li class="nav-item" style="height: 10px; background-color: white">
+                                            <hr/>
+                                        </li>
+
+
+                                    {% elseif ent.tipo == 'DROPDOWN' %}
+                                        <li class="nav-item nav-dropdown"
+                                            style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
+                                            <a class="nav-link nav-dropdown-toggle" href="#">
+                                                <i class="nav-icon {{ ent.icon }}"></i>
+                                                {{ ent.label }}
+                                            </a>
+
+                                            {% if ent.filhos is defined %}
+                                                <ul class="nav-dropdown-items" style="background-color: black">
+
+                                                    {% for filho in ent.filhos %}
+
+                                                        {% if filho.tipo == 'ENT' %}
+                                                            <li class="nav-item"
+                                                                style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
+                                                                <a class="nav-link"
+                                                                   href="{{ filho.url is defined ? filho.url : '' }}">
+                                                                    <i class="nav-icon {{ filho.icon }}"></i>{{ filho.label }}
+                                                                </a></li>
+
+                                                        {% elseif ent.tipo == 'hr' %}
+                                                            <li class="nav-item"
+                                                                style="height: 10px; background-color: white">
+                                                                <hr/>
+                                                            </li>
+
+                                                        {% elseif ent.tipo == 'LABEL' %}
+                                                            <li class="nav-title">{{ filho.label }}</li>
+                                                        {% endif %}
+
+                                                    {% endfor %}
+
+                                                    <li class="nav-item"
+                                                        style="background-color: white; height: 1px"></li>
+
+                                                </ul>
+                                            {% endif %}
+
+                                        </li>
+
+                                    {% elseif ent.tipo == 'LABEL' %}
                                         <li class="nav-title">{{ filho.label }}</li>
                                     {% endif %}
+
+
+
                                 {% endfor %}
+
                                 <li class="nav-item" style="background-color: white; height: 1px"></li>
+
                             </ul>
                         {% endif %}
 
                     </li>
 
+                {% elseif ent.tipo == 'LABEL' %}
+                    <li class="nav-title">{{ filho.label }}</li>
                 {% endif %}
 
 
