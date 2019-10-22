@@ -5,7 +5,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository\Config;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\App;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Repository para a entidade EntMenu.
@@ -44,9 +46,10 @@ class EntMenuRepository extends FilterRepository
 
     /**
      * @param EntMenu $entMenuPai
+     * @param User $user
      * @return array
      */
-    public function buildMenuByEntMenuPai(EntMenu $entMenuPai): array
+    public function buildMenuByEntMenuPai(EntMenu $entMenuPai, User $user): array
     {
         $entsMenu = $this->findBy(['paiUUID' => $entMenuPai->getUUID()], ['ordem' => 'ASC']);
 
@@ -54,9 +57,26 @@ class EntMenuRepository extends FilterRepository
 
         /** @var EntMenu $entMenu */
         foreach ($entsMenu as $entMenu) {
-            $entMenuInJson = $this->entMenuInJson($entMenu);
-            $this->addFilhosInJson($entMenu, $entMenuInJson);
-            $rs[] = $entMenuInJson;
+            $temPermissao = true;
+            if ($entMenu->getRoles()) {
+                $roles = explode(',',$entMenu->getRoles());
+                if (!array_intersect($user->getRoles(), $roles)) {
+                    $temPermissao = false;
+                }
+            }
+            if ($temPermissao) {
+                $entMenuInJson = $this->entMenuInJson($entMenu);
+                $this->addFilhosInJson($entMenu, $entMenuInJson, $user);
+                $rs[] = $entMenuInJson;
+            }
+        }
+        // Limpa os DROPDOWN que não tenham filhos (por falta de permissão ou outra coisa)
+        foreach ($rs as $key => $r) {
+            if ($r['tipo'] === 'DROPDOWN') {
+                if (!isset($r['filhos']) || count($r['filhos']) < 1) {
+                    unset($rs[$key]);
+                }
+            }
         }
         return $rs;
     }
@@ -84,6 +104,7 @@ class EntMenuRepository extends FilterRepository
             'ordem' => $entMenu->getOrdem(),
             'cssStyle' => $entMenu->getCssStyle(),
             'url' => $urlBase . $entMenu->getUrl(),
+            'roles' => $entMenu->getRoles(),
             'pai' => [
                 'id' => $entMenu->getPai() ? $entMenu->getPai()->getId() : null,
                 'tipo' => $entMenu->getPai() ? $entMenu->getPai()->getTipo() : null,
@@ -121,16 +142,26 @@ class EntMenuRepository extends FilterRepository
     /**
      * @param EntMenu $entMenu
      * @param array $json
+     * @param User $user
      * @return array
      */
-    private function addFilhosInJson(EntMenu $entMenu, array &$json): array
+    private function addFilhosInJson(EntMenu $entMenu, array &$json, User $user): array
     {
         $this->fillTransients($entMenu);
         if ($entMenu->getFilhos() && count($entMenu->getFilhos()) > 0) {
             foreach ($entMenu->getFilhos() as $filho) {
-                $filhoJson = $this->entMenuInJson($filho);
-                $this->addFilhosInJson($filho, $filhoJson);
-                $json['filhos'][] = $filhoJson;
+                $temPermissao = true;
+                if ($filho->getRoles()) {
+                    $roles = explode(',',$filho->getRoles());
+                    if (!array_intersect($user->getRoles(), $roles)) {
+                        $temPermissao = false;
+                    }
+                }
+                if ($temPermissao) {
+                    $filhoJson = $this->entMenuInJson($filho);
+                    $this->addFilhosInJson($filho, $filhoJson, $user);
+                    $json['filhos'][] = $filhoJson;
+                }
             }
         }
         return $json;

@@ -90,6 +90,15 @@ class EntMenu implements EntityId
 
     /**
      *
+     * @ORM\Column(name="roles", type="string", nullable=true, length=200)
+     * @Groups("entity")
+     *
+     * @var string|null
+     */
+    private $roles;
+
+    /**
+     *
      * @ORM\Column(name="url", type="string", nullable=false, length=2000)
      * @NotUppercase()
      * @Groups("entity")
@@ -255,6 +264,24 @@ class EntMenu implements EntityId
     public function setCssStyle(?string $cssStyle): EntMenu
     {
         $this->cssStyle = $cssStyle;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRoles(): ?string
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param string|null $roles
+     * @return EntMenu
+     */
+    public function setRoles(?string $roles): EntMenu
+    {
+        $this->roles = $roles;
         return $this;
     }
 

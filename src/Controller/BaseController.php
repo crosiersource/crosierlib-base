@@ -77,7 +77,7 @@ class BaseController extends AbstractController
             $this->entMenuLocatorRepository->security = $this->security;
             $menu = null;
             try {
-                $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri);
+                $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri, $this->security->getUser());
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erro ao construir o menu');
             }
