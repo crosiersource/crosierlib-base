@@ -10,7 +10,9 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <h3>{{ formPageTitle }}</h3>
+                        {% if formPageTitle is defined %}
+                            <h3>{{ formPageTitle }}</h3>
+                        {% endif %}
                         {% if formPageSubTitle is defined %}
                             <h6>{{ formPageSubTitle }}</h6>
                         {% endif %}

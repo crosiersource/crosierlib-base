@@ -17,12 +17,23 @@ class EntMenuBusiness
         $this->entityHandler = $entityHandler;
     }
 
-    public function saveOrdem($ordArr)
+    /**
+     * @param array $ordArr
+     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     */
+    public function saveOrdem(array $ordArr): void
     {
         $i = 1;
+        $dropDownAtual = null;
         foreach ($ordArr as $ord) {
             /** @var EntMenu $entMenu */
             $entMenu = $this->entityHandler->getDoctrine()->getRepository(EntMenu::class)->find($ord);
+            if ($entMenu->getTipo() === 'DROPDOWN' && $dropDownAtual !== $entMenu) {
+                $dropDownAtual = $entMenu;
+            }
+            if ($dropDownAtual && $entMenu->getTipo() === 'ENT') {
+                $entMenu->setPaiUUID($dropDownAtual->getUUID());
+            }
             $entMenu->setOrdem($i++);
             $this->entityHandler->save($entMenu);
         }

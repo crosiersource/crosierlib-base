@@ -21,18 +21,32 @@ class EntMenu implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var string
      * @ORM\Column(name="uuid", type="string", nullable=false, length=36)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $UUID;
+
+    /**
+     * Necessário para poder montar a URL corretamente (pois o domínio do App pode variar por ambiente).
+     *
+     * @ORM\Column(name="app_uuid", type="string", nullable=false, length=36)
+     * @NotUppercase()
+     * @Groups("entity")
+     *
+     * @var string|null
+     */
+    private $appUUID;
 
     /**
      *
      * @ORM\Column(name="label", type="string", nullable=false, length=255)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $label;
 
@@ -41,6 +55,8 @@ class EntMenu implements EntityId
      * @ORM\Column(name="icon", type="string", nullable=true, length=50)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $icon;
 
@@ -48,6 +64,8 @@ class EntMenu implements EntityId
      *
      * @ORM\Column(name="tipo", type="string", nullable=false, length=50)
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $tipo;
 
@@ -55,6 +73,8 @@ class EntMenu implements EntityId
      *
      * @ORM\Column(name="ordem", type="integer", nullable=true)
      * @Groups("entity")
+     *
+     * @var int|null
      */
     private $ordem;
 
@@ -63,37 +83,49 @@ class EntMenu implements EntityId
      * @ORM\Column(name="css_style", type="string", nullable=true, length=200)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $cssStyle;
 
     /**
-     * @var string
-     * @ORM\Column(name="program_uuid", type="string", nullable=true, length=36)
+     *
+     * @ORM\Column(name="url", type="string", nullable=false, length=2000)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
-    private $programUUID;
+    private $url;
 
     /**
      * @var string
      * @ORM\Column(name="pai_uuid", type="string", nullable=true, length=36)
      * @NotUppercase()
      * @Groups("entity")
+     *
+     * @var string|null
      */
     private $paiUUID;
 
     /**
      * TRANSIENT
-     * @var EntMenu
+     * @var EntMenu|null
      */
     private $pai;
 
     /**
      * TRANSIENT
-     * @var EntMenu[]|ArrayCollection
+     * @var EntMenu|null
+     */
+    private $superPai;
+
+    /**
+     * TRANSIENT
+     * @var null|EntMenu[]|ArrayCollection
      */
     private $filhos;
-    
+
 
     public function __construct()
     {
@@ -101,7 +133,7 @@ class EntMenu implements EntityId
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUUID(): ?string
     {
@@ -109,123 +141,157 @@ class EntMenu implements EntityId
     }
 
     /**
-     * @param string $UUID
+     * @param string|null $UUID
+     * @return EntMenu
      */
-    public function setUUID(?string $UUID): void
+    public function setUUID(?string $UUID): EntMenu
     {
         $this->UUID = $UUID;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getLabel()
+    public function getAppUUID(): ?string
+    {
+        return $this->appUUID;
+    }
+
+    /**
+     * @param string|null $appUUID
+     * @return EntMenu
+     */
+    public function setAppUUID(?string $appUUID): EntMenu
+    {
+        $this->appUUID = $appUUID;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
     /**
-     * @param mixed $label
+     * @param string|null $label
+     * @return EntMenu
      */
-    public function setLabel($label): void
+    public function setLabel(?string $label): EntMenu
     {
         $this->label = $label;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getIcon()
+    public function getIcon(): ?string
     {
         return $this->icon;
     }
 
     /**
-     * @param mixed $icon
+     * @param string|null $icon
+     * @return EntMenu
      */
-    public function setIcon($icon): void
+    public function setIcon(?string $icon): EntMenu
     {
         $this->icon = $icon;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getTipo()
+    public function getTipo(): ?string
     {
         return $this->tipo;
     }
 
     /**
-     * @param mixed $tipo
+     * @param string|null $tipo
+     * @return EntMenu
      */
-    public function setTipo($tipo): void
+    public function setTipo(?string $tipo): EntMenu
     {
         $this->tipo = $tipo;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getOrdem()
+    public function getOrdem(): ?int
     {
         return $this->ordem;
     }
 
     /**
-     * @param mixed $ordem
+     * @param int|null $ordem
+     * @return EntMenu
      */
-    public function setOrdem($ordem): void
+    public function setOrdem(?int $ordem): EntMenu
     {
         $this->ordem = $ordem;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getCssStyle()
+    public function getCssStyle(): ?string
     {
         return $this->cssStyle;
     }
 
     /**
-     * @param mixed $cssStyle
+     * @param string|null $cssStyle
+     * @return EntMenu
      */
-    public function setCssStyle($cssStyle): void
+    public function setCssStyle(?string $cssStyle): EntMenu
     {
         $this->cssStyle = $cssStyle;
+        return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getProgramUUID(): ?string
+    public function getUrl(): ?string
     {
-        return $this->programUUID;
+        return $this->url;
     }
 
     /**
-     * @param string|null $programUUID
+     * @param string|null $url
+     * @return EntMenu
      */
-    public function setProgramUUID(?string $programUUID): void
+    public function setUrl(?string $url): EntMenu
     {
-        $this->programUUID = $programUUID;
+        $this->url = $url;
+        return $this;
     }
 
     /**
-     * @return string|null
+     * @return mixed
      */
-    public function getPaiUUID(): ?string
+    public function getPaiUUID()
     {
         return $this->paiUUID;
     }
 
     /**
-     * @param string|null $paiUUID
+     * @param mixed $paiUUID
+     * @return EntMenu
      */
-    public function setPaiUUID(?string $paiUUID): void
+    public function setPaiUUID($paiUUID)
     {
         $this->paiUUID = $paiUUID;
+        return $this;
     }
 
     /**
@@ -238,14 +304,34 @@ class EntMenu implements EntityId
 
     /**
      * @param EntMenu|null $pai
+     * @return EntMenu
      */
-    public function setPai(?EntMenu $pai): void
+    public function setPai(?EntMenu $pai): EntMenu
     {
         $this->pai = $pai;
+        return $this;
     }
 
     /**
-     * @return EntMenu[]|ArrayCollection
+     * @return EntMenu|null
+     */
+    public function getSuperPai(): ?EntMenu
+    {
+        return $this->superPai;
+    }
+
+    /**
+     * @param EntMenu|null $superPai
+     * @return EntMenu
+     */
+    public function setSuperPai(?EntMenu $superPai): EntMenu
+    {
+        $this->superPai = $superPai;
+        return $this;
+    }
+
+    /**
+     * @return EntMenu[]|ArrayCollection|null
      */
     public function getFilhos()
     {
@@ -253,11 +339,13 @@ class EntMenu implements EntityId
     }
 
     /**
-     * @param EntMenu[]|ArrayCollection $filhos
+     * @param EntMenu[]|ArrayCollection|null $filhos
+     * @return EntMenu
      */
-    public function setFilhos($filhos): void
+    public function setFilhos($filhos)
     {
         $this->filhos = $filhos;
+        return $this;
     }
 
 

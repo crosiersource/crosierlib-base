@@ -257,7 +257,7 @@ abstract class FormListController extends BaseController
         if (($queryParams['filter'] ?? null) && (count($queryParams['filter']) > 0)) {
             $this->storedViewInfoBusiness->store($parameters['listRoute'], ['filter' => $queryParams['filter']]);
         }
-
+        $parameters['listView'] = $parameters['listView'] ?? '@CrosierLibBase/list.html.twig';
         return $this->doRender($parameters['listView'], $queryParams);
     }
 
@@ -454,7 +454,7 @@ abstract class FormListController extends BaseController
      * @param EntityId $entityId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function doDelete(Request $request, EntityId $entityId): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function doDelete(Request $request, EntityId $entityId, array $parameters): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
@@ -462,6 +462,8 @@ abstract class FormListController extends BaseController
             try {
                 $this->getEntityHandler()->delete($entityId);
                 $this->addFlash('success', 'Registro deletado com sucesso.');
+            } catch (ViewException $e) {
+                $this->addFlash('error', $e->getMessage());
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erro ao deletar registro.');
             }
@@ -470,7 +472,7 @@ abstract class FormListController extends BaseController
             return $this->redirect($request->server->get('HTTP_REFERER'));
         }
 
-        return $this->redirectToRoute($parameters['listRoute']);
+        return $this->redirectToRoute($parameters['listRoute'], $parameters['listRouteParams'] ?? null);
     }
 
 

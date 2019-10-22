@@ -28,6 +28,11 @@ class AppConfigRepository extends FilterRepository
             ->leftJoin(App::class, 'app', 'WITH', 'app.UUID = e.appUUID');
     }
 
+    /**
+     * @param App $app
+     * @param string $chave
+     * @return string|null
+     */
     public function findConfigByCrosierEnv(App $app, string $chave)
     {
         try {

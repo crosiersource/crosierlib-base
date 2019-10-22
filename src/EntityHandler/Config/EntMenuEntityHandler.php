@@ -5,6 +5,11 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Config;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
+/**
+ * Class EntMenuEntityHandler
+ * @package CrosierSource\CrosierLibBaseBundle\EntityHandler\Config
+ * @author Carlos Eduardo Pauluk
+ */
 class EntMenuEntityHandler extends EntityHandler
 {
 
@@ -13,7 +18,7 @@ class EntMenuEntityHandler extends EntityHandler
         if (!$entMenu->getOrdem()) {
             if ($entMenu->getPai()) {
                 if ($entMenu->getPai()->getFilhos() and $entMenu->getPai()->getFilhos()->count() > 0) {
-                    $ordem = $entMenu->getPai()->getFilhos()->get($entMenu->getPai()->getFilhos()->count()-1)->getOrdem();
+                    $ordem = $entMenu->getPai()->getFilhos()->get($entMenu->getPai()->getFilhos()->count() - 1)->getOrdem();
                     $entMenu->setOrdem($ordem);
                 } else {
                     $entMenu->setOrdem($entMenu->getPai()->getOrdem());
@@ -21,6 +26,12 @@ class EntMenuEntityHandler extends EntityHandler
             } else {
                 $entMenu->setOrdem(9999999);
             }
+        }
+        if (!$entMenu->getPaiUUID()) {
+            $entMenu->setTipo('PAI');
+        }
+        if ($entMenu->getTipo() === 'PAI') {
+            $entMenu->setPaiUUID(null);
         }
     }
 

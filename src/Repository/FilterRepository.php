@@ -6,6 +6,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;

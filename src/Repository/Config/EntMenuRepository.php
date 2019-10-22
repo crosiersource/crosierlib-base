@@ -5,9 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository\Config;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\App;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu;
-use CrosierSource\CrosierLibBaseBundle\Entity\Config\Program;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
-use RuntimeException;
 
 /**
  * Repository para a entidade EntMenu.
@@ -45,60 +43,6 @@ class EntMenuRepository extends FilterRepository
     }
 
     /**
-     *
-     * @param string $programUUID
-     * @return array
-     */
-    public function buildMenuByProgram(string $programUUID): array
-    {
-        /** @var EntMenu $entMenuPaiJson */
-        $entMenuPaiJson = $this->getEntMenuByProgramUUID($programUUID);
-        if ($entMenuPaiJson) {
-            /** @var EntMenu $entMenuPai */
-            $entMenuPai = $this->find($entMenuPaiJson['id']);
-            if ($entMenuPai) {
-                return $this->buildMenuByEntMenuPai($entMenuPai);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param string $programUUID
-     * @return array|null
-     */
-    public function getEntMenuByProgramUUID(string $programUUID): ?array
-    {
-        /** @var Program $program */
-        $program = $this->getEntityManager()->getRepository(Program::class)->findOneBy(['UUID' => $programUUID]);
-        if ($program) {
-            /** @var EntMenu $entMenuPai */
-            $entMenuPai = null;
-            if ($program->getEntMenuUUID()) {
-                $entMenuPai = $this->findOneBy(['UUID' => $program->getEntMenuUUID()]);
-            } else if ($program->getAppUUID()) {
-                /** @var App $app */
-                $app = $this->getEntityManager()->getRepository(App::class)->findOneBy(['UUID' => $program->getAppUUID()]);
-                $entMenuPai = $this->findOneBy(['UUID' => $app->getDefaultEntMenuUUID()]);
-            } else {
-                $entMenuPai = $this->findOneBy(['UUID' => '71d1456b-3a9f-4589-8f71-42bbf6c91a3e']);
-            }
-            $rEntMenu = [
-                'id' => $entMenuPai->getId(),
-                'UUID' => $entMenuPai->getUUID(),
-                'label' => $entMenuPai->getLabel(),
-                'icon' => $entMenuPai->getIcon(),
-                'tipo' => $entMenuPai->getTipo(),
-                'ordem' => $entMenuPai->getOrdem()
-            ];
-
-            return $rEntMenu;
-        }
-        return null;
-
-    }
-
-    /**
      * @param EntMenu $entMenuPai
      * @return array
      */
@@ -107,30 +51,6 @@ class EntMenuRepository extends FilterRepository
         $entsMenu = $this->findBy(['paiUUID' => $entMenuPai->getUUID()], ['ordem' => 'ASC']);
 
         $rs = [];
-        // Está no CrosierCore
-        if ($entMenuPai->getUUID() === '71d1456b-3a9f-4589-8f71-42bbf6c91a3e') {
-            // Cria entradas para os Apps instalados
-            $defaultEntMenuApps = $this->findBy(['tipo' => 'CROSIERCORE_APPENT']);
-            /** @var EntMenu $defaultEntMenuApp */
-            foreach ($defaultEntMenuApps as $defaultEntMenuApp) {
-                if ($defaultEntMenuApp->getProgramUUID()) {
-                    /** @var ProgramRepository $programRepo */
-                    $programRepo = $this->getEntityManager()->getRepository(Program::class);
-                    /** @var Program $program */
-                    $program = $programRepo->findOneBy(['UUID' => $defaultEntMenuApp->getProgramUUID()]);
-                    $programRepo->buildTransients($program);
-                    $app = $program->getApp();
-                    $url = $this->getEntityManager()->getRepository(AppConfig::class)->findConfigByCrosierEnv($app, 'URL');
-                    $entMenuJson = $this->entMenuInJson($defaultEntMenuApp);
-                    $entMenuJson['program']['url'] = $url; // . $entMenuJson['program']['url'] . '?_remember_me=1&apiTokenAuthorization=' . $token;
-//                    $entMenuJson['label'] = $app->getNome();
-//                    $entMenuJson['cssStyle'] = 'background-color: darkblue';
-                    $rs[] = $entMenuJson;
-                }
-            }
-        }
-
-        $rs[] = ['tipo' => 'hr'];
 
         /** @var EntMenu $entMenu */
         foreach ($entsMenu as $entMenu) {
@@ -147,14 +67,15 @@ class EntMenuRepository extends FilterRepository
      */
     private function entMenuInJson(EntMenu $entMenu): array
     {
-        /** @var Program $program */
-        $program = $this->getEntityManager()->getRepository(Program::class)->findOneBy(['UUID' => $entMenu->getProgramUUID()]);
-        $app = null;
-        if ($program) {
-            /** @var App $app */
-            $app = $this->getEntityManager()->getRepository(App::class)->findOneBy(['UUID' => $program->getAppUUID()]);
-        }
         $this->fillTransients($entMenu);
+
+        /** @var AppRepository $repoApp */
+        $repoApp = $this->getEntityManager()->getRepository(App::class);
+        /** @var App $app */
+        $app = $repoApp->findOneBy(['UUID' => $entMenu->getAppUUID()]);
+
+        $urlBase = $this->getEntityManager()->getRepository(AppConfig::class)->findConfigByCrosierEnv($app, 'URL');
+
         return [
             'id' => $entMenu->getId(),
             'label' => $entMenu->getLabel(),
@@ -162,22 +83,12 @@ class EntMenuRepository extends FilterRepository
             'tipo' => $entMenu->getTipo(),
             'ordem' => $entMenu->getOrdem(),
             'cssStyle' => $entMenu->getCssStyle(),
+            'url' => $urlBase . $entMenu->getUrl(),
             'pai' => [
                 'id' => $entMenu->getPai() ? $entMenu->getPai()->getId() : null,
                 'tipo' => $entMenu->getPai() ? $entMenu->getPai()->getTipo() : null,
                 'icon' => $entMenu->getPai() ? $entMenu->getPai()->getIcon() : null,
                 'label' => $entMenu->getPai() ? $entMenu->getPai()->getLabel() : null
-            ],
-            'program' => [
-                'id' => $program ? $program->getId() : null,
-                'descricao' => $program ? $program->getDescricao() : null,
-                'url' => $program ? $program->getUrl() : null,
-                'UUID' => $program ? $program->getUUID() : null,
-                'app' => [
-                    'id' => $app ? $app->getId() : null,
-                    'nome' => $app ? $app->getNome() : null
-
-                ]
             ]
         ];
     }
@@ -199,8 +110,12 @@ class EntMenuRepository extends FilterRepository
                 $filhos = $this->findBy(['paiUUID' => $entMenu->getUUID()], ['ordem' => 'ASC']);
                 $entMenu->setFilhos($filhos);
             }
+            $superPai = $entMenu->getPai();
+            while ($superPai->getPaiUUID()) {
+                $superPai = $this->findOneBy(['UUID' => $superPai->getPaiUUID()]);
+            }
+            $entMenu->setSuperPai($superPai);
         }
-
     }
 
     /**
@@ -259,26 +174,6 @@ class EntMenuRepository extends FilterRepository
             }
         } else {
             return;
-        }
-    }
-
-    /**
-     * @param string $appUUID
-     * @return mixed
-     */
-    public function findAppMainProgramUUID(string $appUUID)
-    {
-        try {
-            $dql = 'SELECT p FROM 
-                CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e JOIN 
-                CrosierSource\CrosierLibBaseBundle\Entity\Config\Program p WITH e.programUUID = p.UUID WHERE p.appUUID = :appUUID AND e.tipo = \'CROSIERCORE_APPENT\'';
-            $qry = $this->getEntityManager()->createQuery($dql);
-            $qry->setParameter('appUUID', $appUUID);
-            /** @var EntMenu $r */
-            $r = $qry->getOneOrNullResult();
-            return $r->getUUID();
-        } catch (\Exception $e) {
-            throw new RuntimeException($e->getMessage());
         }
     }
 

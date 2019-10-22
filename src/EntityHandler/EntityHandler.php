@@ -6,6 +6,7 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use ReflectionClass;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -162,7 +163,8 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->doctrine->getEntityManager()->flush();
             $this->afterDelete($entityId);
         } catch (\Exception $e) {
-            throw new ViewException('Erro ao deletar.', 0, $e);
+            $msg = ExceptionUtils::treatException($e);
+            throw new ViewException('Erro ao deletar' . ($msg ? ' (' . $msg . ')' : '') , 0, $e);
         }
     }
 

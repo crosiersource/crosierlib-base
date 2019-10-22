@@ -414,6 +414,28 @@
                  alias="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"/>
 
 
+
+        <!-- EntMenuLocatorEntityHandler -->
+        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"
+                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
+                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
+                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"/>
+
+        <!-- EntMenuLocatorRepository -->
+        <service id="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"
+                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
+                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+            <tag name="doctrine.repository_service"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
+                 alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
+        
+
         <!-- ProgramEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.program_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ProgramEntityHandler"
