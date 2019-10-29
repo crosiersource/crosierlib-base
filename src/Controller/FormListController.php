@@ -130,6 +130,15 @@ abstract class FormListController extends BaseController
     }
 
     /**
+     * Neste caso é necessário o getter pois (??)
+     * @return EntityHandler
+     */
+    public function getEntityHandler(): EntityHandler
+    {
+        return $this->entityHandler;
+    }
+
+    /**
      * Caso seja necessário alterar alguma coisa na entity parseada após uma submissão válida do formulário.
      * @param Request $request
      * @param $entity
@@ -137,15 +146,6 @@ abstract class FormListController extends BaseController
     public function handleRequestOnValid(Request $request, $entity): void
     {
 
-    }
-
-    /**
-     * Neste caso é necessário o getter pois (??)
-     * @return EntityHandler
-     */
-    public function getEntityHandler(): EntityHandler
-    {
-        return $this->entityHandler;
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class FormListController extends BaseController
     public function doDatatablesJsList(Request $request, $defaultFilters = null, ?array $dadosProntos = null, ?int $countByFilter = null): Response
     {
         /** @var FilterRepository $repo */
-        $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
+        $repo = $this->getRepository();
 
         $rParams = $request->request->all();
 
@@ -343,6 +343,16 @@ abstract class FormListController extends BaseController
         }
 
         return new JsonResponse($r);
+    }
+
+    /**
+     * Possibilidade de ser sobreescrito...
+     *
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
+    public function getRepository(): \Doctrine\Common\Persistence\ObjectRepository
+    {
+        return $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
     }
 
     /**
