@@ -337,6 +337,7 @@ abstract class FormListController extends BaseController
             $context['circular_reference_limit'] = 3;
             $context['enable_max_depth'] = true;
             $r = $serializer->normalize($results, 'json', $context);
+            $this->handleSerializedList($r);
         } catch (\Throwable $e) {
             throw new \RuntimeException($e->getMessage(), 0, $e);
         }
@@ -380,7 +381,17 @@ abstract class FormListController extends BaseController
      *
      * @param array $dados
      */
-    public function handleDadosList(array &$dados)
+    public function handleDadosList(array &$dados): void
+    {
+
+    }
+
+    /**
+     * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados já serializados em JSON.
+     *
+     * @param array $dados
+     */
+    public function handleSerializedList(array &$r): void
     {
 
     }
