@@ -20,4 +20,16 @@ class DecimalUtils
         return $fmt->parse($str);
     }
 
+    public static function roundUp($number, $precision = 2): float
+    {
+        $fig = (int)str_pad('1', $precision, '0');
+        return (ceil($number * $fig) / $fig);
+    }
+
+    public static function roundDown($number, $precision = 2): float
+    {
+        $fig = (int)str_pad('1', $precision, '0');
+        return (floor($number * $fig) / $fig);
+    }
+
 }
