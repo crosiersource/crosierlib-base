@@ -85,6 +85,10 @@ class EntMenuRepository extends FilterRepository
         /** @var App $app */
         $app = $repoApp->findOneBy(['UUID' => $entMenu->getAppUUID()]);
 
+        if (!$app) {
+            throw new \RuntimeException('Nenhum app encontrado com UUID ' . $entMenu->getAppUUID());
+        }
+
         $urlBase = $this->getEntityManager()->getRepository(AppConfig::class)->findConfigByCrosierEnv($app, 'URL');
 
         return [
