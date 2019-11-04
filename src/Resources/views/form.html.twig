@@ -21,14 +21,14 @@
 
                         {% block btns %}
 
-                            <button type="button" class="btn btn-secondary"
+                            <button type="button" class="btn btn-primary"
                                     onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
                                 <i class="fas fa-file" aria-hidden="true"></i> Novo
                             </button>
                             {% if listRoute is defined %}
                                 <button type="button" class="btn btn-secondary"
                                         onclick="window.location.href='{{ url(listRoute) }}'">
-                                    <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                                    <i class="fas fa-list"></i> Listar
                                 </button>
                             {% endif %}
 

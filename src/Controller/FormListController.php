@@ -493,7 +493,7 @@ abstract class FormListController extends BaseController
             return $this->redirect($request->server->get('HTTP_REFERER'));
         }
 
-        return $this->redirectToRoute($parameters['listRoute'], $parameters['listRouteParams'] ?? null);
+        return $this->redirectToRoute($parameters['listRoute'], $parameters['listRouteParams'] ?? []);
     }
 
 
