@@ -51,15 +51,6 @@ class App implements EntityId
     private $obs;
 
     /**
-     * @ORM\Column(name="default_entmenu_uuid", type="string", nullable=true, length=36)
-     * @NotUppercase()
-     * @Groups("entity")
-     *
-     * @var string|null
-     */
-    private $defaultEntMenuUUID;
-
-    /**
      * Transient.
      *
      * @var array|null
@@ -118,22 +109,6 @@ class App implements EntityId
     public function setObs($obs): void
     {
         $this->obs = $obs;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDefaultEntMenuUUID(): ?string
-    {
-        return $this->defaultEntMenuUUID;
-    }
-
-    /**
-     * @param null|string $defaultEntMenuUUID
-     */
-    public function setDefaultEntMenuUUID(?string $defaultEntMenuUUID): void
-    {
-        $this->defaultEntMenuUUID = $defaultEntMenuUUID;
     }
 
     /**
