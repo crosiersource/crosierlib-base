@@ -65,6 +65,10 @@ class WhereBuilder
                         $orX->add($qb->expr()
                             ->eq($field, $fieldP));
                         break;
+                    case 'EQ_DIAMES':
+                        $orX->add($qb->expr()
+                            ->eq('DATE_FORMAT(' . $field . ', \'%d/%m\')', $fieldP));
+                        break;
                     case 'EQ_BOOL':
                         $orX->add($qb->expr()
                             ->eq($field, $fieldP));
@@ -174,6 +178,9 @@ class WhereBuilder
                     break;
                 case 'IS_NULL':
                 case 'IS_NOT_NULL':
+                    break;
+                case 'EQ_DIAMES':
+                    $qb->setParameter($fieldP, $filter->val);
                     break;
                 default:
                     $qb->setParameter($fieldP, $filter->val);

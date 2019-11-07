@@ -85,11 +85,16 @@
 
                                     {% block campos_pesquisar %}
 
-                                        <label for="p_filter_str"></label>
-                                        <input type="text"
-                                               class="form-control" id="filter[str]"
-                                               name="filter[str]"
-                                               value="{{ filter.str|default('') }}">
+                                        {% if filterInputs is defined %}
+
+                                            {% for filterInput in filterInputs %}
+
+                                                {{ buildRowInput(filterInput.label, filterInput.inputName, filterInput.type, filter[filterInput.inputName]|default({}), {'arrayField': 'filter'}) }}
+
+
+                                            {% endfor %}
+
+                                        {% endif %}
 
                                     {% endblock %}
 

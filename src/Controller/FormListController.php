@@ -80,7 +80,8 @@ abstract class FormListController extends BaseController
             $entityId = new $entityName();
         }
 
-        $form = $this->createForm($parameters['typeClass'], $entityId);
+        $formOptions = $preventSubmit ? ['disabled' => true] : [];
+        $form = $this->createForm($parameters['typeClass'], $entityId, $formOptions);
 
         $entityHandler = $parameters['entityHandler'] ?? $this->getEntityHandler();
 
@@ -125,6 +126,7 @@ abstract class FormListController extends BaseController
         $parameters['entityClass'] = null;
         $parameters['typeClass'] = null;
         $parameters['entityHandler'] = null;
+        $parameters['preventSubmit'] = $preventSubmit;
 
         return $this->doRender($parameters['formView'], $parameters);
     }

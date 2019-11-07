@@ -16,23 +16,20 @@
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
 
-        <!-- RouteExistsExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
-            <argument type="service" id="service_container"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
 
-        <!-- GetEnvExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension">
-            <argument type="service" id="service_container"/>
+        <!-- .................................. -->
+        <!-- .................................. -->
+        <!-- .................................. -->
+        
+        <!-- BuildInputExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="monolog.logger"/>
             <tag name="twig.extension"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"/>
 
         <!-- CrosierCoreAssetExtension -->
         <service id="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"
@@ -42,6 +39,49 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>
+
+        <!-- GetEnvExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
+        
+        <!-- RouteExistsExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
+
+        <!-- SerializeEntityFilter -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.filter"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"/>
+
+        <!-- TransliterateFilter -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"/>
+
+        <!-- .................................. -->
+        <!-- .................................. -->
+        <!-- .................................. -->
+        
+
+        
 
         <!-- UppercaseFieldsJsonBuilderCommand -->
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
