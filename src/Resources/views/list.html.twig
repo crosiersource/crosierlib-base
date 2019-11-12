@@ -89,7 +89,7 @@
 
                                             {% for filterInput in filterInputs %}
 
-                                                {{ buildRowInput(filterInput.label, filterInput.inputName, filterInput.type, filter[filterInput.inputName]|default({}), {'arrayField': 'filter'}) }}
+                                                {{ buildRowInput(filterInput.label, filterInput.inputName, filterInput.type, filter[filterInput.inputName]|default({}), filterInput.config|default([])|merge({'arrayField': 'filter'})) }}
 
 
                                             {% endfor %}

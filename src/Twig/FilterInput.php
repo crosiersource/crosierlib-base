@@ -27,13 +27,14 @@ class FilterInput
     private $config;
 
     /**
+     * FilterInput constructor.
      * @param string $label
      * @param string $inputName
-     * @param string $type
+     * @param string|null $type
      * @param string|null $val
      * @param array|null $config
      */
-    public function __construct(string $label, string $inputName, string $type, ?string $val = null, ?array $config = null)
+    public function __construct(string $label, string $inputName, ?string $type = 'STRING', ?string $val = null, ?array $config = null)
     {
         $this->label = $label;
         $this->inputName = $inputName;

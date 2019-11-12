@@ -96,7 +96,7 @@ class BuildInputExtension extends AbstractExtension
                     if ($prefixo) {
                         $r .= '<div class="input-group-prepend"><span class="input-group-text">' . $prefixo . '</span></div>';
                     }
-                    $r .= '<input type="number" id="' . $inputName . '" name="' . $inputName . '" class="form-control" value="' . $val . '">';
+                    $r .= '<input type="number" min="0" step="1" id="' . $inputName . '" name="' . $inputName . '" class="form-control int" value="' . $val . '">';
                     if ($sufixo) {
                         $r .= '<div class="input-group-append"><span class="input-group-text">' . $sufixo . '</span></div>';
                     }
@@ -116,6 +116,28 @@ class BuildInputExtension extends AbstractExtension
                     if ($sufixo) {
                         $r .= '<div class="input-group-append"><span class="input-group-text">' . $sufixo . '</span></div>';
                     }
+                    $r .= '</div>';
+                    return $r;
+                case 'BETWEEN_INTEGER':
+                    $r = '<div class="input-group">Entre ';
+
+                    if ($prefixo) {
+                        $r .= '<div class="input-group-prepend"><span class="input-group-text">' . $prefixo . '</span></div>';
+                    }
+                    $r .= '<input type="number" min="0" step="1" id="' . $inputName . '[i]" name="' . $inputName . '[i]" class="form-control int" value="' . $val['i'] . '">';
+                    if ($sufixo) {
+                        $r .= '<div class="input-group-append"><span class="input-group-text">' . $sufixo . '</span></div>';
+                    }
+                    $r .= ' e ';
+
+                    if ($prefixo) {
+                        $r .= '<div class="input-group-prepend"><span class="input-group-text">' . $prefixo . '</span></div>';
+                    }
+                    $r .= '<input type="number" min="0" step="1" id="' . $inputName . '[f]" name="' . $inputName . '[f]" class="form-control int" value="' . $val['f'] . '">';
+                    if ($sufixo) {
+                        $r .= '<div class="input-group-append"><span class="input-group-text">' . $sufixo . '</span></div>';
+                    }
+
                     $r .= '</div>';
                     return $r;
                 case 'BETWEEN_DATE':

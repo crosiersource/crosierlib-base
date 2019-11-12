@@ -106,6 +106,29 @@ abstract class FilterRepository extends EntityRepository
     /**
      *
      *
+     * @param array $filtersSimpl
+     * @param null $orders (no padrão do datatables.js)
+     * @param int $start
+     * @param int $limit
+     * @return mixed
+     * @throws ViewException
+     */
+    public function doCountByFiltersSimpl(array $filtersSimpl)
+    {
+        $filters = [];
+        foreach ($filtersSimpl as $filterSimpl) {
+            $filter = new FilterData($filterSimpl[0], $filterSimpl[1]);
+            if (isset($filterSimpl[2])) {
+                $filter->setVal($filterSimpl[2]);
+            }
+            $filters[] = $filter;
+        }
+        return $this->doCountByFilters($filters);
+    }
+
+    /**
+     *
+     *
      * @param $filters
      * @param null $orders (no padrão do datatables.js)
      * @param int $start

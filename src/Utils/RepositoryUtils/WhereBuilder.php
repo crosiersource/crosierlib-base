@@ -125,6 +125,7 @@ class WhereBuilder
                     case 'BETWEEN_DATE':
                     case 'BETWEEN_IDADE':
                     case 'BETWEEN_MESANO':
+                    case 'BETWEEN_PORCENT':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
                     default:
@@ -158,6 +159,16 @@ class WhereBuilder
                     }
                     if ($filter->val['f']) {
                         $qb->setParameter($fieldP . '_f', $filter->val['f']);
+                    }
+                    break;
+                case 'BETWEEN_PORCENT':
+                    if ($filter->val['i']) {
+                        $val_i = bcdiv($filter->val['i'], 100, 6);
+                        $qb->setParameter($fieldP . '_i', $val_i);
+                    }
+                    if ($filter->val['f']) {
+                        $val_f = bcdiv($filter->val['f'], 100, 6);
+                        $qb->setParameter($fieldP . '_f', $val_f);
                     }
                     break;
                 case 'LIKE':
@@ -278,7 +289,7 @@ class WhereBuilder
             return;
         }
 
-        if ($filter->filterType === 'IS_EMPTY' || $filter->filterType === 'IS_NOT_EMPTY' ) {
+        if ($filter->filterType === 'IS_EMPTY' || $filter->filterType === 'IS_NOT_EMPTY') {
             $filter->val = '';
             return;
         }
@@ -299,7 +310,7 @@ class WhereBuilder
                     return true;
                 }
             }
-        } else if ($filter->val) { // if ($filter->val !== null && $filter->val !== '') {
+        } else if ($filter->val === 0 || $filter->val) { // if ($filter->val !== null && $filter->val !== '') {
             return true;
         }
         return false;
