@@ -80,6 +80,9 @@ class BuildInputExtension extends AbstractExtension
 
         try {
             switch ($tipo) {
+                case 'HIDDEN':
+                    $r = '<input type="hidden" id="' . $inputName . '" name="' . $inputName . '" class="form-control" value="' . $val . '">';
+                    return $r;
                 case 'STRING':
                     $r = '<div class="input-group">';
                     if ($prefixo) {
