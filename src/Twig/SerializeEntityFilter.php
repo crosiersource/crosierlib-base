@@ -14,8 +14,6 @@ use Twig\TwigFilter;
 class SerializeEntityFilter extends AbstractExtension
 {
 
-
-
     public function getFilters()
     {
         return [
