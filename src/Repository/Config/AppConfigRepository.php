@@ -59,11 +59,54 @@ class AppConfigRepository extends FilterRepository
     public function findConfigByChaveAndAppNome(string $chave, string $appNome): ?AppConfig
     {
         try {
-            $dql = 'SELECT ac FROM App\Entity\Config\AppConfig ac JOIN App\Entity\Config\App app WITH ac.app = app WHERE app.nome = :appNome AND ac.chave = :chave';
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac JOIN CrosierSource\CrosierLibBaseBundle\Entity\Config\App app WITH ac.app = app WHERE app.nome = :appNome AND ac.chave = :chave';
             $qry = $this->getEntityManager()->createQuery($dql);
             $qry->setParameter('appNome', $appNome);
             $qry->setParameter('chave', $chave);
             return $qry->getSingleResult();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Pesquisa uma configuração de um App por sua chave.
+     *
+     * @param string $chave
+     * @param string $appNome
+     * @return AppConfig|null
+     */
+    public function findConfigByChaveAndAppUUID(string $chave, string $appUUID): ?AppConfig
+    {
+        try {
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac WHERE ac.chave = :chave AND ac.appUUID = :appUUID';
+            $qry = $this->getEntityManager()->createQuery($dql);
+            $qry->setParameter('chave', $chave);
+            $qry->setParameter('appUUID', $appUUID);
+            return $qry->getSingleResult();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+
+    /**
+     * Pesquisa uma configuração de um App por sua chave.
+     *
+     * @param string $chave
+     * @param string $appNome
+     * @return string|null
+     */
+    public function findValorByChaveAndAppUUID(string $chave, string $appUUID): ?string
+    {
+        try {
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac WHERE ac.chave = :chave AND ac.appUUID = :appUUID';
+            $qry = $this->getEntityManager()->createQuery($dql);
+            $qry->setParameter('chave', $chave);
+            $qry->setParameter('appUUID', $appUUID);
+            /** @var AppConfig $r */
+            $r = $qry->getSingleResult();
+            return $r->getValor() ?? null;
         } catch (\Exception $e) {
             return null;
         }
