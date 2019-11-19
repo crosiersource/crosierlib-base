@@ -375,4 +375,22 @@ class DateTimeUtils
         return $dts;
     }
 
+    /**
+     * Retorna um array com todos os Datetime para o mês/ano passado.
+     *
+     * @param string $mesano
+     * @return array
+     */
+    public static function getDatasMesAno(string $mesano): array
+    {
+        $datas = [];
+        $dtIni = \DateTime::createFromFormat('Ymd', $mesano . '01');
+        $dtIni->setTime(0, 0, 0, 0);
+
+        $dtFim = \DateTime::createFromFormat('Ymd', $dtIni->format('Ymt'));
+        $dtFim->setTime(23, 59, 59, 99999);
+
+        return ['i' => $dtIni, 'f' => $dtFim];
+    }
+
 }
