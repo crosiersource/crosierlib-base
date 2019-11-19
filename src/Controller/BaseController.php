@@ -2,10 +2,9 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,7 @@ use Symfony\Component\Security\Core\Security;
 class BaseController extends AbstractController
 {
 
-    /** @var RegistryInterface */
+    /** @var ManagerRegistry */
     private $doctrine;
 
     /** @var SessionInterface */
@@ -41,13 +40,14 @@ class BaseController extends AbstractController
 
     /**
      * BaseController constructor.
-     * @param RegistryInterface $doctrine
+     * @param ManagerRegistry $doctrine
      * @param SessionInterface $session
      * @param LoggerInterface $logger
      * @param RequestStack $requestStack
      * @param EntMenuLocatorRepository $entMenuLocatorRepository
+     * @param Security $security
      */
-    public function __construct(RegistryInterface $doctrine,
+    public function __construct(ManagerRegistry $doctrine,
                                 SessionInterface $session,
                                 LoggerInterface $logger,
                                 RequestStack $requestStack,

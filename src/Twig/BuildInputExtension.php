@@ -3,8 +3,8 @@
 namespace CrosierSource\CrosierLibBaseBundle\Twig;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -18,14 +18,14 @@ class BuildInputExtension extends AbstractExtension
 {
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(RegistryInterface $doctrine, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;

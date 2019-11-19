@@ -3,7 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Business;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 
 /**
@@ -23,18 +23,18 @@ class BaseBusiness
 
 
     /**
-     * @return RegistryInterface
+     * @return ManagerRegistry
      */
-    public function getDoctrine(): RegistryInterface
+    public function getDoctrine(): ManagerRegistry
     {
         return $this->doctrine;
     }
 
     /**
      * @required
-     * @param RegistryInterface $doctrine
+     * @param ManagerRegistry $doctrine
      */
-    public function setDoctrine(RegistryInterface $doctrine): void
+    public function setDoctrine(ManagerRegistry $doctrine): void
     {
         $this->doctrine = $doctrine;
     }
