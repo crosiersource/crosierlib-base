@@ -154,10 +154,10 @@ class WhereBuilder
                 case 'BETWEEN_DATE':
                 case 'BETWEEN_IDADE':
                 case 'BETWEEN_MESANO':
-                    if ($filter->val['i']) {
+                    if ($filter->val['i'] !== null && $filter->val['i'] !== '') {
                         $qb->setParameter($fieldP . '_i', $filter->val['i']);
                     }
-                    if ($filter->val['f']) {
+                    if ($filter->val['f'] !== null && $filter->val['f'] !== '') {
                         $qb->setParameter($fieldP . '_f', $filter->val['f']);
                     }
                     break;
@@ -214,10 +214,10 @@ class WhereBuilder
         // Usa sempre o nme do primeiro campo como nome para o parâmetro, pois setará sempre o mesmo na lógica do "OR"
         $fieldP = str_replace('.', '_', $filter->field[0]);
 
-        if (!$filter->val['i']) {
+        if ($filter->val['i'] === null || $filter->val['i'] === '') {
             return $qb->expr()->lte($field, ':' . $fieldP . '_f');
         }
-        if (!$filter->val['f']) {
+        if ($filter->val['f'] === null || $filter->val['f'] === '') {
             return $qb->expr()->gte($field, ':' . $fieldP . '_i');
         }
         return $qb->expr()->between($field, ':' . $fieldP . '_i', ':' . $fieldP . '_f');
@@ -235,10 +235,10 @@ class WhereBuilder
             if (!is_array($filter->val)) {
                 $filter->val = (new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL))->parse($filter->val);
             } else {
-                if ($filter->val['i'] && !is_numeric($filter->val['i'])) {
+                if ($filter->val['i'] !== null && !is_numeric($filter->val['i'])) {
                     $filter->val['i'] = DecimalUtils::parseStr($filter->val['i']);
                 }
-                if ($filter->val['f'] && !is_numeric($filter->val['f'])) {
+                if ($filter->val['f'] !== null && !is_numeric($filter->val['f'])) {
                     $filter->val['f'] = DecimalUtils::parseStr($filter->val['f']);
                 }
             }

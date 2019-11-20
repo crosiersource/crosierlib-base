@@ -369,7 +369,15 @@ abstract class FormListController extends BaseController
         $filterDatasComValores = [];
         if ($filterDatas && count($filterDatas) > 0) {
             foreach ($filterDatas as $filterData) {
-                if ($filterData->val !== null && $filterData->val !== '') {
+                if (is_array($filterData->val)) {
+                    foreach ($filterData->val as $val) {
+                        if ($val !== null && $val !== '') {
+                            $filterDatasComValores[] = $filterData;
+                            break;
+                        }
+                    }
+                }
+                else if ($filterData->val !== null && $filterData->val !== '') {
                     $filterDatasComValores[] = $filterData;
                 }
             }
