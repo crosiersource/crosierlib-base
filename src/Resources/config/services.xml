@@ -9,7 +9,7 @@
         <!-- EntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -24,7 +24,7 @@
         <!-- BuildInputExtension -->
         <service id="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"
                  class="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="monolog.logger"/>
             <tag name="twig.extension"/>
         </service>
@@ -84,7 +84,7 @@
         <!-- UppercaseFieldsJsonBuilderCommand -->
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
                  class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <tag name="console.command"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
@@ -131,7 +131,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -152,7 +152,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -261,7 +261,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -272,7 +272,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"
                  class="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness">
             <argument type="service" id="security.helper"/>
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service"
                       id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
         </service>
@@ -301,7 +301,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.categoria_pessoa_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\CategoriaPessoaEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -322,7 +322,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -343,7 +343,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_contato_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaContatoEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -363,7 +363,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_endereco_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEnderecoEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -384,7 +384,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.prop_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PropEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -405,7 +405,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.config_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ConfigEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -426,7 +426,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -457,7 +457,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -478,7 +478,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.program_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ProgramEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -499,7 +499,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -520,7 +520,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
@@ -540,7 +540,7 @@
         <!-- UserEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
-            <argument index="0" type="service" id="doctrine"/>
+            <argument index="0" type="service" id="doctrine.orm.default_entity_manager"/>
             <argument index="1" type="service" id="security.helper"/>
             <argument index="2" type="service" id="parameter_bag"/>
             <argument index="3" type="service" id="security.user_password_encoder.generic"/>
@@ -562,7 +562,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
                  parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>

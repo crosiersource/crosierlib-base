@@ -4,7 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -22,12 +22,12 @@ class UserEntityHandler extends EntityHandler
 
     /**
      * UserEntityHandler constructor.
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      * @param Security $security
      * @param ParameterBagInterface $parameterBag
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(ManagerRegistry $doctrine, Security $security, ParameterBagInterface $parameterBag, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $doctrine, Security $security, ParameterBagInterface $parameterBag, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;

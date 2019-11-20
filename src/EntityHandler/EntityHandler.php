@@ -7,7 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
@@ -21,7 +21,7 @@ abstract class EntityHandler implements EntityHandlerInterface
 {
 
     /**
-     * @var ManagerRegistry
+     * @var EntityManagerInterface
      */
     protected $doctrine;
 
@@ -37,11 +37,11 @@ abstract class EntityHandler implements EntityHandlerInterface
 
     /**
      * EntityHandler constructor.
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      * @param Security $security
      * @param ParameterBagInterface $parameterBag
      */
-    public function __construct(ManagerRegistry $doctrine, Security $security, ParameterBagInterface $parameterBag)
+    public function __construct(EntityManagerInterface $doctrine, Security $security, ParameterBagInterface $parameterBag)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
@@ -49,9 +49,9 @@ abstract class EntityHandler implements EntityHandlerInterface
     }
 
     /**
-     * @return ManagerRegistry
+     * @return EntityManagerInterface
      */
-    public function getDoctrine(): ManagerRegistry
+    public function getDoctrine(): EntityManagerInterface
     {
         return $this->doctrine;
     }
@@ -72,8 +72,8 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
         try {
             $this->beforeDelete($entityId);
-            $this->doctrine->getEntityManager()->remove($entityId);
-            $this->doctrine->getEntityManager()->flush();
+            $this->doctrine->remove($entityId);
+            $this->doctrine->flush();
             $this->afterDelete($entityId);
         } catch (\Exception $e) {
             $msg = ExceptionUtils::treatException($e);
@@ -142,13 +142,11 @@ abstract class EntityHandler implements EntityHandlerInterface
         try {
             $this->handleSavingEntityId($entityId);
             $this->beforeSave($entityId);
-            if ($entityId->getId()) {
-                $entityId = $this->doctrine->getEntityManager()->merge($entityId);
-            } else {
-                $this->doctrine->getEntityManager()->persist($entityId);
+            if (!$entityId->getId()) {
+                $this->doctrine->persist($entityId);
             }
             if ($flush) {
-                $this->doctrine->getEntityManager()->flush();
+                $this->doctrine->flush();
             }
             $this->afterSave($entityId);
         } catch (\Exception $e) {
@@ -161,10 +159,11 @@ abstract class EntityHandler implements EntityHandlerInterface
      * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
+     * @throws \Exception
      */
-    public function handleSavingEntityId(/** @var EntityId $entityId */
-        $entityId)
+    public function handleSavingEntityId($entityId): void
     {
+        /** @var EntityId $entityId */
         $this->handleUppercaseFields($entityId);
 
         if (!$entityId->getId()) {
@@ -199,7 +198,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         $uppercaseFields = json_decode($uppercaseFieldsJson);
         $class = str_replace('\\', '_', get_class($entityId));
         $reflectionClass = new ReflectionClass(get_class($entityId));
-        $campos = isset($uppercaseFields->$class) ? $uppercaseFields->$class : array();
+        $campos = $uppercaseFields->$class ?? [];
         foreach ($campos as $field) {
             $property = $reflectionClass->getProperty($field);
             $property->setAccessible(true);

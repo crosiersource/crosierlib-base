@@ -3,7 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Business;
 
 use Psr\Log\LoggerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 /**
@@ -23,18 +23,18 @@ class BaseBusiness
 
 
     /**
-     * @return ManagerRegistry
+     * @return EntityManagerInterface
      */
-    public function getDoctrine(): ManagerRegistry
+    public function getDoctrine(): EntityManagerInterface
     {
         return $this->doctrine;
     }
 
     /**
      * @required
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      */
-    public function setDoctrine(ManagerRegistry $doctrine): void
+    public function setDoctrine(EntityManagerInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
     }

@@ -6,7 +6,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\StoredViewInfo;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\User;
 
@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\User;
 class StoredViewInfoBusiness
 {
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /** @var Security */
@@ -30,11 +30,11 @@ class StoredViewInfoBusiness
 
     /**
      * StoredViewInfoBusiness constructor.
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      * @param Security $security
      * @param StoredViewInfoEntityHandler $entityHandler
      */
-    public function __construct(Security $security, ManagerRegistry $doctrine, StoredViewInfoEntityHandler $entityHandler)
+    public function __construct(Security $security, EntityManagerInterface $doctrine, StoredViewInfoEntityHandler $entityHandler)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;

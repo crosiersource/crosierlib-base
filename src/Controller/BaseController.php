@@ -3,7 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Security;
 class BaseController extends AbstractController
 {
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /** @var SessionInterface */
@@ -40,14 +40,14 @@ class BaseController extends AbstractController
 
     /**
      * BaseController constructor.
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      * @param SessionInterface $session
      * @param LoggerInterface $logger
      * @param RequestStack $requestStack
      * @param EntMenuLocatorRepository $entMenuLocatorRepository
      * @param Security $security
      */
-    public function __construct(ManagerRegistry $doctrine,
+    public function __construct(EntityManagerInterface $doctrine,
                                 SessionInterface $session,
                                 LoggerInterface $logger,
                                 RequestStack $requestStack,
