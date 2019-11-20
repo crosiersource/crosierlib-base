@@ -94,6 +94,15 @@
 
                                             {% endfor %}
 
+                                        {% else %}
+
+                                            <label for="p_filter_str"></label>
+                                            <input type="text"
+                                                   class="form-control" id="filter[str]"
+                                                   name="filter[str]"
+                                                   value="{{ filter.str|default('') }}">
+
+
                                         {% endif %}
 
                                     {% endblock %}
