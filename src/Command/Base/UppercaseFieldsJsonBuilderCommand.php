@@ -69,12 +69,12 @@ class UppercaseFieldsJsonBuilderCommand extends Command
     {
         $array = array();
 
-        $all = $this->getDoctrine()->getEntityManager()->getMetadataFactory()->getAllMetadata();
+        $all = $this->getDoctrine()->getMetadataFactory()->getAllMetadata();
         $annotationReader = new AnnotationReader();
         foreach ($all as $classMeta) {
             $reflectionClass = $classMeta->getReflectionClass();
             $fields = array();
-            $eMeta = $this->getDoctrine()->getEntityManager()->getMetadataFactory()->getMetadataFor($classMeta->getName());
+            $eMeta = $this->getDoctrine()->getMetadataFactory()->getMetadataFor($classMeta->getName());
             $output->writeln('Pesquisando ' . $classMeta->getName());
             foreach ($eMeta->getFieldNames() as $field) {
                 $notUppercaseAnnotation = $annotationReader->getPropertyAnnotation(new \ReflectionProperty($classMeta->getName(), $field), 'CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase');
