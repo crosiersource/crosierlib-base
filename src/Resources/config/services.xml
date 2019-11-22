@@ -240,6 +240,16 @@
                  alias="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"/>
 
 
+        <!-- PreUpdateListener -->
+        <service id="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"
+                 class="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener">
+            <argument type="service" id="monolog.logger"/>
+            <tag name="doctrine.event_listener" event="preUpdate" priority="500"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener"
+                 alias="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"/>
+
+
         <!-- BaseController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">

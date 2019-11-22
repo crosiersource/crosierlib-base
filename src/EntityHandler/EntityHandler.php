@@ -195,17 +195,24 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
+    /**
+     * @param $entityId
+     */
     private function handleUppercaseFields($entityId): void
     {
-        $uppercaseFieldsJson = file_get_contents($this->parameterBag->get('kernel.project_dir') . '/src/Entity/uppercaseFields.json');
-        $uppercaseFields = json_decode($uppercaseFieldsJson);
-        $class = str_replace('\\', '_', get_class($entityId));
-        $reflectionClass = new ReflectionClass(get_class($entityId));
-        $campos = $uppercaseFields->$class ?? [];
-        foreach ($campos as $field) {
-            $property = $reflectionClass->getProperty($field);
-            $property->setAccessible(true);
-            $property->setValue($entityId, mb_strtoupper($property->getValue($entityId)));
+        try {
+            $uppercaseFieldsJson = file_get_contents($this->parameterBag->get('kernel.project_dir') . '/src/Entity/uppercaseFields.json');
+            $uppercaseFields = json_decode($uppercaseFieldsJson);
+            $class = str_replace('\\', '_', get_class($entityId));
+            $reflectionClass = new ReflectionClass(get_class($entityId));
+            $campos = $uppercaseFields->$class ?? [];
+            foreach ($campos as $field) {
+                $property = $reflectionClass->getProperty($field);
+                $property->setAccessible(true);
+                $property->setValue($entityId, mb_strtoupper($property->getValue($entityId)));
+            }
+        } catch (\ReflectionException $e) {
+            throw new \RuntimeException('Erro em handleUppercaseFields');
         }
     }
 
