@@ -143,7 +143,7 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->handleSavingEntityId($entityId);
             $this->beforeSave($entityId);
             if ($entityId->getId()) {
-                $this->doctrine->merge($entityId);
+                $entityId = $this->doctrine->merge($entityId);
             } else {
                 $this->doctrine->persist($entityId);
             }

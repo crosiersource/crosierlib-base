@@ -359,20 +359,24 @@ class DateTimeUtils
      */
     public static function getDiasMesAno(string $mesano): array
     {
-        $dt = \DateTime::createFromFormat('Ymd', $mesano . '01');
-        $dt->setTime(0, 0, 0, 0);
-        $ultimoDia = self::getUltimoDiaMes($dt)->format('d/m/Y');
-        $dts = [];
-        $aux = clone $dt;
-        while (true) {
-            $dts[] = clone $aux;
-            $aux->add(new \DateInterval('P1D'));
-            if ($aux->format('d/m/Y') === $ultimoDia) {
+        try {
+            $dt = \DateTime::createFromFormat('Ymd', $mesano . '01');
+            $dt->setTime(0, 0, 0, 0);
+            $ultimoDia = self::getUltimoDiaMes($dt)->format('d/m/Y');
+            $dts = [];
+            $aux = clone $dt;
+            while (true) {
                 $dts[] = clone $aux;
-                break;
+                $aux->add(new \DateInterval('P1D'));
+                if ($aux->format('d/m/Y') === $ultimoDia) {
+                    $dts[] = clone $aux;
+                    break;
+                }
             }
+            return $dts;
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Erro ao gerar dias para o mesano "' . $mesano . '"');
         }
-        return $dts;
     }
 
     /**
