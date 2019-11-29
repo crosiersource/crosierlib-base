@@ -6,29 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
 
-    
 
     <script src="{{ asset('build/runtime.js') }}"></script>
 
     <script>
-        paceOptions = {
-            ajax: true,
+
+        window.paceOptions = {
+            ajax: {
+                trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
+            },
             document: true,
             eventLag: true
         };
     </script>
+
     <script src="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace.min.js"></script>
+
     <script>
 
         window.onbeforeunload = function (e) {
+            Pace.restart();
             document.getElementById('preloader').style.display = '';
 
             for (let i = 0; i < document.getElementsByClassName("blur-on-pace").length; i++) {
                 document.getElementsByClassName("blur-on-pace")[i].style.filter = 'blur(3px)';
             }
+            Pace.restart();
         };
 
         Pace.on('start', function (e) {
+            console.log('starting');
             document.getElementById('preloader').style.display = '';
 
             for (let i = 0; i < document.getElementsByClassName("blur-on-pace").length; i++) {
@@ -48,7 +55,7 @@
     <title>{{ page_title is defined ? page_title ~ ' - Crosier v.0.0.1' : 'Crosier v.0.0.1' }} </title>
 
     {% block stylesheets %}
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
         <link rel="stylesheet" href="{{ crosierAsset('build/crosier/layout.css') }}">
 
     {% endblock %}
@@ -63,15 +70,12 @@
 <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
 
 
-
-
 {% block body %}
 {% endblock %}
 
 {{ include('@CrosierLibBase/Util/flashes.html.twig') }}
 
 {{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
-
 
 
 </body>
