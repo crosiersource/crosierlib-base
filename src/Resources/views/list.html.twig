@@ -24,12 +24,15 @@
                     {% block btns %}
 
                         {% if formRoute is defined %}
-                            <button type="button" class="btn btn-primary ml-1" data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Novo registro"
-                                    onclick="window.location.href='{{ url(formRoute) }}'">
+                            <a role="button" class="btn btn-primary ml-1" title="Novo" href="{{ url(formRoute) }}">
                                 <i class="fas fa-file" aria-hidden="true"></i>
-                            </button>
+                            </a>
+                        {% endif %}
+                        {% if formUrl is defined %}
+                            <a role="button" class="btn btn-primary ml-1" title="Novo"
+                                    href="{{ formUrl }}">
+                                <i class="fas fa-file" aria-hidden="true"></i>
+                            </a>
                         {% endif %}
                         <button type="button" class="btn btn-secondary ml-1"
                                 title="Pesquisar"
