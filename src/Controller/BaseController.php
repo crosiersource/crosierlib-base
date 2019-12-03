@@ -63,6 +63,14 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
      * Chama o parent::render passando informações sobre a criação do menu.
      *
      * @param string $view

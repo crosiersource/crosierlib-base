@@ -136,6 +136,17 @@ class StringUtils
         return $value;
     }
 
+    /**
+     * @param $number
+     * @param int $pad_length
+     * @param string|null $pad_string
+     * @return string
+     */
+    public static function strpad($number, int $pad_length, ?string $pad_string = '0'): string
+    {
+        return str_pad($number, $pad_length, $pad_string, STR_PAD_LEFT);
+    }
+
 
 }
 

@@ -2,8 +2,8 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Business;
 
-use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 
 /**
@@ -16,10 +16,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class BaseBusiness
 {
 
+    /** @var EntityManagerInterface */
     private $doctrine;
 
+    /** @var LoggerInterface */
     private $logger;
-
 
 
     /**
@@ -55,7 +56,6 @@ class BaseBusiness
     {
         $this->logger = $logger;
     }
-
 
 
 }

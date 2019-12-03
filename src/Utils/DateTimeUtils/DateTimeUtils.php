@@ -15,9 +15,9 @@ class DateTimeUtils
 
     /**
      * @param $dateStr
-     * @return null|\DateTime
+     * @return \DateTime
      */
-    public static function parseDateStr($dateStr): ?\DateTime
+    public static function parseDateStr($dateStr): \DateTime
     {
         $dateStr = trim($dateStr);
         if (!$dateStr) {
