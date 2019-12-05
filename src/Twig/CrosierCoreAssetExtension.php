@@ -34,18 +34,15 @@ class CrosierCoreAssetExtension extends AbstractExtension
      * @param $asset
      * @return string
      */
-    function getCrosierAsset($asset)
+    public function getCrosierAsset($asset): ?string
     {
         try {
             $asset = trim($asset);
-            $this->logger->debug(str_repeat('.', 100));
-            $this->logger->debug('getCrosierAsset(' . $asset . ')');
             $base_uri = trim($_SERVER['CROSIERCORE_URL']);
             if (!$base_uri) {
                 throw new \Exception('CROSIERCORE_URL não definido');
             }
 
-            $this->logger->info($base_uri);
             $cParams = [
                 'base_uri' => $base_uri,
                 'timeout' => 10.0,
@@ -55,15 +52,10 @@ class CrosierCoreAssetExtension extends AbstractExtension
             }
             $client = new Client($cParams);
             $uri = $base_uri . '/getCrosierAssetUrl?asset=' . urlencode($asset);
-            $this->logger->debug('request uri="' . $uri . '"');
             $response = $client->request('GET', $uri);
-            $this->logger->debug('OK! getContents()');
             $jsonResponse = $response->getBody()->getContents();
-            $this->logger->debug('OK!');
             $decoded = json_decode($jsonResponse, true);
-            $this->logger->debug('url="' . $decoded['url'] . '"');
             return $base_uri . $decoded['url'];
-            return null;
         } catch (\GuzzleHttp\Exception\GuzzleException $e) {
             $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
             $this->logger->error($e->getMessage());
