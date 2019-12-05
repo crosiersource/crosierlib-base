@@ -9,14 +9,12 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * Trait APIAuthenticatorTrait.
@@ -53,23 +51,25 @@ trait APIAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        $this->logger->info('APIAuthenticator supports?');
-        $supports = strpos($request->getPathInfo(), '/api/') === 0 && $request->headers->has('X-Authorization') && (!$this->security->getUser());
-        $this->logger->info($supports ? 'Yeah!' : 'Nope!');
-        return $supports;
+        if (strpos($request->getPathInfo(), '/api/') === 0) {
+            $this->logger->info('APIAuthenticator support!' . $request->getUri());
+            if (!$request->headers->has('X-Authorization')) {
+                $this->logger->error('APIAuthenticator sem header X-Authorization');
+            } elseif (!$this->security->getUser()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getCredentials(Request $request)
     {
-        $this->logger->info('APIAuthenticator getCredentials()');
-        $this->logger->info('pathInfo: "' . $request->getPathInfo() . '"');
         // Lógica para poder liberar acesso em ambiente de dev.
         if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
-            $this->logger->info('APP_ENV = dev');
+            $this->logger->info('APIAuthenticator com APP_ENV = dev');
             return 1;
         } else {
             $authorizationHeader = $request->headers->get('X-Authorization');
-            $this->logger->info('....................... authorizationHeader = "' . $authorizationHeader . '"');
             return $authorizationHeader ? substr($authorizationHeader, 7) : '';
         }
     }
