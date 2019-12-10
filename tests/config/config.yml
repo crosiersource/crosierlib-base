@@ -5,9 +5,3 @@ services:
     autowire: true
     # for tests only
     public: true
-
-  #CrosierSource\CrosierLibBaseBundle\:
-  #  resource: ../../src
-  test.CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient: '@CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient'
-
-  test.CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient: '@CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient'

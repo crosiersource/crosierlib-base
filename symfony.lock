@@ -114,6 +114,9 @@
     "ocramius/proxy-manager": {
         "version": "2.2.2"
     },
+    "php": {
+        "version": "7.3"
+    },
     "php-http/guzzle6-adapter": {
         "version": "v1.1.1"
     },
