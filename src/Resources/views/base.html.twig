@@ -24,30 +24,7 @@
 
     <script>
 
-        window.onbeforeunload = function (e) {
-            Pace.restart();
-            document.getElementById('preloader').style.display = '';
 
-            for (let i = 0; i < document.getElementsByClassName("blur-on-pace").length; i++) {
-                document.getElementsByClassName("blur-on-pace")[i].style.filter = 'blur(3px)';
-            }
-            Pace.restart();
-        };
-
-        Pace.on('start', function (e) {
-            document.getElementById('preloader').style.display = '';
-
-            for (let i = 0; i < document.getElementsByClassName("blur-on-pace").length; i++) {
-                document.getElementsByClassName("blur-on-pace")[i].style.filter = 'blur(3px)';
-            }
-        });
-
-        Pace.on('hide', function (e) {
-            document.getElementById('preloader').style.display = 'none';
-            for (let i = 0; i < document.getElementsByClassName("blur-on-pace").length; i++) {
-                document.getElementsByClassName("blur-on-pace")[i].style.filter = '';
-            }
-        });
     </script>
     <link href="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace-theme-loading-bar.css" rel="stylesheet"/>
 
@@ -68,11 +45,14 @@
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
 
-
-{% block body %}
-{% endblock %}
+<div id="blurriers" style="filter: blur(2px) grayscale(2)">
+    {% block body %}
+    {% endblock %}
+</div>
 
 {{ include('@CrosierLibBase/Util/flashes.html.twig') }}
+
+
 
 {{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
 
