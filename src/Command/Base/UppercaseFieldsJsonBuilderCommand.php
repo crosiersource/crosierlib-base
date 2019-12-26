@@ -36,23 +36,6 @@ class UppercaseFieldsJsonBuilderCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @return EntityManagerInterface
-     */
-    public function getDoctrine(): EntityManagerInterface
-    {
-        return $this->doctrine;
-    }
-
-    /**
-     * @param EntityManagerInterface $doctrine
-     */
-    public function setDoctrine(EntityManagerInterface $doctrine): void
-    {
-        $this->doctrine = $doctrine;
-    }
-
-
     protected function configure()
     {
         $this
@@ -72,14 +55,14 @@ class UppercaseFieldsJsonBuilderCommand extends Command
 
     public function buildJson(OutputInterface $output)
     {
-        $array = array();
+        $array = [];
 
-        $all = $this->getDoctrine()->getMetadataFactory()->getAllMetadata();
+        $all = $this->doctrine->getMetadataFactory()->getAllMetadata();
         $annotationReader = new AnnotationReader();
         foreach ($all as $classMeta) {
             $reflectionClass = $classMeta->getReflectionClass();
-            $fields = array();
-            $eMeta = $this->getDoctrine()->getMetadataFactory()->getMetadataFor($classMeta->getName());
+            $fields = [];
+            $eMeta = $this->doctrine->getMetadataFactory()->getMetadataFor($classMeta->getName());
             $this->logger->debug('Pesquisando ' . $classMeta->getName());
             foreach ($eMeta->getFieldNames() as $field) {
                 $notUppercaseAnnotation = $annotationReader->getPropertyAnnotation(new \ReflectionProperty($classMeta->getName(), $field), 'CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase');
