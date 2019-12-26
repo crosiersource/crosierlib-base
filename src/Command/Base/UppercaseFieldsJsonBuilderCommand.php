@@ -29,6 +29,11 @@ class UppercaseFieldsJsonBuilderCommand extends Command
     /** @var LoggerInterface */
     private $logger;
 
+    /**
+     * UppercaseFieldsJsonBuilderCommand constructor.
+     * @param EntityManagerInterface $doctrine
+     * @param LoggerInterface $logger
+     */
     public function __construct(EntityManagerInterface $doctrine, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
@@ -36,6 +41,9 @@ class UppercaseFieldsJsonBuilderCommand extends Command
         parent::__construct();
     }
 
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -60,7 +68,6 @@ class UppercaseFieldsJsonBuilderCommand extends Command
         $all = $this->doctrine->getMetadataFactory()->getAllMetadata();
         $annotationReader = new AnnotationReader();
         foreach ($all as $classMeta) {
-            $reflectionClass = $classMeta->getReflectionClass();
             $fields = [];
             $eMeta = $this->doctrine->getMetadataFactory()->getMetadataFor($classMeta->getName());
             $this->logger->debug('Pesquisando ' . $classMeta->getName());
@@ -82,8 +89,6 @@ class UppercaseFieldsJsonBuilderCommand extends Command
             }
             $this->logger->debug('');
         }
-
-        print_r($array);
 
         $normalizer = new ObjectNormalizer();
         $encoder = new JsonEncoder();

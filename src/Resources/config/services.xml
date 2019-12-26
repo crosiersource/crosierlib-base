@@ -93,6 +93,7 @@
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
                  class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="monolog.logger"/>
             <tag name="console.command"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
