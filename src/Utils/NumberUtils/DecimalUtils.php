@@ -2,7 +2,6 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils;
 
-use http\Exception\RuntimeException;
 
 /**
  * Class DecimalUtils

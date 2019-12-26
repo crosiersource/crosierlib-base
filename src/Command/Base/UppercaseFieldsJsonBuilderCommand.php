@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Command\Base;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,11 +23,16 @@ use Symfony\Component\Serializer\Serializer;
 class UppercaseFieldsJsonBuilderCommand extends Command
 {
 
+    /** @var EntityManagerInterface */
     private $doctrine;
 
-    public function __construct(EntityManagerInterface $doctrine)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(EntityManagerInterface $doctrine, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
+        $this->logger = $logger;
         parent::__construct();
     }
 
@@ -61,8 +67,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln($this->buildJson($output));
-
+        $this->buildJson($output);
     }
 
     public function buildJson(OutputInterface $output)
@@ -75,7 +80,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
             $reflectionClass = $classMeta->getReflectionClass();
             $fields = array();
             $eMeta = $this->getDoctrine()->getMetadataFactory()->getMetadataFor($classMeta->getName());
-            $output->writeln('Pesquisando ' . $classMeta->getName());
+            $this->logger->debug('Pesquisando ' . $classMeta->getName());
             foreach ($eMeta->getFieldNames() as $field) {
                 $notUppercaseAnnotation = $annotationReader->getPropertyAnnotation(new \ReflectionProperty($classMeta->getName(), $field), 'CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase');
                 if ($notUppercaseAnnotation) {
@@ -84,7 +89,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
 
                 $fieldM = $eMeta->getFieldMapping($field);
                 if ($fieldM['type'] == 'string') {
-                    $output->writeln($field);
+                    $this->logger->debug($field);
                     $fields[] = $field;
                 }
             }
@@ -92,7 +97,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
                 $className = str_replace('\\', '_', $classMeta->getName());
                 $array[$className] = $fields;
             }
-            $output->writeln('');
+            $this->logger->debug('');
         }
 
         print_r($array);
@@ -100,12 +105,10 @@ class UppercaseFieldsJsonBuilderCommand extends Command
         $normalizer = new ObjectNormalizer();
         $encoder = new JsonEncoder();
 
-        $serializer = new Serializer(array($normalizer), array($encoder));
+        $serializer = new Serializer([$normalizer], [$encoder]);
         $json = $serializer->serialize($array, 'json');
 
-        $output->writeln('');
-        $output->writeln('');
-        $output->writeln($json);
+        $this->logger->debug($json);
 
         file_put_contents('./src/Entity/uppercaseFields.json', $json);
 
