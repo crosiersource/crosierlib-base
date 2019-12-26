@@ -31,7 +31,7 @@
     "symfony/monolog-bundle": "^3.0",
     "symfony/phpunit-bridge": "^4.3",
     "symfony/profiler-pack": "^1.0",
-    "symfony/var-dumper": "^4.3",
+    "symfony/var-dumper": "^4.4",
     "symfony/form": "^4.3",
     "easycorp/easy-log-handler": "^1.0.2",
     "sensiolabs/security-checker": "^5.0",
@@ -55,7 +55,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "4.*"
+      "require": "5.*"
     }
   }
 }
