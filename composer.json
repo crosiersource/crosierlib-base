@@ -15,28 +15,27 @@
     "ext-json": "*",
     "ext-intl": "*",
     "php-http/guzzle6-adapter": "^1.1",
-    "sensio/framework-extra-bundle": "^5.2",
-    "symfony/asset": "^5.0",
-    "symfony/console": "^5",
+    "sensio/framework-extra-bundle": "^5.1",
+    "symfony/asset": "5.0.*",
+    "symfony/console": "5.0.*",
     "symfony/flex": "^1.1",
-    "symfony/framework-bundle": "^5.0",
-    "symfony/twig-bundle": "^5.0",
+    "symfony/framework-bundle": "5.0.*",
+    "symfony/twig-bundle": "5.0.*",
     "symfony/web-server-bundle": "^4.4",
-    "symfony/yaml": "^5.0",
-    "symfony/security-bundle": "^5.0",
+    "symfony/yaml": "5.0.*",
+    "symfony/security-bundle": "5.0.*",
     "symfony/orm-pack": "*",
-    "symfony/debug-bundle": "^5.0",
-    "symfony/dotenv": "^5.0",
+    "symfony/debug-bundle": "5.0.*",
+    "symfony/dotenv": "5.0.*",
     "symfony/maker-bundle": "^1.0",
     "symfony/monolog-bundle": "^3.0",
-    "symfony/phpunit-bridge": "^5.0",
+    "symfony/phpunit-bridge": "5.0.*",
     "symfony/profiler-pack": "^1.0",
-    "symfony/var-dumper": "^4.4",
-    "symfony/form": "^5.0",
+    "symfony/var-dumper": "5.0.*",
+    "symfony/form": "5.0.*",
     "easycorp/easy-log-handler": "^1.0.2",
-    "sensiolabs/security-checker": "^6.0.3",
-    "symfony/http-foundation": "^5.0",
-    "symfony/cache": "^5.0",
+    "symfony/http-foundation": "5.0.*",
+    "symfony/cache": "5.0.*",
     "symfony/serializer-pack": "*"
   },
   "autoload": {
@@ -55,7 +54,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "5.*"
+      "require": "5.0.*"
     }
   },
   "replace": {
