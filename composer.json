@@ -16,27 +16,27 @@
     "ext-intl": "*",
     "php-http/guzzle6-adapter": "^1.1",
     "sensio/framework-extra-bundle": "^5.2",
-    "symfony/asset": "^4.3",
-    "symfony/console": "^4.3",
+    "symfony/asset": "^5.0",
+    "symfony/console": "^5",
     "symfony/flex": "^1.1",
-    "symfony/framework-bundle": "^4.3",
-    "symfony/twig-bundle": "^4.3",
-    "symfony/web-server-bundle": "^4.3",
-    "symfony/yaml": "^4.3",
-    "symfony/security-bundle": "^4.3",
+    "symfony/framework-bundle": "^5.0",
+    "symfony/twig-bundle": "^5.0",
+    "symfony/web-server-bundle": "^4.4",
+    "symfony/yaml": "^5.0",
+    "symfony/security-bundle": "^5.0",
     "symfony/orm-pack": "*",
-    "symfony/debug-bundle": "^4.3",
-    "symfony/dotenv": "^4.3",
+    "symfony/debug-bundle": "^5.0",
+    "symfony/dotenv": "^5.0",
     "symfony/maker-bundle": "^1.0",
     "symfony/monolog-bundle": "^3.0",
-    "symfony/phpunit-bridge": "^4.3",
+    "symfony/phpunit-bridge": "^5.0",
     "symfony/profiler-pack": "^1.0",
     "symfony/var-dumper": "^4.4",
-    "symfony/form": "^4.3",
+    "symfony/form": "^5.0",
     "easycorp/easy-log-handler": "^1.0.2",
-    "sensiolabs/security-checker": "^5.0",
-    "symfony/http-foundation": "^4.3",
-    "symfony/cache": "^4.3",
+    "sensiolabs/security-checker": "^6.0.3",
+    "symfony/http-foundation": "^5.0",
+    "symfony/cache": "^5.0",
     "symfony/serializer-pack": "*"
   },
   "autoload": {
@@ -57,5 +57,8 @@
       "allow-contrib": false,
       "require": "5.*"
     }
+  },
+  "replace": {
+    "symfony/console": "^5"
   }
 }
