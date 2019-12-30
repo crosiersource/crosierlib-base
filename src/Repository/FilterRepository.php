@@ -6,7 +6,6 @@ namespace CrosierSource\CrosierLibBaseBundle\Repository;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -54,16 +53,6 @@ abstract class FilterRepository extends EntityRepository
     }
 
     /**
-     * Monta o "FROM" da query.
-     *
-     * @param QueryBuilder $qb
-     */
-    public function handleFrombyFilters(QueryBuilder $qb)
-    {
-        $qb->from($this->getEntityClass(), 'e');
-    }
-
-    /**
      * @param null $orderBy
      * @return array|mixed
      * @throws ViewException
@@ -71,59 +60,6 @@ abstract class FilterRepository extends EntityRepository
     public function findAll($orderBy = null)
     {
         return $this->findByFilters(null, $orderBy, $start = 0, $limit = null);
-    }
-
-    /**
-     * Ordens padrão do ORDER BY.
-     *
-     * @return array
-     */
-    public function getDefaultOrders()
-    {
-        return ['e.updated' => 'desc'];
-    }
-
-    /**
-     * Contagem de registros utilizando os filtros.
-     *
-     * @param $filters
-     * @return mixed
-     * @throws ViewException
-     */
-    public function doCountByFilters(?array $filters = null)
-    {
-        $em = $this->getEntityManager();
-        $qb = $em->createQueryBuilder();
-        $qb->select('count(e.id)');
-        $this->handleFrombyFilters($qb);
-        WhereBuilder::build($qb, $filters);
-//        $dql = $qb->getDql();
-//        $sql = $qb->getQuery()->getSQL();
-        $count = $qb->getQuery()->getScalarResult();
-        return $count[0][1];
-    }
-
-    /**
-     *
-     *
-     * @param array $filtersSimpl
-     * @param null $orders (no padrão do datatables.js)
-     * @param int $start
-     * @param int $limit
-     * @return mixed
-     * @throws ViewException
-     */
-    public function doCountByFiltersSimpl(array $filtersSimpl)
-    {
-        $filters = [];
-        foreach ($filtersSimpl as $filterSimpl) {
-            $filter = new FilterData($filterSimpl[0], $filterSimpl[1]);
-            if (isset($filterSimpl[2])) {
-                $filter->setVal($filterSimpl[2]);
-            }
-            $filters[] = $filter;
-        }
-        return $this->doCountByFilters($filters);
     }
 
     /**
@@ -167,6 +103,84 @@ abstract class FilterRepository extends EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * Monta o "FROM" da query.
+     *
+     * @param QueryBuilder $qb
+     */
+    public function handleFrombyFilters(QueryBuilder $qb)
+    {
+        $qb->from($this->getEntityClass(), 'e');
+    }
+
+    /**
+     * Ordens padrão do ORDER BY.
+     *
+     * @return array
+     */
+    public function getDefaultOrders()
+    {
+        return ['e.updated' => 'desc'];
+    }
+
+    /**
+     *
+     *
+     * @param array $filtersSimpl
+     * @param null $orders (no padrão do datatables.js)
+     * @param int $start
+     * @param int $limit
+     * @return mixed
+     * @throws ViewException
+     */
+    public function doCountByFiltersSimpl(array $filtersSimpl)
+    {
+        $filters = [];
+        foreach ($filtersSimpl as $filterSimpl) {
+            $filter = new FilterData($filterSimpl[0], $filterSimpl[1]);
+            if (isset($filterSimpl[2])) {
+                $filter->setVal($filterSimpl[2]);
+            }
+            $filters[] = $filter;
+        }
+        return $this->doCountByFilters($filters);
+    }
+
+    /**
+     * Contagem de registros utilizando os filtros.
+     *
+     * @param $filters
+     * @return mixed
+     * @throws ViewException
+     */
+    public function doCountByFilters(?array $filters = null)
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('count(e.id)');
+        $this->handleFrombyFilters($qb);
+        WhereBuilder::build($qb, $filters);
+//        $dql = $qb->getDql();
+//        $sql = $qb->getQuery()->getSQL();
+        $count = $qb->getQuery()->getScalarResult();
+        return $count[0][1];
+    }
+
+    /**
+     * @param array $filtersSimpl
+     * @param null $orders
+     */
+    public function findOneByFiltersSimpl(array $filtersSimpl, $orders = null)
+    {
+        $r = $this->findByFiltersSimpl($filtersSimpl, $orders, 0, 2);
+        if ($r) {
+            if (count($r) > 1) {
+                throw new ViewException('Mais de um resultado encontrado.');
+            }
+            return $r[0];
+        }
+        return null;
+    }
 
     /**
      *
@@ -190,23 +204,6 @@ abstract class FilterRepository extends EntityRepository
         }
         return $this->findByFilters($filters, $orders, $start, $limit);
     }
-
-    /**
-     * @param array $filtersSimpl
-     * @param null $orders
-     */
-    public function findOneByFiltersSimpl(array $filtersSimpl, $orders = null)
-    {
-        $r = $this->findByFiltersSimpl($filtersSimpl, $orders, 0, 2);
-        if ($r) {
-            if (count($r) > 1) {
-                throw new ViewException('Mais de um resultado encontrado.');
-            }
-            return $r[0];
-        }
-        return null;
-    }
-
 
     /**
      * @param string $field

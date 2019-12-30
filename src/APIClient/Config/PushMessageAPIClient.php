@@ -4,8 +4,6 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient\Config;
 
 
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  *
@@ -20,5 +18,5 @@ class PushMessageAPIClient extends CrosierEntityIdAPIClient
         return $_SERVER['CROSIERCORE_URL'] . '/api/cfg/pushMessage';
     }
 
-    
+
 }
