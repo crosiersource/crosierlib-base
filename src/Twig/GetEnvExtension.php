@@ -23,6 +23,6 @@ class GetEnvExtension extends AbstractExtension
 
     function getEnv($var)
     {
-        return trim(getenv(trim($var)));
+        return isset($_SERVER[(trim($var))]) ? trim($_SERVER[(trim($var))]) : null;
     }
 }

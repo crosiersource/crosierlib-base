@@ -60,9 +60,7 @@ trait CrosierCoreAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        // look for header "Authorization: Bearer <token>"
-        $this->logger->info('ApiTokenAuthenticator supports');
-        return $request->query->has('apiTokenAuthorization');
+        return $request->query->has('apiTokenAuthorization') || strpos($request->getPathInfo(), '/relVendas01/listItensVendidosPorFornecedor/') !== false;
     }
 
     public function getCredentials(Request $request)
@@ -115,7 +113,7 @@ trait CrosierCoreAuthenticatorTrait
         if (isset($_SERVER['PATH_INFO'])) {
             $whereTo = $_SERVER['PATH_INFO']; // em alguns servers, não está definida
         } else {
-            $whereTo = str_replace('?' . $_SERVER['QUERY_STRING'],'', $_SERVER['REQUEST_URI']);
+            $whereTo = str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
         }
 
         return new RedirectResponse($whereTo);
@@ -123,9 +121,10 @@ trait CrosierCoreAuthenticatorTrait
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $this->logger->info('Autenticar pelo CrosierCore...');
-        $url = getenv('CROSIERCORE_URL');
-        $this->logger->info("Redirecionando para '" . $url . "'");
+        $url = $_SERVER['CROSIERCORE_URL'] ?? null;
+        if (!$url) {
+            throw new \RuntimeException('CROSIERCORE_URL não informada');
+        }
         return new RedirectResponse($url);
     }
 
