@@ -58,7 +58,13 @@ class UppercaseFieldsJsonBuilderCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->buildJson($output);
+        try {
+            $this->buildJson($output);
+            return 1;
+        } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
+            return -1;
+        }
     }
 
     public function buildJson(OutputInterface $output)
