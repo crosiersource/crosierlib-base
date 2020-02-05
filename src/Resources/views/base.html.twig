@@ -11,7 +11,8 @@
     <script>
         window.paceOptions = {
             ajax: {
-                trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH']
+                trackMethods: ['GET', 'POST'],
+                ignoreURLs: ['getNewMessages']
             },
             document: true,
             eventLag: true
