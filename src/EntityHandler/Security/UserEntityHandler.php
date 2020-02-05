@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Security;
 
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +35,7 @@ class UserEntityHandler extends EntityHandler
         $this->parameterBag = $parameterBag;
         $this->passwordEncoder = $passwordEncoder;
         parent::__construct($doctrine, $security, $parameterBag);
-        
+
     }
 
     public function beforeSave($user)
@@ -72,6 +73,25 @@ class UserEntityHandler extends EntityHandler
     {
         $user->setApiToken(null);
         $this->save($user);
+    }
+
+    /**
+     * Verifica e conserta as roles de um usuário (ex.: usuário que seja ROLE_ADMIN deve ter também todas as outras roles)
+     *
+     * @param User $user
+     */
+    public function fixRoles(User $user): void
+    {
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $todas = $this->getDoctrine()->getRepository(Role::class)->findAll();
+            /** @var Role $role */
+            foreach ($todas as $role) {
+                if (!in_array($role->getRole(), $user->getRoles())) {
+                    $user->getUserRoles()->add($role);
+                }
+            }
+            $this->save($user);
+        }
     }
 
 
