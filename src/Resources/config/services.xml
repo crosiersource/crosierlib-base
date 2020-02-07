@@ -600,17 +600,20 @@
         <!-- DiaUtilController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\Base\DiaUtilController" public="true">
+            <argument type="service" id="service_container"/>
         </service>
 
         <!-- PessoaController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\Base\PessoaController" public="true">
+            <argument type="service" id="service_container"/>
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
         </service>
 
         <!-- MunicipioController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
+            <argument type="service" id="service_container"/>
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
         </service>
 

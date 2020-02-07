@@ -4,12 +4,10 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller\Base;
 
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +15,16 @@ use Symfony\Component\HttpFoundation\Request;
 class PessoaController extends AbstractController
 {
 
-    /**
-     * @var EntityIdUtils
-     */
-    private $entityIdUtils;
+    private EntityIdUtils $entityIdUtils;
 
-    public function __construct(EntityIdUtils $entityIdUtils)
+    /**
+     * PessoaController constructor.
+     * @param ContainerInterface $container
+     * @param EntityIdUtils $entityIdUtils
+     */
+    public function __construct(ContainerInterface $container, EntityIdUtils $entityIdUtils)
     {
+        $this->container = $container;
         $this->entityIdUtils = $entityIdUtils;
     }
 

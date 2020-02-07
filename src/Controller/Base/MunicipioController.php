@@ -7,20 +7,28 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller\Base;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class MunicipioController
+ * @package CrosierSource\CrosierLibBaseBundle\Controller\Base
+ */
 class MunicipioController extends AbstractController
 {
 
-    /**
-     * @var EntityIdUtils
-     */
-    private $entityIdUtils;
+    private EntityIdUtils $entityIdUtils;
 
-    public function __construct(EntityIdUtils $entityIdUtils)
+    /**
+     * MunicipioController constructor.
+     * @param ContainerInterface $container
+     * @param EntityIdUtils $entityIdUtils
+     */
+    public function __construct(ContainerInterface $container, EntityIdUtils $entityIdUtils)
     {
+        $this->container = $container;
         $this->entityIdUtils = $entityIdUtils;
     }
 
