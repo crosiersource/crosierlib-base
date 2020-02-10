@@ -20,7 +20,7 @@ class BaseBusiness
     private $doctrine;
 
     /** @var LoggerInterface */
-    private $logger;
+    protected $logger;
 
 
     /**
