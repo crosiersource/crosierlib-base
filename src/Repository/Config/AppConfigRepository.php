@@ -89,6 +89,24 @@ class AppConfigRepository extends FilterRepository
         }
     }
 
+    /**
+     *
+     * @param string $chave
+     * @return AppConfig|null
+     */
+    public function findByChave(string $chave): ?string
+    {
+        try {
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac WHERE ac.chave = :chave AND ac.appUUID = :appUUID';
+            $qry = $this->getEntityManager()->createQuery($dql);
+            $qry->setParameter('chave', $chave);
+            $qry->setParameter('appUUID', $_SERVER['CROSIERAPP_UUID']);
+            return $qry->getSingleResult()->getValor();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
 
     /**
      * Pesquisa uma configuração de um App por sua chave.
