@@ -80,10 +80,10 @@ class BuildInputExtension extends AbstractExtension
 
         try {
             switch ($tipo) {
-                case 'HIDDEN':
+                case 'hidden':
                     $r = '<input type="hidden" id="' . $inputName . '" name="' . $inputName . '" class="form-control" value="' . $val . '">';
                     return $r;
-                case 'STRING':
+                case 'string':
                     $r = '<div class="input-group">';
                     if ($prefixo) {
                         $r .= '<div class="input-group-prepend"><span class="input-group-text">' . $prefixo . '</span></div>';
@@ -94,7 +94,7 @@ class BuildInputExtension extends AbstractExtension
                     }
                     $r .= '</div>';
                     return $r;
-                case 'INTEGER':
+                case 'int':
                     $r = '<div class="input-group">';
                     if ($prefixo) {
                         $r .= '<div class="input-group-prepend"><span class="input-group-text">' . $prefixo . '</span></div>';
@@ -105,11 +105,11 @@ class BuildInputExtension extends AbstractExtension
                     }
                     $r .= '</div>';
                     return $r;
-                case 'DECIMAL1':
-                case 'DECIMAL2':
-                case 'DECIMAL3':
-                case 'DECIMAL4':
-                case 'DECIMAL5':
+                case 'decimal1':
+                case 'decimal2':
+                case 'decimal3':
+                case 'decimal4':
+                case 'decimal5':
                     $valFormatado = number_format((float)$val, $tipo[7], ',', '.');
                     $r = '<div class="input-group">';
                     if ($prefixo) {
@@ -121,7 +121,7 @@ class BuildInputExtension extends AbstractExtension
                     }
                     $r .= '</div>';
                     return $r;
-                case 'BETWEEN_INTEGER':
+                case 'between_integer':
                     $r = '<div class="input-group">Entre ';
 
                     if ($prefixo) {
@@ -143,7 +143,7 @@ class BuildInputExtension extends AbstractExtension
 
                     $r .= '</div>';
                     return $r;
-                case 'BETWEEN_DATE':
+                case 'between_date':
                     $dtIni = '';
                     $dtFim = '';
                     if (is_array($val)) {
@@ -155,12 +155,12 @@ class BuildInputExtension extends AbstractExtension
                     $r .= '<input type="text" id="' . $inputName . '[f]" name="' . $inputName . '[f]" class="form-control crsr-date" value="' . $dtFim . '">';
                     $r .= '</div>';
                     return $r;
-                case 'EQ_DIAMES':
+                case 'eq_diames':
                     $r = '<div class="input-group">';
                     $r .= '<input type="text" id="' . $inputName . '" name="' . $inputName . '" class="form-control crsr-date-diames" value="' . $val . '">';
                     $r .= '</div>';
                     return $r;
-                case 'DATE':
+                case 'date':
                     if ($val) {
                         $dt = DateTimeUtils::parseDateStr($val);
                         $val = $dt ? $dt->format('d/m/Y') : null;
@@ -175,7 +175,7 @@ class BuildInputExtension extends AbstractExtension
                     }
                     $r .= '</div>';
                     return $r;
-                case 'DATETIME':
+                case 'datetime':
                     if ($val) {
                         $dt = DateTimeUtils::parseDateStr($val);
                         $val = $dt ? $dt->format('d/m/Y H:i:s') : null;
@@ -191,13 +191,13 @@ class BuildInputExtension extends AbstractExtension
                     }
                     $r .= '</div>';
                     return $r;
-                case 'LISTA':
+                case 'lista':
                     $options = [];
 
                     return '<select id="' . $inputName . '" name="' . $inputName . '"
                                             data-options="' . htmlentities($options) . '"
                                             class="form-control autoSelect2"></select>';
-                case 'TAGS':
+                case 'tags':
 
                     $tagsoptions = null;
                     $options = [];

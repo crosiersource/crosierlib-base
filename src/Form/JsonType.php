@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CrosierSource\CrosierLibBaseBundle\Form;
 
 
@@ -8,7 +7,13 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -23,7 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class JsonType extends AbstractType implements DataMapperInterface
 {
 
-    private array $defsJson;
+    private array $jsonMetadata;
 
     /**
      * {@inheritdoc}
@@ -32,18 +37,46 @@ class JsonType extends AbstractType implements DataMapperInterface
     {
         parent::buildForm($builder, $options);
 
-        $this->defsJson = $options['defsJson'];
+        $this->jsonMetadata = $options['jsonMetadata'];
 
-        foreach ($this->defsJson as $defsCampo) {
-            switch ($defsCampo['tipo']) {
+        foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
+            switch ($metadata['tipo']) {
                 case "string":
-                    $this->buildTextType($builder, $defsCampo);
+                    $this->buildTextType($builder, $nome, $metadata);
+                    break;
+                case "html":
+                    $this->buildHtmlType($builder, $nome, $metadata);
+                    break;
+                case "int":
+                    $this->buildIntegerType($builder, $nome, $metadata);
+                    break;
+                case "decimal1":
+                case "decimal2":
+                case "decimal3":
+                case "decimal4":
+                case "decimal5":
+                    $this->buildDecimalType($builder, $nome, $metadata);
+                    break;
+                case "preco":
+                    $this->buildMoneyType($builder, $nome, $metadata);
                     break;
                 case "date":
-                    $this->buildDateType($builder, $defsCampo);
+                    $this->buildDateType($builder, $nome, $metadata);
+                    break;
+                case "datetime":
+                    $this->buildDatetimeType($builder, $nome, $metadata);
+                    break;
+                case "bool":
+                    $this->buildBoolType($builder, $nome, $metadata);
+                    break;
+                case "tags":
+                    $this->buildTagsType($builder, $nome, $metadata);
+                    break;
+                case "compo":
+                    $this->buildCompoType($builder, $nome, $metadata);
                     break;
                 default:
-                    throw new \LogicException('tipo N/D');
+                    throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
             }
         }
         $builder->setDataMapper($this);
@@ -52,34 +85,184 @@ class JsonType extends AbstractType implements DataMapperInterface
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array $defsCampo
+     * @param string $nome
+     * @param array $metadata
      */
-    private function buildTextType(FormBuilderInterface $builder, array $defsCampo)
+    private function buildTextType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $builder->add($defsCampo['nome'], TextType::class, [
+        $builder->add($nome, TextType::class, [
             'mapped' => false,
-            'label' => $defsCampo['label'],
-            'required' => $defsCampo['required'] ?? false,
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
         ]);
     }
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array $defsCampo
+     * @param string $nome
+     * @param array $metadata
      */
-    private function buildDateType(FormBuilderInterface $builder, array $defsCampo)
+    private function buildHtmlType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $builder->add($defsCampo['nome'], DateType::class, [
+        $builder->add($nome, TextareaType::class, [
             'mapped' => false,
-            'label' => $defsCampo['label'],
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
+            'attr' => [
+                'class' => 'summernote'
+            ]
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildIntegerType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, IntegerType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildDecimalType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, NumberType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
+            'scale' => (int)$metadata['tipo'][7],
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-dec' . $metadata['tipo'][7]
+            ]
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildMoneyType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, MoneyType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-money'
+            ],
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildDateType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, DateType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
             'widget' => 'single_text',
             'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
             ],
-            'required' => $defsCampo['required'] ?? false,
+            'required' => $metadata['required'] ?? false,
         ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildDatetimeType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, DateTimeType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'widget' => 'single_text',
+            'html5' => false,
+            'format' => 'dd/MM/yyyy HH:mm:ss',
+            'attr' => ['class' => 'crsr-datetime'],
+            'required' => $metadata['required'] ?? false,
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildBoolType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, ChoiceType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'choices' => [
+                'Sim' => 'S',
+                'Não' => 'N'
+            ],
+            'attr' => [
+                'class' => 'autoSelect2'
+            ],
+            'required' => $metadata['required'] ?? false,
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildTagsType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, ChoiceType::class, [
+            'mapped' => false,
+            'multiple' => true,
+            'label' => $metadata['label'] ?? $nome,
+            'attr' => [
+                'class' => 'autoSelect2',
+                'data-tags' => 'true',
+                'data-token-separator' => ',',
+            ],
+            'required' => $metadata['required'] ?? false,
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $campos = explode('|', $metadata['formato']);
+        foreach ($campos as $campo) {
+            list($prefixoCampo, $classes, $sufixo) = explode(',', $campo);
+            $builder->add($nome, TextType::class, [
+                'mapped' => false,
+                'label' => $prefixoCampo,
+                'attr' => [
+                ],
+                'required' => $metadata['required'] ?? false,
+            ]);
+        }
     }
 
     /**
@@ -93,7 +276,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             // Pass errors to the parent
             'error_bubbling' => true,
             'compound' => true,
-            'defsJson' => []
+            'jsonMetadata' => []
         ]);
     }
 
@@ -103,6 +286,7 @@ class JsonType extends AbstractType implements DataMapperInterface
      * Do atributo da entidade para os campos.
      *
      * @param array|null $viewData
+     * @param $forms
      */
     public function mapDataToForms($viewData, $forms)
     {
@@ -119,8 +303,10 @@ class JsonType extends AbstractType implements DataMapperInterface
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
-        foreach ($this->defsJson as $campo) {
-            $this->setFormData($forms[$campo['nome']], $campo, $viewData[$campo['nome']]);
+        foreach ($this->jsonMetadata['campos'] as $nomeDoCampo => $metadata) {
+            if (isset($forms[$nomeDoCampo]) && isset($viewData[$nomeDoCampo]) && $viewData[$nomeDoCampo] !== NUll) {
+                $this->setFormData($forms[$nomeDoCampo], $nomeDoCampo, $metadata, $viewData[$nomeDoCampo]);
+            }
         }
     }
 
@@ -135,46 +321,79 @@ class JsonType extends AbstractType implements DataMapperInterface
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
         $viewData = [];
-        foreach ($this->defsJson as $defCampo) {
-            $this->setViewData($viewData, $defCampo, $forms[$defCampo['nome']]->getData());
+        foreach ($this->jsonMetadata['campos'] as $nomeDoCampo => $metadata) {
+            $this->setViewData($viewData, $nomeDoCampo, $metadata, $forms[$nomeDoCampo]->getData());
         }
     }
 
-    /**
-     * @param $viewData
-     * @param $defCampo
-     * @param $val
-     */
-    private function setViewData(array &$viewData, array $defCampo, $val)
+    private function setViewData(array &$viewData, string $nomeDoCampo, array $metadata, $val = null)
     {
-        switch ($defCampo['tipo']) {
+        if (!$val) return;
+        switch ($metadata['tipo']) {
+            case "string":
+            case "html":
+            case "int":
+            case "bool":
+            case "tags":
+                $viewData[$nomeDoCampo] = $val;
+                break;
+            case "decimal1":
+            case "decimal2":
+            case "decimal3":
+            case "decimal4":
+            case "decimal5":
+            case "preco":
+                $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+                $number = $fmt->parse($val);
+                $viewData[$nomeDoCampo] = $number;
+                break;
             case 'date':
-                if (! $val instanceof \DateTime) throw new \LogicException($defCampo['nome'] . ' is not DateTime');
-                $viewData[$defCampo['nome']] = $val->format('Y-m-d');
+                if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
+                $viewData[$nomeDoCampo] = $val->format('Y-m-d');
                 break;
             case 'datetime':
-                if (! $val instanceof \DateTime) throw new \LogicException($defCampo['nome'] . ' is not DateTime');
-                $viewData[$defCampo['nome']] = $val->format('Y-m-d H:m:i');
+                if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
+                $viewData[$nomeDoCampo] = $val->format('Y-m-d H:m:i');
+                break;
+            case "compo":
+                $this->buildCompoType($builder, $nome, $metadata);
                 break;
             default:
-                $viewData[$defCampo['nome']] = $val;
+                throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
         }
     }
 
     /**
      * @param FormInterface $form
-     * @param $defCampo
-     * @param $val
+     * @param string $nomeDoCampo
+     * @param array $metadata
+     * @param mixed $val
      */
-    private function setFormData(FormInterface $form, $defCampo, $val)
+    private function setFormData(FormInterface $form, string $nomeDoCampo, array $metadata, $val)
     {
-        switch ($defCampo['tipo']) {
+        switch ($metadata['tipo']) {
+            case "string":
+            case "html":
+            case "int":
+            case "bool":
+            case "tags":
+            case "decimal1":
+            case "decimal2":
+            case "decimal3":
+            case "decimal4":
+            case "decimal5":
+            case "preco":
+                $form->setData($val);
+                break;
             case 'date':
             case 'datetime':
                 $form->setData(DateTimeUtils::parseDateStr($val));
                 break;
+            case "compo":
+                $this->buildCompoType($builder, $nome, $metadata);
+                break;
             default:
-                $form->setData($val);
+                throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
         }
     }
 

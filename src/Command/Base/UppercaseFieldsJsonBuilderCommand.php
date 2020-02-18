@@ -62,6 +62,7 @@ class UppercaseFieldsJsonBuilderCommand extends Command
             $this->buildJson($output);
             return 1;
         } catch (\Exception $e) {
+            $output->writeln('Erro: ' . $e->getMessage());
             $this->logger->debug($e->getMessage());
             return -1;
         }
@@ -105,6 +106,8 @@ class UppercaseFieldsJsonBuilderCommand extends Command
         $this->logger->debug($json);
 
         file_put_contents('./src/Entity/uppercaseFields.json', $json);
+
+        $output->writeln('Arquivo escrito: ./src/Entity/uppercaseFields.json');
 
     }
 
