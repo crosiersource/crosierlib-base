@@ -130,7 +130,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             return;
         }
 
-        $viewData = explode(',', $viewData);
+        $viewData = explode('|', $viewData);
 
         // invalid data type
         if (!is_array($viewData)) {
@@ -145,7 +145,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             $d = explode(',', $campo);
             $nomeDoSubCampo = $this->nomeDoCampo . '_' . $d[0];
             $tipo = $d[1];
-            if (isset($forms[$nomeDoSubCampo]) && isset($viewData[$i]) && $viewData[$i] !== NUll) {
+            if (isset($forms[$nomeDoSubCampo]) && isset($viewData[$i]) && $viewData[$i] !== null) {
                 $this->setFormData($forms[$nomeDoSubCampo], $nomeDoSubCampo, $tipo, $viewData[$i]);
             }
         }
@@ -168,7 +168,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             $d = explode(',', $campo);
             $nomeDoSubCampo = $this->nomeDoCampo . '_' . $d[0];
             $tipo = $d[1];
-            $this->setViewData($viewData, $nomeDoSubCampo , $tipo, $forms[$nomeDoSubCampo]->getData());
+            $this->setViewData($viewData, $nomeDoSubCampo, $tipo, $forms[$nomeDoSubCampo]->getData());
         }
     }
 
@@ -207,14 +207,23 @@ class CompoType extends AbstractType implements DataMapperInterface
     {
         switch ($tipo) {
             case "string":
+                $form->setData($val);
+                break;
             case "int":
+                $form->setData((int)$val);
             case "decimal1":
             case "decimal2":
             case "decimal3":
             case "decimal4":
             case "decimal5":
             case "preco":
-                $form->setData($val);
+                if (!is_numeric($val)) {
+                    $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+                    $number = $fmt->parse($val);
+                    $form->setData($number);
+                } else {
+                    $form->setData($val);
+                }
                 break;
             default:
                 throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $tipo);

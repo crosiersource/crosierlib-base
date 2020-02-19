@@ -78,6 +78,9 @@ class JsonType extends AbstractType implements DataMapperInterface
                 case "compo":
                     $this->buildCompoType($builder, $nome, $metadata);
                     break;
+                case "select":
+                    $this->buildSelectType($builder, $nome, $metadata);
+                    break;
                 default:
                     throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
             }
@@ -97,6 +100,9 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
+            'attr' => [
+                'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : ''
+            ]
         ]);
     }
 
@@ -261,6 +267,26 @@ class JsonType extends AbstractType implements DataMapperInterface
      * @param string $nome
      * @param array $metadata
      */
+    private function buildSelectType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $choices = array_combine($metadata['opcoes'], $metadata['opcoes']); // pois o ChoiceType precisa que os valores sejam chaves
+        $builder->add($nome, ChoiceType::class, [
+            'mapped' => false,
+            'multiple' => false,
+            'choices' => $choices,
+            'label' => $metadata['label'] ?? $nome,
+            'attr' => [
+                'class' => 'autoSelect2',
+            ],
+            'required' => $metadata['required'] ?? false,
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
     private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
         $builder->add($nome, CompoType::class, [
@@ -337,6 +363,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $viewData[$nomeDoCampo] = $val;
                 break;
             case "tags":
+            case "select":
                 $viewData[$nomeDoCampo] = implode(',', $val);
                 break;
             case "decimal1":
@@ -389,7 +416,8 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "decimal5":
             case "preco":
             case "compo":
-                $form->setData($val);
+            case "select":
+                $form->setData($val !== '' ? $val : null);
                 break;
             case "tags":
                 if (!is_array($val)) {
