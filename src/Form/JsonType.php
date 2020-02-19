@@ -30,6 +30,8 @@ class JsonType extends AbstractType implements DataMapperInterface
 
     private array $jsonMetadata;
 
+    private array $jsonData;
+
     /**
      * {@inheritdoc}
      */
@@ -38,6 +40,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         parent::buildForm($builder, $options);
 
         $this->jsonMetadata = $options['jsonMetadata'];
+        $this->jsonData = $options['jsonData'];
 
         foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
             switch ($metadata['tipo']) {
@@ -232,9 +235,15 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function buildTagsType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
+        $choices = null;
+        if (isset($this->jsonData[$nome])) {
+            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
+            $choices = array_combine($choices, $choices); // pois o ChoiceType precisa que os valores sejam chaves
+        }
         $builder->add($nome, ChoiceType::class, [
             'mapped' => false,
             'multiple' => true,
+            'choices' => $choices,
             'label' => $metadata['label'] ?? $nome,
             'attr' => [
                 'class' => 'autoSelect2',
@@ -252,31 +261,14 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $campos = explode('|', $metadata['formato']);
-        foreach ($campos as $campo) {
-            list($prefixoCampo, $classes, $sufixo) = explode(',', $campo);
-            $builder->add($nome, TextType::class, [
-                'mapped' => false,
-                'label' => $prefixoCampo,
-                'attr' => [
-                ],
-                'required' => $metadata['required'] ?? false,
-            ]);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            // hidden fields cannot have a required attribute
-            'required' => false,
-            // Pass errors to the parent
-            'error_bubbling' => true,
-            'compound' => true,
-            'jsonMetadata' => []
+        $builder->add($nome, CompoType::class, [
+            'mapped' => false,
+            'metadata' => $metadata,
+            'label' => $metadata['label'] ?? $nome,
+            'nomeDoCampo' => $nome,
+            'attr' => [
+            ],
+            'required' => $metadata['required'] ?? false,
         ]);
     }
 
@@ -326,6 +318,12 @@ class JsonType extends AbstractType implements DataMapperInterface
         }
     }
 
+    /**
+     * @param array $viewData
+     * @param string $nomeDoCampo
+     * @param array $metadata
+     * @param null $val
+     */
     private function setViewData(array &$viewData, string $nomeDoCampo, array $metadata, $val = null)
     {
         if (!$val) return;
@@ -334,8 +332,10 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "html":
             case "int":
             case "bool":
-            case "tags":
                 $viewData[$nomeDoCampo] = $val;
+                break;
+            case "tags":
+                $viewData[$nomeDoCampo] = implode(',', $val);
                 break;
             case "decimal1":
             case "decimal2":
@@ -356,10 +356,10 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $viewData[$nomeDoCampo] = $val->format('Y-m-d H:m:i');
                 break;
             case "compo":
-                $this->buildCompoType($builder, $nome, $metadata);
+                $viewData[$nomeDoCampo] = implode(',', $val);
                 break;
             default:
-                throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
+                throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
         }
     }
 
@@ -376,26 +376,45 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "html":
             case "int":
             case "bool":
-            case "tags":
             case "decimal1":
             case "decimal2":
             case "decimal3":
             case "decimal4":
             case "decimal5":
             case "preco":
+            case "compo":
                 $form->setData($val);
+                break;
+            case "tags":
+                if (!is_array($val)) {
+                    $form->setData(explode(',', $val));
+                } else {
+                    $form->setData($val);
+                }
                 break;
             case 'date':
             case 'datetime':
                 $form->setData(DateTimeUtils::parseDateStr($val));
-                break;
-            case "compo":
-                $this->buildCompoType($builder, $nome, $metadata);
                 break;
             default:
                 throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            // hidden fields cannot have a required attribute
+            'required' => false,
+            // Pass errors to the parent
+            'error_bubbling' => true,
+            'compound' => true,
+            'jsonMetadata' => [],
+            'jsonData' => []
+        ]);
+    }
 
 }

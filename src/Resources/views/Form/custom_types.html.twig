@@ -1,0 +1,32 @@
+{% block form_group_class -%}
+    {% if compo is defined %}
+        col-sm-10 form-inline d-flex flex-nowrap
+    {% else %}
+        col-sm-10
+    {% endif %}
+{%- endblock form_group_class %}
+
+{% block compo_widget -%}
+
+    {% for child in form|filter(child => not child.rendered) %}
+        {%- set prepend = (prefixos[loop.index0]|default('') != '') -%}
+        {%- set append = (sufixos[loop.index0]|default('') != '') -%}
+        {%- if prepend or append -%}
+            <div class="input-group{{ group_class|default('') }}">
+                {%- if prepend -%}
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{ prefixos[loop.index0] }}</span>
+                    </div>
+                {%- endif -%}
+                {{- form_widget(child) -}}
+                {%- if append -%}
+                    <div class="input-group-append">
+                        <span class="input-group-text">{{ sufixos[loop.index0] }}</span>
+                    </div>
+                {%- endif -%}
+            </div>
+        {%- else -%}
+            {{- form_widget(child) -}}
+        {%- endif -%}
+    {% endfor %}
+{%- endblock compo_widget %}
