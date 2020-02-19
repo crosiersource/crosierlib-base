@@ -143,10 +143,11 @@ class JsonType extends AbstractType implements DataMapperInterface
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
             'scale' => (int)$metadata['tipo'][7],
-            'grouping' => 'true',
+            'grouping' => true,
             'attr' => [
                 'class' => 'crsr-dec' . $metadata['tipo'][7]
-            ]
+            ],
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -166,6 +167,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'attr' => [
                 'class' => 'crsr-money'
             ],
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -275,7 +277,7 @@ class JsonType extends AbstractType implements DataMapperInterface
     // ...
 
     /**
-     * Do atributo da entidade para os campos.
+     * Do BD para os campos no html.
      *
      * @param array|null $viewData
      * @param $forms
@@ -343,9 +345,13 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-                $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
-                $number = $fmt->parse($val);
-                $viewData[$nomeDoCampo] = $number;
+                if (!is_numeric($val)) {
+                    $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+                    $number = $fmt->parse($val);
+                    $viewData[$nomeDoCampo] = $number;
+                } else {
+                    $viewData[$nomeDoCampo] = $val;
+                }
                 break;
             case 'date':
                 if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
