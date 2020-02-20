@@ -100,6 +100,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false,
             'attr' => [
                 'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : ''
             ]
@@ -119,7 +120,8 @@ class JsonType extends AbstractType implements DataMapperInterface
             'required' => $metadata['required'] ?? false,
             'attr' => [
                 'class' => 'summernote'
-            ]
+            ],
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -134,6 +136,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -194,6 +197,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'class' => 'crsr-date'
             ],
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -212,6 +216,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'format' => 'dd/MM/yyyy HH:mm:ss',
             'attr' => ['class' => 'crsr-datetime'],
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -233,6 +238,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'class' => 'autoSelect2'
             ],
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -259,6 +265,26 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'data-token-separator' => ',',
             ],
             'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, CompoType::class, [
+            'mapped' => false,
+            'metadata' => $metadata,
+            'label' => $metadata['label'] ?? $nome,
+            'nomeDoCampo' => $nome,
+            'attr' => [
+            ],
+            'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false
         ]);
     }
 
@@ -281,26 +307,6 @@ class JsonType extends AbstractType implements DataMapperInterface
             'required' => $metadata['required'] ?? false,
         ]);
     }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param string $nome
-     * @param array $metadata
-     */
-    private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
-    {
-        $builder->add($nome, CompoType::class, [
-            'mapped' => false,
-            'metadata' => $metadata,
-            'label' => $metadata['label'] ?? $nome,
-            'nomeDoCampo' => $nome,
-            'attr' => [
-            ],
-            'required' => $metadata['required'] ?? false,
-        ]);
-    }
-
-    // ...
 
     /**
      * Do BD para os campos no html.
@@ -360,10 +366,10 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "html":
             case "int":
             case "bool":
+            case "select":
                 $viewData[$nomeDoCampo] = $val;
                 break;
             case "tags":
-            case "select":
                 $viewData[$nomeDoCampo] = implode(',', $val);
                 break;
             case "decimal1":
