@@ -128,6 +128,10 @@ class WhereBuilder
                     case 'BETWEEN_PORCENT':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
+                    case 'JSON_LIKE':
+                        $orX->add($qb->expr()
+                            ->like($qb->expr()->lower('JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')'), $fieldP));
+                        break;
                     default:
                         throw new ViewException('Tipo de filtro desconhecido.');
                 }
@@ -172,6 +176,7 @@ class WhereBuilder
                     }
                     break;
                 case 'LIKE':
+                case 'JSON_LIKE':
                     $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
                     break;
                 case 'LIKE_START':

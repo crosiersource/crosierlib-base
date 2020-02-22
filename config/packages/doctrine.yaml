@@ -31,3 +31,6 @@ doctrine:
             datetime_functions:
                 date_format: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\DateFormat
                 date: CrosierSource\CrosierLibBaseBundle\Doctrine\Extensions\MySQL\Date
+            string_functions:
+                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch

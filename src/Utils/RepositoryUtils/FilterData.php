@@ -45,7 +45,8 @@ class FilterData
         'BETWEEN_DATE' => 2,
         'BETWEEN_MESANO' => 2,
         'BETWEEN_IDADE' => 2,
-        'BETWEEN_PORCENT' => 2
+        'BETWEEN_PORCENT' => 2,
+        'JSON_LIKE' => 1,
     );
 
     /**
