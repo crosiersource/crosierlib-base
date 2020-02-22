@@ -217,12 +217,16 @@ class CompoType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-                if (!is_numeric($val)) {
-                    $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
-                    $number = $fmt->parse($val);
-                    $form->setData($number);
+                if ($val) {
+                    if (!is_numeric($val)) {
+                        $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+                        $number = $fmt->parse($val);
+                        $form->setData($number);
+                    } else {
+                        $form->setData($val);
+                    }
                 } else {
-                    $form->setData($val);
+                    $form->setData(null);
                 }
                 break;
             default:
