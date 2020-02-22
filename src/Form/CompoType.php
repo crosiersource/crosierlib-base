@@ -7,13 +7,8 @@ use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -130,7 +125,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             return;
         }
 
-        $viewData = explode('|', $viewData);
+        $viewData = explode(',', $viewData);
 
         // invalid data type
         if (!is_array($viewData)) {
@@ -205,32 +200,31 @@ class CompoType extends AbstractType implements DataMapperInterface
      */
     private function setFormData(FormInterface $form, string $nomeDoCampo, string $tipo, $val)
     {
+        $form->setData($val ? $this->parseFormData($tipo, $val) : null);
+    }
+
+    private function parseFormData(string $tipo, $val)
+    {
         switch ($tipo) {
             case "string":
-                $form->setData($val);
-                break;
             case "int":
-                $form->setData((int)$val);
+            case "bool":
+                return $val;
+                break;
             case "decimal1":
             case "decimal2":
             case "decimal3":
             case "decimal4":
             case "decimal5":
             case "preco":
-                if ($val) {
-                    if (!is_numeric($val)) {
-                        $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
-                        $number = $fmt->parse($val);
-                        $form->setData($number);
-                    } else {
-                        $form->setData($val);
-                    }
-                } else {
-                    $form->setData(null);
-                }
+                return is_numeric($val) ? (float)$val : number_format((float)$val, $tipo[7], ',', '.');
+                break;
+            case 'date':
+            case 'datetime':
+                return ($val instanceof \DateTime) ? $val : DateTimeUtils::parseDateStr($val);
                 break;
             default:
-                throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $tipo);
+                throw new \LogicException('tipo N/D para valor ' . $val . ': ' . $tipo);
         }
     }
 
