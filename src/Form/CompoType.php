@@ -217,7 +217,11 @@ class CompoType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-                return is_numeric($val) ? (float)$val : number_format((float)$val, $tipo[7], ',', '.');
+                if (is_numeric($val)) {
+                    return (float)$val;
+                } else {
+                    number_format((float)$val, $tipo[7], ',', '.');
+                }
                 break;
             case 'date':
             case 'datetime':
