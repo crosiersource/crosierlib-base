@@ -395,7 +395,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $viewData[$nomeDoCampo] = $val->format('Y-m-d H:m:i');
                 break;
             case "compo":
-                $viewData[$nomeDoCampo] = implode(',', $val);
+                $viewData[$nomeDoCampo] = implode('|', $val);
                 break;
             default:
                 throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);

@@ -125,7 +125,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             return;
         }
 
-        $viewData = explode(',', $viewData);
+        $viewData = explode('|', $viewData);
 
         // invalid data type
         if (!is_array($viewData)) {
@@ -217,11 +217,7 @@ class CompoType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-                if (is_numeric($val)) {
-                    return (float)$val;
-                } else {
-                    number_format((float)$val, $tipo[7], ',', '.');
-                }
+                return (float)$val;
                 break;
             case 'date':
             case 'datetime':
