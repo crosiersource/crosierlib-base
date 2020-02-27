@@ -249,18 +249,26 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function buildTagsType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $choices = null;
-        if (isset($this->jsonData[$nome])) {
-            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
-            $choices = array_combine($choices, $choices); // pois o ChoiceType precisa que os valores sejam chaves
+        $sugestoes = null;
+        if (isset($metadata['sugestoes']) && count($metadata['sugestoes']) > 0) {
+            $sugestoes = $metadata['sugestoes'];
         }
+        $choices = null;
+        if (isset($this->jsonData[$nome])) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
+            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
+            $choices = $sugestoes ? array_unique(array_merge($sugestoes, $choices), SORT_REGULAR) : $choices;
+            sort($choices);
+        } else {
+            $choices = $sugestoes;
+        }
+        $choices = $choices ? array_combine($choices, $choices) : null;
         $builder->add($nome, ChoiceType::class, [
             'mapped' => false,
             'multiple' => true,
             'choices' => $choices,
             'label' => $metadata['label'] ?? $nome,
             'attr' => [
-                'class' => 'autoSelect2',
+                'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
                 'data-tags' => 'true',
                 'data-token-separator' => ',',
             ],
@@ -295,14 +303,26 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function buildSelectType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $choices = array_combine($metadata['opcoes'], $metadata['opcoes']); // pois o ChoiceType precisa que os valores sejam chaves
+        $sugestoes = null;
+        if (isset($metadata['sugestoes']) && count($metadata['sugestoes']) > 0) {
+            $sugestoes = $metadata['sugestoes'];
+        }
+        $choices = null;
+        if (isset($this->jsonData[$nome])) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
+            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
+            $choices = $sugestoes ? array_unique(array_merge($sugestoes, $choices), SORT_REGULAR) : $choices;
+            sort($choices);
+        } else {
+            $choices = $sugestoes;
+        }
+        $choices = $choices ? array_combine($choices, $choices) : null;
         $builder->add($nome, ChoiceType::class, [
             'mapped' => false,
             'multiple' => false,
             'choices' => $choices,
             'label' => $metadata['label'] ?? $nome,
             'attr' => [
-                'class' => 'autoSelect2',
+                'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
             ],
             'required' => $metadata['required'] ?? false,
         ]);
