@@ -90,7 +90,7 @@ class AppConfigRepository extends FilterRepository
     }
 
     /**
-     *
+     * Retorna o valor pela chave.
      * @param string $chave
      * @return AppConfig|null
      */
@@ -102,6 +102,24 @@ class AppConfigRepository extends FilterRepository
             $qry->setParameter('chave', $chave);
             $qry->setParameter('appUUID', $_SERVER['CROSIERAPP_UUID']);
             return $qry->getSingleResult()->getValor();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Retorna um AppConfig pela chave
+     * @param string $chave
+     * @return AppConfig|null
+     */
+    public function findAppConfigByChave(string $chave): ?AppConfig
+    {
+        try {
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac WHERE ac.chave = :chave AND ac.appUUID = :appUUID';
+            $qry = $this->getEntityManager()->createQuery($dql);
+            $qry->setParameter('chave', $chave);
+            $qry->setParameter('appUUID', $_SERVER['CROSIERAPP_UUID']);
+            return $qry->getSingleResult();
         } catch (\Exception $e) {
             return null;
         }

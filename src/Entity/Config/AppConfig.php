@@ -48,6 +48,12 @@ class AppConfig implements EntityId
      */
     private $appUUID;
 
+    public function __construct(?string $chave = null, ?string $appUUID = null)
+    {
+        $this->chave = $chave;
+        $this->appUUID = $appUUID;
+    }
+
     /**
      * @return mixed
      */
