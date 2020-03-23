@@ -28,9 +28,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class JsonType extends AbstractType implements DataMapperInterface
 {
 
-    private array $jsonMetadata;
+    private ?array $jsonMetadata = null;
 
-    private array $jsonData;
+    private ?array $jsonData = null;
 
     /**
      * {@inheritdoc}
@@ -39,8 +39,8 @@ class JsonType extends AbstractType implements DataMapperInterface
     {
         parent::buildForm($builder, $options);
 
-        $this->jsonMetadata = $options['jsonMetadata'];
-        $this->jsonData = $options['jsonData'];
+        $this->jsonMetadata = $options['jsonMetadata'] ?? null;
+        $this->jsonData = $options['jsonData'] ?? null;
 
         foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
             switch ($metadata['tipo']) {
