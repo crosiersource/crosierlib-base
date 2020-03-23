@@ -40,6 +40,16 @@ class EntMenuLocator implements EntityId
 
     /**
      *
+     * @ORM\Column(name="nao_contendo", type="string")
+     * @NotUppercase()
+     * @Groups("entity")
+     *
+     * @var null|string
+     */
+    private $naoContendo;
+
+    /**
+     *
      * @ORM\Column(name="quem", type="string", nullable=false, length=2000)
      * @NotUppercase()
      * @Groups("entity")
@@ -82,6 +92,22 @@ class EntMenuLocator implements EntityId
     {
         $this->urlRegexp = $urlRegexp;
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNaoContendo(): ?string
+    {
+        return $this->naoContendo;
+    }
+
+    /**
+     * @param string|null $naoContendo
+     */
+    public function setNaoContendo(?string $naoContendo): void
+    {
+        $this->naoContendo = $naoContendo;
     }
 
     /**
