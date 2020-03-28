@@ -86,7 +86,6 @@ class JsonType extends AbstractType implements DataMapperInterface
             }
         }
         $builder->setDataMapper($this);
-
     }
 
     /**
