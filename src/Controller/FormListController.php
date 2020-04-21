@@ -469,7 +469,7 @@ abstract class FormListController extends BaseController
         $this->handleDadosList($dados);
 
         $parameters['dados'] = $dados;
-        $parameters['filter'] = $filterParams['filter'];
+        $parameters['filter'] = $filterParams['filter'] ?? [];
 
         if ($filterDatas and count($filterDatas) > 0) {
             $viewInfo = [];

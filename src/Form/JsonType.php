@@ -81,6 +81,10 @@ class JsonType extends AbstractType implements DataMapperInterface
                 case "select":
                     $this->buildSelectType($builder, $nome, $metadata);
                     break;
+                case "uf":
+                    $metadata['sugestoes'] = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
+                    $this->buildSelectType($builder, $nome, $metadata);
+                    break;
                 default:
                     throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
             }
@@ -101,7 +105,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'required' => $metadata['required'] ?? false,
             'disabled' => $metadata['disabled'] ?? false,
             'attr' => [
-                'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : ''
+                'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? '')
             ]
         ]);
     }
@@ -386,6 +390,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "int":
             case "bool":
             case "select":
+            case "uf":
                 $viewData[$nomeDoCampo] = $val;
                 break;
             case "tags":
@@ -442,6 +447,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "preco":
             case "compo":
             case "select":
+            case "uf":
                 $form->setData($val !== '' ? $val : null);
                 break;
             case "tags":
