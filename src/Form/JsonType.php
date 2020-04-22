@@ -47,6 +47,9 @@ class JsonType extends AbstractType implements DataMapperInterface
                 case "string":
                     $this->buildTextType($builder, $nome, $metadata);
                     break;
+                case "textarea":
+                    $this->buildTextareaType($builder, $nome, $metadata);
+                    break;
                 case "html":
                     $this->buildHtmlType($builder, $nome, $metadata);
                     break;
@@ -106,6 +109,25 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false,
             'attr' => [
                 'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? '')
+            ]
+        ]);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
+    private function buildTextareaType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $builder->add($nome, TextareaType::class, [
+            'mapped' => false,
+            'label' => $metadata['label'] ?? $nome,
+            'required' => $metadata['required'] ?? false,
+            'disabled' => $metadata['disabled'] ?? false,
+            'attr' => [
+                'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? ''),
+                'style' => isset($metadata['height']) ? ('height: ' . $metadata['height']) : null
             ]
         ]);
     }
@@ -386,6 +408,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         if (!$val) return;
         switch ($metadata['tipo']) {
             case "string":
+            case "textarea":
             case "html":
             case "int":
             case "bool":
@@ -436,6 +459,7 @@ class JsonType extends AbstractType implements DataMapperInterface
     {
         switch ($metadata['tipo']) {
             case "string":
+            case "textarea":
             case "html":
             case "int":
             case "bool":
