@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -152,6 +153,7 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $this->doctrine->flush();
             }
             $this->afterSave($entityId);
+            $this->handleJsonMetadata();
         } catch (\Exception $e) {
             throw new ViewException('Erro ao salvar (' . $e->getMessage() . ')', 0, $e);
         }
@@ -191,6 +193,47 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
             if (!$entityId->getUserUpdatedId()) {
                 $entityId->setUserUpdatedId(1);
+            }
+        }
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function handleJsonMetadata()
+    {
+        $tableName = $this->doctrine->getClassMetadata($this->getEntityClass())->getTableName();
+
+        /** @var Connection $conn */
+        $conn = $this->getDoctrine()->getConnection();
+        $rConfig = $conn->fetchAll('SELECT * FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => $tableName . '_json_metadata']);
+
+        if ($rConfig) {
+            $cfgAppConfig = $rConfig[0];
+            $jsonMetadata = json_decode($cfgAppConfig['valor'], true);
+            $mudou = null;
+            foreach ($jsonMetadata['campos'] as $campo => $metadata) {
+                if (isset($metadata['sugestoes'])) {
+                    $valoresNaBase = $conn->fetchAll('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
+                    $sugestoes = [];
+                    foreach ($valoresNaBase as $v) {
+                        $valExploded = explode(',', $v['val']);
+                        foreach ($valExploded as $val) {
+                            if ($val && !in_array($val, $sugestoes)) {
+                                $sugestoes[] = $val;
+                            }
+                        }
+                    }
+                    if (strcmp(json_encode($metadata['sugestoes']), json_encode($sugestoes)) !== 0) {
+                        $mudou .= $campo . ',';
+                        sort($sugestoes);
+                        $jsonMetadata['campos'][$campo]['sugestoes'] = $sugestoes;
+                    }
+                }
+            }
+            if ($mudou) {
+                $cfgAppConfig['valor'] = json_encode($jsonMetadata);
+                $conn->update('cfg_app_config', $cfgAppConfig, ['id' => $cfgAppConfig['id']]);
             }
         }
     }
