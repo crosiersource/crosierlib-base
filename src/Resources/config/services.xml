@@ -546,16 +546,6 @@
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"/>
 
-        <!-- RoleRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"/>
-
-
         <!-- UserEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
@@ -566,16 +556,6 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
-
-        <!-- UserRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"/>
-
 
         <!-- GroupEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"
@@ -616,6 +596,7 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
         </service>
+
 
 
     </services>

@@ -3,65 +3,134 @@
 namespace CrosierSource\CrosierLibBaseBundle\Form;
 
 
-use CrosierSource\CrosierLibBaseBundle\Form\Transformer\Select2TagsTransformer;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataMapperInterface;
-use Symfony\Component\Form\Exception;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
+use Symfony\Component\Form\ChoiceList\Factory\CachingFactoryDecorator;
+use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
+use Symfony\Component\Form\ChoiceList\Factory\PropertyAccessDecorator;
+use Symfony\Component\Form\ChoiceList\View\ChoiceListView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  *
  * @package CrosierSource\CrosierLibBaseBundle\Form
  */
-class Select2TagsType extends AbstractType
+class Select2TagsType extends ChoiceType
 {
 
-    private Select2TagsTransformer $transformer;
+    private $choiceListFactory;
 
-    public function __construct(Select2TagsTransformer $transformer)
+    public function __construct(ChoiceListFactoryInterface $choiceListFactory = null)
     {
-        $this->transformer = $transformer;
+        $this->choiceListFactory = $choiceListFactory ?: new CachingFactoryDecorator(
+            new PropertyAccessDecorator(
+                new DefaultChoiceListFactory()
+            )
+        );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer($this->transformer);
+        $choices = null !== $options['choices'] ? $options['choices'] : [];
+        $choiceList = $this->choiceListFactory->createListFromChoices($choices, $options['choice_value']);
+        $builder->setAttribute('choice_list', $choiceList);
+
+        $builder->resetModelTransformers();
+        $builder->resetViewTransformers();
+        $builder->addViewTransformer(new CallbackTransformer(
+            function ($tagsAsArray) {
+                if ($tagsAsArray) {
+                    $tags = explode(', ', $tagsAsArray);
+                    return array_combine($tags, $tags);
+                } else {
+                    return [];
+                }
+            },
+            function ($tagsAsString) {
+                // transform the string back to an array
+                return $tagsAsString ? implode(', ', $tagsAsString) : '';
+            }));
+
+
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $resolver->setDefaults([
-            'invalid_message' => 'The selected issue does not exist',
+        $choiceTranslationDomain = $options['choice_translation_domain'];
+        if ($view->parent && null === $choiceTranslationDomain) {
+            $choiceTranslationDomain = $view->vars['translation_domain'];
+        }
+
+        /** @var ChoiceListInterface $choiceList */
+        $choiceList = $form->getConfig()->getAttribute('choice_list');
+
+        /** @var ChoiceListView $choiceListView */
+        $choiceListView = $form->getConfig()->hasAttribute('choice_list_view')
+            ? $form->getConfig()->getAttribute('choice_list_view')
+            : $this->createChoiceListView($choiceList, $options);
+
+        $view->vars = array_replace($view->vars, [
+            'multiple' => $options['multiple'],
+            'expanded' => $options['expanded'],
+            'preferred_choices' => $choiceListView->preferredChoices,
+            'choices' => $choiceListView->choices,
+            'separator' => '-------------------',
+            'placeholder' => null,
+            'choice_translation_domain' => $choiceTranslationDomain,
         ]);
+
+        // The decision, whether a choice is selected, is potentially done
+        // thousand of times during the rendering of a template. Provide a
+        // closure here that is optimized for the value of the form, to
+        // avoid making the type check inside the closure.
+        if ($options['multiple']) {
+            $view->vars['is_selected'] = function ($choice, array $values) {
+                return \in_array($choice, $values, true);
+            };
+        } else {
+            $view->vars['is_selected'] = function ($choice, $value) {
+                return $choice === $value;
+            };
+        }
+
+        // Check if the choices already contain the empty value
+        $view->vars['placeholder_in_choices'] = $choiceListView->hasPlaceholder();
+
+        // Only add the empty value option if this is not the case
+        if (null !== $options['placeholder'] && !$view->vars['placeholder_in_choices']) {
+            $view->vars['placeholder'] = $options['placeholder'];
+        }
+
+        if ($options['multiple'] && !$options['expanded']) {
+            // Add "[]" to the name in case a select tag with multiple options is
+            // displayed. Otherwise only one of the selected options is sent in the
+            // POST request.
+            $view->vars['full_name'] .= '[]';
+        }
     }
 
-    public function getParent()
+
+    private function createChoiceListView(ChoiceListInterface $choiceList, array $options)
     {
-        return ChoiceType::class;
+        return $this->choiceListFactory->createView(
+            $choiceList,
+            $options['preferred_choices'],
+            $options['choice_label'],
+            $options['choice_name'],
+            $options['group_by'],
+            $options['choice_attr']
+        );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function mapDataToForms($viewData, iterable $forms)
-    {
-        // TODO: Implement mapDataToForms() method.
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function mapFormsToData(iterable $forms, &$viewData)
-    {
-        // TODO: Implement mapFormsToData() method.
-    }
 }
