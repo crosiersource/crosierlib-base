@@ -42,54 +42,56 @@ class JsonType extends AbstractType implements DataMapperInterface
         $this->jsonMetadata = $options['jsonMetadata'] ?? null;
         $this->jsonData = $options['jsonData'] ?? null;
 
-        foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
-            switch ($metadata['tipo']) {
-                case "string":
-                    $this->buildTextType($builder, $nome, $metadata);
-                    break;
-                case "textarea":
-                    $this->buildTextareaType($builder, $nome, $metadata);
-                    break;
-                case "html":
-                    $this->buildHtmlType($builder, $nome, $metadata);
-                    break;
-                case "int":
-                    $this->buildIntegerType($builder, $nome, $metadata);
-                    break;
-                case "decimal1":
-                case "decimal2":
-                case "decimal3":
-                case "decimal4":
-                case "decimal5":
-                    $this->buildDecimalType($builder, $nome, $metadata);
-                    break;
-                case "preco":
-                    $this->buildMoneyType($builder, $nome, $metadata);
-                    break;
-                case "date":
-                    $this->buildDateType($builder, $nome, $metadata);
-                    break;
-                case "datetime":
-                    $this->buildDatetimeType($builder, $nome, $metadata);
-                    break;
-                case "bool":
-                    $this->buildBoolType($builder, $nome, $metadata);
-                    break;
-                case "tags":
-                    $this->buildTagsType($builder, $nome, $metadata);
-                    break;
-                case "compo":
-                    $this->buildCompoType($builder, $nome, $metadata);
-                    break;
-                case "select":
-                    $this->buildSelectType($builder, $nome, $metadata);
-                    break;
-                case "uf":
-                    $metadata['sugestoes'] = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
-                    $this->buildSelectType($builder, $nome, $metadata);
-                    break;
-                default:
-                    throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
+        if ($this->jsonMetadata) {
+            foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
+                switch ($metadata['tipo']) {
+                    case "string":
+                        $this->buildTextType($builder, $nome, $metadata);
+                        break;
+                    case "textarea":
+                        $this->buildTextareaType($builder, $nome, $metadata);
+                        break;
+                    case "html":
+                        $this->buildHtmlType($builder, $nome, $metadata);
+                        break;
+                    case "int":
+                        $this->buildIntegerType($builder, $nome, $metadata);
+                        break;
+                    case "decimal1":
+                    case "decimal2":
+                    case "decimal3":
+                    case "decimal4":
+                    case "decimal5":
+                        $this->buildDecimalType($builder, $nome, $metadata);
+                        break;
+                    case "preco":
+                        $this->buildMoneyType($builder, $nome, $metadata);
+                        break;
+                    case "date":
+                        $this->buildDateType($builder, $nome, $metadata);
+                        break;
+                    case "datetime":
+                        $this->buildDatetimeType($builder, $nome, $metadata);
+                        break;
+                    case "bool":
+                        $this->buildBoolType($builder, $nome, $metadata);
+                        break;
+                    case "tags":
+                        $this->buildTagsType($builder, $nome, $metadata);
+                        break;
+                    case "compo":
+                        $this->buildCompoType($builder, $nome, $metadata);
+                        break;
+                    case "select":
+                        $this->buildSelectType($builder, $nome, $metadata);
+                        break;
+                    case "uf":
+                        $metadata['sugestoes'] = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
+                        $this->buildSelectType($builder, $nome, $metadata);
+                        break;
+                    default:
+                        throw new \LogicException('tipo N/D para campo ' . $nome . ': ' . $metadata['tipo']);
+                }
             }
         }
         $builder->setDataMapper($this);
