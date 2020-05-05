@@ -30,7 +30,8 @@
     "symfony/serializer-pack": "1.*",
     "symfony/validator": "5.0.*",
     "twig/extensions": "^1.5",
-    "scienta/doctrine-json-functions": "~4.1"
+    "scienta/doctrine-json-functions": "~4.1",
+    "ext-gd": "*"
   },
   "autoload": {
     "psr-4": {
