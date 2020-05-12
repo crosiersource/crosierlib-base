@@ -215,19 +215,18 @@ abstract class EntityHandler implements EntityHandlerInterface
             foreach ($jsonMetadata['campos'] as $campo => $metadata) {
                 if (isset($metadata['class']) && strpos($metadata['class'], 's2allownew') !== FALSE && isset($metadata['sugestoes'])) {
                     $valoresNaBase = $conn->fetchAll('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
-                    $sugestoes = [];
                     foreach ($valoresNaBase as $v) {
                         $valExploded = explode(',', $v['val']);
                         foreach ($valExploded as $val) {
-                            if ($val && !in_array($val, $sugestoes)) {
-                                $sugestoes[] = $val;
+                            if ($val && !in_array($val, $metadata['sugestoes'])) {
+                                $metadata['sugestoes'][] = $val;
+                                $mudou = true;
                             }
                         }
                     }
-                    if (strcmp(json_encode($metadata['sugestoes']), json_encode($sugestoes)) !== 0) {
-                        $mudou .= $campo . ',';
-                        sort($sugestoes);
-                        $jsonMetadata['campos'][$campo]['sugestoes'] = $sugestoes;
+                    if ($mudou) {
+                        sort($metadata['sugestoes']);
+                        $jsonMetadata['campos'][$campo]['sugestoes'] = $metadata['sugestoes'];
                     }
                 }
             }

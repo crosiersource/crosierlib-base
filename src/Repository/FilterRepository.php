@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
-use Psr\Log\LoggerInterface;
 
 /**
  * Classe base para repositórios com pesquisa pelo padrão FilterData.
@@ -19,9 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class FilterRepository extends EntityRepository
 {
-
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(EntityManagerInterface $registry)
     {
@@ -34,23 +30,6 @@ abstract class FilterRepository extends EntityRepository
      * @return string
      */
     abstract public function getEntityClass(): string;
-
-    /**
-     * @return mixed
-     */
-    public function getLogger(): ?LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
-     * @required
-     * @param mixed $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
 
     /**
      * @param null $orderBy
@@ -208,6 +187,7 @@ abstract class FilterRepository extends EntityRepository
     /**
      * @param string $field
      * @return mixed
+     * @throws ViewException
      */
     public function findProx($field = 'id')
     {
@@ -222,7 +202,7 @@ abstract class FilterRepository extends EntityRepository
             $rs = $query->getResult();
             $prox = $rs[0]['prox'];
         } catch (\Exception $e) {
-            $this->logger->error('Erro ao buscar o próximo "' . $field . '" em ' . $this->getEntityClass());
+            throw new ViewException('Erro ao buscar o próximo "' . $field . '" em ' . $this->getEntityClass());
         }
 
         return $prox;
