@@ -59,6 +59,10 @@ class WhereBuilder
             $fieldP = ':' . str_replace('.', '_', $filter->field[0]);
             foreach ($filter->field as $field) {
 
+                if ($filter->jsonDataField) {
+                    $field = $qb->expr()->lower('JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')');
+                }
+
                 switch ($filter->filterType) {
                     case 'EQ':
                     case 'IS_EMPTY':
@@ -128,10 +132,7 @@ class WhereBuilder
                     case 'BETWEEN_PORCENT':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
-                    case 'JSON_LIKE':
-                        $orX->add($qb->expr()
-                            ->like($qb->expr()->lower('JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')'), $fieldP));
-                        break;
+
                     default:
                         throw new ViewException('Tipo de filtro desconhecido.');
                 }
@@ -176,7 +177,6 @@ class WhereBuilder
                     }
                     break;
                 case 'LIKE':
-                case 'JSON_LIKE':
                     $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
                     break;
                 case 'LIKE_START':
@@ -297,6 +297,10 @@ class WhereBuilder
         if ($filter->filterType === 'IS_EMPTY' || $filter->filterType === 'IS_NOT_EMPTY') {
             $filter->val = '';
             return;
+        }
+
+        if ($filter->fieldType === 'date' && !($filter->val instanceof \DateTime)) {
+            $filter->val = DateTimeUtils::parseDateStr($filter->val)->format('Y-m-d');
         }
     }
 

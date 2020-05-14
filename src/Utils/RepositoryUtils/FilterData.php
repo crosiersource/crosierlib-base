@@ -21,6 +21,8 @@ class FilterData
 
     public $fieldType;
 
+    public bool $jsonDataField = false;
+
     public static $filterTypes = array(
         'EQ' => 1,
         'EQ_DIAMES' => 1,
@@ -46,7 +48,6 @@ class FilterData
         'BETWEEN_MESANO' => 2,
         'BETWEEN_IDADE' => 2,
         'BETWEEN_PORCENT' => 2,
-        'JSON_LIKE' => 1,
     );
 
     /**
@@ -57,7 +58,12 @@ class FilterData
      * @param array|null $params
      * @param null $fieldType
      */
-    public function __construct($field = null, $filterType = 'EQ', $viewFieldName = null, ?array $params = null, $fieldType = null)
+    public function __construct($field = null,
+                                string $filterType = 'EQ',
+                                $viewFieldName = null,
+                                ?array $params = null,
+                                $fieldType = null,
+                                bool $jsonDataField = false)
     {
         // sempre será tratado como array
         $this->setField($field);
@@ -66,6 +72,7 @@ class FilterData
             $this->val = $params['filter'][$viewFieldName];
         }
         $this->fieldType = $fieldType;
+        $this->jsonDataField = $jsonDataField;
     }
 
     /**

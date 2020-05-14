@@ -420,7 +420,7 @@ abstract class FormListController extends BaseController
      * Para listas que não utilizam o datatables.js
      *
      * @param Request $request
-     * @param null $defaultFilters
+     * @param array $parameters
      * @return Response
      * @throws ViewException
      */
@@ -435,12 +435,12 @@ abstract class FormListController extends BaseController
             $filterParams['filter'] = $request->get('filter');
         } else {
             $svi = $this->storedViewInfoBusiness->retrieve($parameters['listRoute']);
-            $filterParams = $svi['filterParams'] ?? null;
+            $filterParams = $svi['filterParams'] ?? [];
             if ($filterParams) {
                 return $this->redirectToRoute($parameters['listRoute'], $filterParams);
             }
             // else
-            $filterParams = $parameters['defaultFilters'] ?? null;
+            $filterParams = $parameters['defaultFilters'] ?? [];
         }
 
         if (isset($parameters['fixedFilters'])) {
@@ -448,9 +448,6 @@ abstract class FormListController extends BaseController
         }
 
         $parameters['page_title'] = $parameters['listPageTitle'];
-        if (isset($parameters['list_PROGRAM_UUID'])) {
-            $parameters['PROGRAM_UUID'] = $parameters['list_PROGRAM_UUID'];
-        }
 
         /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
