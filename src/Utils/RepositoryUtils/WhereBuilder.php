@@ -66,6 +66,11 @@ class WhereBuilder
                 switch ($filter->filterType) {
                     case 'EQ':
                     case 'IS_EMPTY':
+                        if ($filter->fieldType === 'date') {
+                            $orX->add($qb->expr()
+                                ->eq('date(' . $field . ')', $fieldP));
+                            break;
+                        }
                         $orX->add($qb->expr()
                             ->eq($field, $fieldP));
                         break;
