@@ -36,6 +36,8 @@
                  class="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension">
             <tag name="twig.extension"/>
             <argument type="service" id="monolog.logger"/>
+            <argument type="service" id="webpack_encore.tag_renderer"/>
+            <argument type="service" id="assets.packages"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>

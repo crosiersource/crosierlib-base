@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
 
-    <script src="{{ asset('build/runtime.js') }}"></script>
+    <script src="{{ getEnv('CROSIERCORE_URL') ~ asset('build/runtime.js') }}"></script>
 
     <script>
         window.paceOptions = {
@@ -27,7 +27,8 @@
 
     {% block stylesheets %}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
-        <link rel="stylesheet" href="{{ crosierAsset('build/crosier/layout.css') }}">
+
+        {{ renderCrosierWebpackLinkTags('crosier/layout') }}
     {% endblock %}
 
     {% block up_scripts %}
@@ -35,6 +36,7 @@
 </head>
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+
 
 {% block body %}
 {% endblock %}
@@ -52,7 +54,8 @@
 <script src="{{ crosierAsset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
-<script src="{{ crosierAsset('build/crosier/layout.js') }}"></script>
+
+{{ renderCrosierWebpackScriptTags('crosier/layout') }}
 
 {% block down_scripts %}
 {% endblock %}
