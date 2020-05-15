@@ -30,7 +30,7 @@
                         {% endif %}
                         {% if formUrl is defined %}
                             <a role="button" class="btn btn-primary ml-1" title="Novo"
-                                    href="{{ formUrl }}">
+                               href="{{ formUrl }}">
                                 <i class="fas fa-file" aria-hidden="true"></i>
                             </a>
                         {% endif %}
@@ -147,6 +147,6 @@
 
 {% block down_scripts %}
     {% if listJS is defined %}
-        <script src="{{ asset('build/' ~ listJS) }}"></script>
+        {{ encore_entry_script_tags(listJS|replace({'.js': ''})) }}
     {% endif %}
 {% endblock %}
