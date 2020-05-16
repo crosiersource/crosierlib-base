@@ -20,7 +20,7 @@
         <!-- .................................. -->
         <!-- .................................. -->
         <!-- .................................. -->
-        
+
         <!-- BuildInputExtension -->
         <service id="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"
                  class="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension">
@@ -50,7 +50,16 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
                  alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
-        
+
+        <!-- StringUtilsExtension -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension">
+            <argument type="service" id="service_container"/>
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"/>
+
         <!-- RouteExistsExtension -->
         <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
                  class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
@@ -87,9 +96,7 @@
         <!-- .................................. -->
         <!-- .................................. -->
         <!-- .................................. -->
-        
 
-        
 
         <!-- UppercaseFieldsJsonBuilderCommand -->
         <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
@@ -473,7 +480,6 @@
                  alias="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"/>
 
 
-
         <!-- EntMenuLocatorEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
@@ -493,7 +499,7 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
                  alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
-        
+
 
         <!-- ProgramEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.program_entity_handler"
@@ -589,16 +595,15 @@
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\Base\PessoaController" public="true">
             <argument type="service" id="service_container"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
         </service>
 
         <!-- MunicipioController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
                  class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
             <argument type="service" id="service_container"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils" />
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
         </service>
-
 
 
     </services>

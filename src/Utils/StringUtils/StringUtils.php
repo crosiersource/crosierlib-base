@@ -21,6 +21,11 @@ class StringUtils
         "(?<SINAL_I>\\+|\\-)?(?<money>(?<INTEIROS>\\d{1,3}|\\d{1,3}(?:\\.\\d{3})+){1},{1}(?<CENTAVOS>\\d{2}){1})(?:\\s)*(?<SINAL_F>\\+|\\-|C|D)?" .
         "@";
 
+    /**
+     * @param $formattedFloat
+     * @param bool $clear
+     * @return false|float|int|mixed
+     */
     public static function parseFloat($formattedFloat, $clear = false)
     {
         $formattedFloat = str_replace(' ', '', $formattedFloat);
@@ -38,6 +43,12 @@ class StringUtils
         return $float;
     }
 
+    /**
+     * @param $valor
+     * @param $mascara
+     * @return string
+     * @throws \Exception
+     */
     public static function mascarar($valor, $mascara)
     {
         $subs = explode(".", $mascara); // verificar como fazer o split tendo separadores diferentes (como é o caso do CNPJ)
@@ -145,6 +156,16 @@ class StringUtils
     public static function strpad($number, int $pad_length, ?string $pad_string = '0'): string
     {
         return str_pad($number, $pad_length, $pad_string, STR_PAD_LEFT);
+    }
+
+    /**
+     * @param string $str
+     * @return bool
+     */
+    public static function isJson(string $str)
+    {
+        json_decode($str);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
 
