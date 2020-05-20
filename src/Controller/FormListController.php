@@ -426,7 +426,7 @@ abstract class FormListController extends BaseController
      */
     public function doListSimpl(Request $request, array $parameters = []): Response
     {
-        if (isset($parameters['r']) && $parameters['r']) {
+        if ($request->get('r')) {
             $this->storedViewInfoBusiness->clear($parameters['listRoute']);
         }
 

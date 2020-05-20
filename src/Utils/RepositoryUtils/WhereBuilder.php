@@ -60,7 +60,7 @@ class WhereBuilder
             foreach ($filter->field as $field) {
 
                 if ($filter->jsonDataField) {
-                    $field = $qb->expr()->lower('JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')');
+                    $field = 'JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')';
                 }
 
                 switch ($filter->filterType) {
