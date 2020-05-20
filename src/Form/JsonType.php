@@ -97,6 +97,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         $builder->setDataMapper($this);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -114,6 +115,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             ]
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -134,6 +136,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -152,6 +155,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -166,6 +170,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -187,6 +192,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -206,6 +212,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -228,6 +235,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -246,6 +254,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -268,6 +277,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -304,6 +314,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * @param FormBuilderInterface $builder
      * @param string $nome
@@ -322,6 +333,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => $metadata['disabled'] ?? false
         ]);
     }
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -355,6 +367,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         ]);
     }
 
+
     /**
      * Do BD para os campos no html.
      *
@@ -383,8 +396,51 @@ class JsonType extends AbstractType implements DataMapperInterface
         }
     }
 
+
     /**
-     * Dos campos para o atributo da entidade.
+     * @param FormInterface $form
+     * @param string $nomeDoCampo
+     * @param array $metadata
+     * @param mixed $val
+     */
+    private function setFormData(FormInterface $form, string $nomeDoCampo, array $metadata, $val)
+    {
+        switch ($metadata['tipo']) {
+            case "string":
+            case "textarea":
+            case "html":
+            case "int":
+            case "bool":
+            case "decimal1":
+            case "decimal2":
+            case "decimal3":
+            case "decimal4":
+            case "decimal5":
+            case "preco":
+            case "compo":
+            case "select":
+            case "uf":
+                $form->setData($val !== '' ? $val : null);
+                break;
+            case "tags":
+                if (!is_array($val)) {
+                    $form->setData(explode(',', $val));
+                } else {
+                    $form->setData($val);
+                }
+                break;
+            case 'date':
+            case 'datetime':
+                $form->setData(DateTimeUtils::parseDateStr($val));
+                break;
+            default:
+                throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
+        }
+    }
+
+
+    /**
+     * Dos campos na tela para o atributo da entidade.
      *
      * @param iterable|FormInterface[] $forms
      * @param mixed $viewData
@@ -399,7 +455,10 @@ class JsonType extends AbstractType implements DataMapperInterface
         }
     }
 
+
     /**
+     * Chamado apenas pelo mapFormsToData.
+     *
      * @param array $viewData
      * @param string $nomeDoCampo
      * @param array $metadata
@@ -451,46 +510,6 @@ class JsonType extends AbstractType implements DataMapperInterface
         }
     }
 
-    /**
-     * @param FormInterface $form
-     * @param string $nomeDoCampo
-     * @param array $metadata
-     * @param mixed $val
-     */
-    private function setFormData(FormInterface $form, string $nomeDoCampo, array $metadata, $val)
-    {
-        switch ($metadata['tipo']) {
-            case "string":
-            case "textarea":
-            case "html":
-            case "int":
-            case "bool":
-            case "decimal1":
-            case "decimal2":
-            case "decimal3":
-            case "decimal4":
-            case "decimal5":
-            case "preco":
-            case "compo":
-            case "select":
-            case "uf":
-                $form->setData($val !== '' ? $val : null);
-                break;
-            case "tags":
-                if (!is_array($val)) {
-                    $form->setData(explode(',', $val));
-                } else {
-                    $form->setData($val);
-                }
-                break;
-            case 'date':
-            case 'datetime':
-                $form->setData(DateTimeUtils::parseDateStr($val));
-                break;
-            default:
-                throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
-        }
-    }
 
     /**
      * {@inheritdoc}
