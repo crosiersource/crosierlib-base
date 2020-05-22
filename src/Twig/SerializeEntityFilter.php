@@ -8,8 +8,8 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
- * Class TransliterateFilter
- * @package App\Twig
+ * @package CrosierSource\CrosierLibBaseBundle\Twig
+ * @author Carlos Eduardo Pauluk
  */
 class SerializeEntityFilter extends AbstractExtension
 {

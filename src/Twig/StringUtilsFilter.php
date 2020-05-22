@@ -7,7 +7,8 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
- * @package App\Twig
+ * @package CrosierSource\CrosierLibBaseBundle\Twig
+ * @author Carlos Eduardo Pauluk
  */
 class StringUtilsFilter extends AbstractExtension
 {

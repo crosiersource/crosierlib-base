@@ -18,6 +18,8 @@ class DecimalUtils
     public const ROUND_HALF_DOWN = 4;
 
     /**
+     * Converte um número na notação brasileira para double.
+     *
      * @param $str
      * @return false|float|int|mixed|null
      */

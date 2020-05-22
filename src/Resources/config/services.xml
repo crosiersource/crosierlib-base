@@ -85,6 +85,14 @@
         <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsFilter"
                  alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_filter"/>
 
+        <!-- DateTimeUtilsFilter -->
+        <service id="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"
+                 class="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter">
+            <tag name="twig.extension"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter"
+                 alias="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"/>
+
         <!-- TransliterateFilter -->
         <service id="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"
                  class="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter">

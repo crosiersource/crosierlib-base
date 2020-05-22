@@ -6,12 +6,12 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
- * Class TransliterateFilter
- * @package App\Twig
+ * @package CrosierSource\CrosierLibBaseBundle\Twig
+ * @author Carlos Eduardo Pauluk
  */
 class TransliterateFilter extends AbstractExtension
 {
-    
+
     public function getFilters()
     {
         return [

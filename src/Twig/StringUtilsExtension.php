@@ -7,8 +7,6 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
- * Class GetEnvExtension
- *
  * @package CrosierSource\CrosierLibBaseBundle\Twig
  * @author Carlos Eduardo Pauluk
  */
