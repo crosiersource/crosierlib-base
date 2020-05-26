@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 
 /**
  * Class FilterData
@@ -45,6 +46,7 @@ class FilterData
         'NOT_LIKE' => 1,
         'BETWEEN' => 2,
         'BETWEEN_DATE' => 2,
+        'BETWEEN_DATE_CONCAT' => 1, // No formato "01/01/2001 - 02/02/2002"
         'BETWEEN_MESANO' => 2,
         'BETWEEN_IDADE' => 2,
         'BETWEEN_PORCENT' => 2,
@@ -69,7 +71,7 @@ class FilterData
         $this->setField($field);
         $this->setFilterType($filterType);
         if (isset($params['filter'][$viewFieldName])) {
-            $this->val = $params['filter'][$viewFieldName];
+            $this->setVal($params['filter'][$viewFieldName]);
         }
         $this->fieldType = $fieldType;
         $this->jsonDataField = $jsonDataField;
@@ -132,7 +134,15 @@ class FilterData
                 $val['f'] = $val[1];
                 unset($val[1]);
             }
+            $this->val = $val;
+            return $this;
         }
+        // else
+        if ($this->filterType === 'BETWEEN_DATE_CONCAT') {
+            $this->val = DateTimeUtils::parseConcatDates($val);
+            return $this;
+        }
+        // else
         $this->val = $val;
         return $this;
     }

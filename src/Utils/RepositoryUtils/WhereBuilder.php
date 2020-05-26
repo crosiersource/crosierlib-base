@@ -135,6 +135,7 @@ class WhereBuilder
                     case 'BETWEEN_IDADE':
                     case 'BETWEEN_MESANO':
                     case 'BETWEEN_PORCENT':
+                    case 'BETWEEN_DATE_CONCAT':
                         $orX->add(self::handleBetween($field, $filter, $qb));
                         break;
 
@@ -162,6 +163,7 @@ class WhereBuilder
             switch ($filter->filterType) {
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
+                case 'BETWEEN_DATE_CONCAT':
                 case 'BETWEEN_IDADE':
                 case 'BETWEEN_MESANO':
                     if ($filter->val['i'] !== null && $filter->val['i'] !== '') {
@@ -254,16 +256,21 @@ class WhereBuilder
             }
             return;
         }
-        if ($filter->filterType === 'BETWEEN_DATE') {
-            if ($filter->val['i'] && !($filter->val['i'] instanceof \DateTime)) {
-                $ini = DateTimeUtils::parseDateStr($filter->val['i']);
-                $ini->setTime(0, 0);
-                $filter->val['i'] = $ini;
+        if (in_array($filter->filterType, ['BETWEEN_DATE', 'BETWEEN_DATE_CONCAT'], true)) {
+            if ($filter->val['i'] ?? false) {
+                if (!($filter->val['i'] instanceof \DateTime)) {
+                    $ini = DateTimeUtils::parseDateStr($filter->val['i']);
+                    $filter->val['i'] = $ini;
+                }
+                $filter->val['i']->setTime(0, 0);
             }
-            if ($filter->val['f'] && !($filter->val['f'] instanceof \DateTime)) {
-                $fim = DateTimeUtils::parseDateStr($filter->val['f']);
-                $fim->setTime(23, 59, 59, 999999);
-                $filter->val['f'] = $fim;
+
+            if ($filter->val['f'] ?? false) {
+                if (!($filter->val['f'] instanceof \DateTime)) {
+                    $fim = DateTimeUtils::parseDateStr($filter->val['f']);
+                    $filter->val['f'] = $fim;
+                }
+                $filter->val['f']->setTime(23, 59, 59, 999999);
             }
             return;
         }

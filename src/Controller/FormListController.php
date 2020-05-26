@@ -225,6 +225,7 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param array $parameters
      * @return Response
+     * @throws ViewException
      */
     public function doList(Request $request, $parameters = []): Response
     {
@@ -361,11 +362,12 @@ abstract class FormListController extends BaseController
      * Filtra os filterDatas por somente aqueles que contenham valores.
      *
      * @param $params
+     * @param \Closure|null $fnGetFilterDatas
      * @return array
      */
-    public function getSomenteFilterDatasComValores($params): array
+    public function getSomenteFilterDatasComValores($params, ?\Closure $fnGetFilterDatas = null): array
     {
-        $filterDatas = $this->getFilterDatas($params);
+        $filterDatas = $fnGetFilterDatas ? $fnGetFilterDatas($params) : $this->getFilterDatas($params);
         $filterDatasComValores = [];
         if ($filterDatas && count($filterDatas) > 0) {
             foreach ($filterDatas as $filterData) {
@@ -376,8 +378,7 @@ abstract class FormListController extends BaseController
                             break;
                         }
                     }
-                }
-                else if ($filterData->val !== null && $filterData->val !== '') {
+                } else if ($filterData->val !== null && $filterData->val !== '') {
                     $filterDatasComValores[] = $filterData;
                 }
             }
@@ -421,10 +422,12 @@ abstract class FormListController extends BaseController
      *
      * @param Request $request
      * @param array $parameters
+     * @param \Closure|null $fnGetFilterDatas
+     * @param \Closure|null $fnHandleDadosList
      * @return Response
      * @throws ViewException
      */
-    public function doListSimpl(Request $request, array $parameters = []): Response
+    public function doListSimpl(Request $request, array $parameters = [], ?\Closure $fnGetFilterDatas = null, ?\Closure $fnHandleDadosList = null): Response
     {
         if ($request->get('r')) {
             $this->storedViewInfoBusiness->clear($parameters['listRoute']);
@@ -456,14 +459,18 @@ abstract class FormListController extends BaseController
         $filterDatas = null;
 
         if ($filterParams) {
-            $filterDatas = $this->getSomenteFilterDatasComValores($filterParams);
+            $filterDatas = $this->getSomenteFilterDatasComValores($filterParams, $fnGetFilterDatas);
         }
 
         $parameters['orders'] = $parameters['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
 
         $dados = $repo->findByFilters($filterDatas, $parameters['orders'], 0, null);
 
-        $this->handleDadosList($dados);
+        if (isset($fnHandleDadosList)) {
+            $fnHandleDadosList($dados);
+        } else {
+            $this->handleDadosList($dados);
+        }
 
         $parameters['dados'] = $dados;
         $parameters['filter'] = $filterParams['filter'] ?? [];

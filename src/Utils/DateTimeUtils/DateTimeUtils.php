@@ -83,6 +83,21 @@ class DateTimeUtils
         throw new \RuntimeException('Impossível parse na data (' . $dateStr . ')');
     }
 
+
+    /**
+     * Faz o parse em uma string no formato "01/01/2001 - 02/02/2002", retornando um array.
+     * @param string $concatDates
+     * @return array
+     */
+    public static function parseConcatDates(string $concatDates): array
+    {
+        $ini = substr($concatDates, 0, 10);
+        $val['i'] = DateTimeUtils::parseDateStr($ini);
+        $fim = substr($concatDates, 13, 10);
+        $val['f'] = DateTimeUtils::parseDateStr($fim);
+        return $val;
+    }
+
     /**
      * Calcula a diferença em meses.
      *
