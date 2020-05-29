@@ -41,6 +41,14 @@ class AppConfig implements EntityId
     private $valor;
 
     /**
+     * @ORM\Column(name="is_json", type="boolean", nullable=false)
+     * @Groups("entity")
+     *
+     * @var bool|null
+     */
+    public ?bool $isJson = false;
+
+    /**
      * @var string
      * @ORM\Column(name="app_uuid", type="string", nullable=false, length=36)
      * @NotUppercase()
