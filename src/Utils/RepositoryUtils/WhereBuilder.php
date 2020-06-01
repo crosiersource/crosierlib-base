@@ -175,11 +175,13 @@ class WhereBuilder
                     break;
                 case 'BETWEEN_PORCENT':
                     if ($filter->val['i']) {
-                        $val_i = bcdiv($filter->val['i'], 100, 6);
+                        $val_i = round( (float) bcdiv($filter->val['i'], 100, 6), 6);
+                        $val_i = floor( $val_i ) !== $val_i ? $val_i : (int) $val_i;
                         $qb->setParameter($fieldP . '_i', $val_i);
                     }
                     if ($filter->val['f']) {
-                        $val_f = bcdiv($filter->val['f'], 100, 6);
+                        $val_f = round((float) bcdiv($filter->val['f'], 100, 6), 6);
+                        $val_f = floor( $val_f ) !== $val_f ? $val_f : (int) $val_f;
                         $qb->setParameter($fieldP . '_f', $val_f);
                     }
                     break;
@@ -223,8 +225,12 @@ class WhereBuilder
      */
     private static function handleBetween(string $field, FilterData $filter, QueryBuilder $qb)
     {
-        // Usa sempre o nme do primeiro campo como nome para o parâmetro, pois setará sempre o mesmo na lógica do "OR"
+        // Usa sempre o nome do primeiro campo como nome para o parâmetro, pois setará sempre o mesmo na lógica do "OR"
         $fieldP = str_replace('.', '_', $filter->field[0]);
+
+        if ($filter->filterType === 'BETWEEN_PORCENT') {
+            $field = 'CAST(' . $field  . ' AS DECIMAL(15,4))';
+        }
 
         if ($filter->val['i'] === null || $filter->val['i'] === '') {
             return $qb->expr()->lte($field, ':' . $fieldP . '_f');

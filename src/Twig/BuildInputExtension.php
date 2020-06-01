@@ -141,12 +141,24 @@ class BuildInputExtension extends AbstractExtension
 
                     $r .= '</div>';
                     return $r;
+                case 'BETWEEN_PORCENT':
+                    $r = '<div class="input-group">Entre ';
+
+                    $r .= '<input type="text" id="' . $inputName . '[i]" name="' . $inputName . '[i]" class="form-control dec2" value="' . ($val['i'] ?? '') . '">';
+                    $r .= '<div class="input-group-append"><span class="input-group-text">%</span></div>';
+                    $r .= ' e ';
+
+                    $r .= '<input type="text" id="' . $inputName . '[f]" name="' . $inputName . '[f]" class="form-control dec" value="' . ($val['f'] ?? '') . '">';
+                    $r .= '<div class="input-group-append"><span class="input-group-text">%</span></div>';
+
+                    $r .= '</div>';
+                    return $r;
                 case 'BETWEEN_DATE':
                     $dtIni = '';
                     $dtFim = '';
                     if (is_array($val)) {
-                        $dtIni = isset($val['i']) ? DateTimeUtils::parseDateStr($val['i'])->format('d/m/Y') : '';
-                        $dtFim = isset($val['f']) ? DateTimeUtils::parseDateStr($val['f'])->format('d/m/Y') : '';
+                        $dtIni = (isset($val['i']) && $val['i']) ? DateTimeUtils::parseDateStr($val['i'])->format('d/m/Y') : '';
+                        $dtFim = (isset($val['f']) && $val['f']) ? DateTimeUtils::parseDateStr($val['f'])->format('d/m/Y') : '';
                     }
                     $r = '<div class="input-group">';
                     $r .= '<input type="text" id="' . $inputName . '[i]" name="' . $inputName . '[i]" class="form-control crsr-date" value="' . $dtIni . '"> - ';
