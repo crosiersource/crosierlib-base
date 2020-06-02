@@ -144,11 +144,11 @@ class BuildInputExtension extends AbstractExtension
                 case 'BETWEEN_PORCENT':
                     $r = '<div class="input-group">Entre ';
 
-                    $r .= '<input type="text" id="' . $inputName . '[i]" name="' . $inputName . '[i]" class="form-control dec2" value="' . ($val['i'] ?? '') . '">';
+                    $r .= '<input type="text" id="' . $inputName . '[i]" name="' . $inputName . '[i]" class="form-control crsr-dec2" value="' . ($val['i'] ?? '') . '">';
                     $r .= '<div class="input-group-append"><span class="input-group-text">%</span></div>';
                     $r .= ' e ';
 
-                    $r .= '<input type="text" id="' . $inputName . '[f]" name="' . $inputName . '[f]" class="form-control dec" value="' . ($val['f'] ?? '') . '">';
+                    $r .= '<input type="text" id="' . $inputName . '[f]" name="' . $inputName . '[f]" class="form-control crsr-dec2" value="' . ($val['f'] ?? '') . '">';
                     $r .= '<div class="input-group-append"><span class="input-group-text">%</span></div>';
 
                     $r .= '</div>';

@@ -6,6 +6,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use Doctrine\ORM\QueryBuilder;
+use NumberFormatter;
 
 /**
  * Class WhereBuilder
@@ -174,14 +175,22 @@ class WhereBuilder
                     }
                     break;
                 case 'BETWEEN_PORCENT':
-                    if ($filter->val['i']) {
-                        $val_i = round( (float) bcdiv($filter->val['i'], 100, 6), 6);
-                        $val_i = floor( $val_i ) !== $val_i ? $val_i : (int) $val_i;
+                    if ($filter->val['i'] ?? null) {
+                        if (!is_float($filter->val['i'])) {
+                            $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+                            $filter->val['i'] = $fmt->parse($filter->val['i']);
+                        }
+                        $val_i = round((float)bcdiv($filter->val['i'], 100, 6), 6);
+                        $val_i = floor($val_i) !== $val_i ? $val_i : (int)$val_i;
                         $qb->setParameter($fieldP . '_i', $val_i);
                     }
-                    if ($filter->val['f']) {
-                        $val_f = round((float) bcdiv($filter->val['f'], 100, 6), 6);
-                        $val_f = floor( $val_f ) !== $val_f ? $val_f : (int) $val_f;
+                    if ($filter->val['f'] ?? null) {
+                        if (!is_float($filter->val['f'])) {
+                            $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+                            $filter->val['f'] = $fmt->parse($filter->val['f']);
+                        }
+                        $val_f = round((float)bcdiv($filter->val['f'], 100, 6), 6);
+                        $val_f = floor($val_f) !== $val_f ? $val_f : (int)$val_f;
                         $qb->setParameter($fieldP . '_f', $val_f);
                     }
                     break;
