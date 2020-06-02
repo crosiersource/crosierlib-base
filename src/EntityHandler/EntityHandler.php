@@ -232,6 +232,7 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
             if ($mudou) {
                 $cfgAppConfig['valor'] = json_encode($jsonMetadata);
+                $cfgAppConfig['is_json'] = (bool) $cfgAppConfig['is_json'];
                 $conn->update('cfg_app_config', $cfgAppConfig, ['id' => $cfgAppConfig['id']]);
             }
         }
