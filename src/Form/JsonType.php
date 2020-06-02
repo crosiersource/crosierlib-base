@@ -353,19 +353,27 @@ class JsonType extends AbstractType implements DataMapperInterface
         if (isset($metadata['sugestoes']) && count($metadata['sugestoes']) > 0) {
             $sugestoes = $metadata['sugestoes'];
         }
+        $sugestoesComKeys = !($metadata['sugestoes_com_keys'] ?? false);
+
         $choices = null;
-        if (isset($this->jsonData[$nome])) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
+        if (isset($this->jsonData[$nome]) && strpos($metadata['class'] ?? '', 's2allownew') !== FALSE) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
             $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
             $choices = $sugestoes ? array_unique(array_merge($sugestoes, $choices), SORT_REGULAR) : $choices;
             sort($choices);
         } else {
             $choices = $sugestoes;
         }
-        $choices = $choices ? array_combine($choices, $choices) : null;
+        $choicez = null;
+        // 'sugestoes_com_keys' informa que é para indexar o valor do campo pela key do array sugestões
+        if ($sugestoesComKeys) {
+            $choicez = $choices ? array_combine($choices, $choices) : null;
+        } else {
+            $choicez = array_flip($choices);
+        }
         $builder->add($nome, ChoiceType::class, [
             'mapped' => false,
             'multiple' => false,
-            'choices' => $choices,
+            'choices' => $choicez,
             'label' => $metadata['label'] ?? $nome,
             'attr' => [
                 'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
