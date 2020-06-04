@@ -66,6 +66,9 @@ abstract class FilterRepository extends EntityRepository
                 if (strpos($col, '.') === FALSE) {
                     $col = 'e.' . $col;
                 }
+                if (strpos($col, 'jsonData') !== FALSE) {
+                    $col = 'JSON_EXTRACT(e.jsonData, \'$.' . substr($col, 11) . '\')';
+                }
                 $qb->addOrderBy($col, $dir);
             }
         } else if (is_string($orders)) {

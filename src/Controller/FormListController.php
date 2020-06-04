@@ -35,9 +35,6 @@ abstract class FormListController extends BaseController
     // deve ser setado a partir do setEntityHandler da subclasse com '@required'
     protected $entityHandler;
 
-    /** @var StoredViewInfoBusiness */
-    protected $storedViewInfoBusiness;
-
     /**
      * @required
      * @param LoggerInterface $logger
@@ -45,15 +42,6 @@ abstract class FormListController extends BaseController
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * @required
-     * @param StoredViewInfoBusiness $storedViewInfoBusiness
-     */
-    public function setStoredViewInfoBusiness(StoredViewInfoBusiness $storedViewInfoBusiness): void
-    {
-        $this->storedViewInfoBusiness = $storedViewInfoBusiness;
     }
 
     /**

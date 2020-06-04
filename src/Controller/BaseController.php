@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -22,6 +23,9 @@ class BaseController extends AbstractController
 
     /** @var EntityManagerInterface */
     private $doctrine;
+
+    /** @var StoredViewInfoBusiness */
+    protected $storedViewInfoBusiness;
 
     /** @var SessionInterface */
     private $session;
@@ -48,6 +52,7 @@ class BaseController extends AbstractController
      * @param Security $security
      */
     public function __construct(EntityManagerInterface $doctrine,
+                                StoredViewInfoBusiness $storedViewInfoBusiness,
                                 SessionInterface $session,
                                 LoggerInterface $logger,
                                 RequestStack $requestStack,
@@ -55,6 +60,7 @@ class BaseController extends AbstractController
                                 Security $security)
     {
         $this->doctrine = $doctrine;
+        $this->storedViewInfoBusiness = $storedViewInfoBusiness;
         $this->session = $session;
         $this->logger = $logger;
         $this->requestStack = $requestStack;
