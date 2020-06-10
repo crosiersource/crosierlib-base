@@ -87,7 +87,7 @@ class SyslogBusiness
      */
     public function info(string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null)
     {
-        $this->save('info', $action, $app, $component, $obs, $username, $deleteAfter, $jsonData);
+        $this->save('info', $action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
     }
 
     /**
@@ -101,7 +101,7 @@ class SyslogBusiness
      */
     public function err(string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null)
     {
-        $this->save('err', $action, $app, $component, $obs, $username, $deleteAfter, $jsonData);
+        $this->save('err', $action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
     }
 
     /**
