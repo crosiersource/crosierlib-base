@@ -316,6 +316,17 @@
                  alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"/>
 
 
+        <!-- SyslogBusiness -->
+        <service id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
+                 class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="monolog.logger"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness"
+                 alias="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+
+
         <!-- EntityIdUtils -->
         <service id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"
                  class="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils">
