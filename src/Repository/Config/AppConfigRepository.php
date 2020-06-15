@@ -42,9 +42,11 @@ class AppConfigRepository extends FilterRepository
             $crosierEnv = $_SERVER['CROSIER_ENV'];
             $qry->setParameter('chave', $chave . '_' . $crosierEnv);
             $appConfig = $qry->getOneOrNullResult();
-            return $appConfig ? $appConfig->getValor() : 'NULL_CONFIG';
+            if (!$appConfig) {
+                return 'NULL_CONFIG';
+            }
+            return $appConfig->getValor();
         } catch (NonUniqueResultException $e) {
-            $this->getLogger()->error($e->getMessage());
             return null;
         }
     }
@@ -73,7 +75,7 @@ class AppConfigRepository extends FilterRepository
      * Pesquisa uma configuração de um App por sua chave.
      *
      * @param string $chave
-     * @param string $appNome
+     * @param string $appUUID
      * @return AppConfig|null
      */
     public function findConfigByChaveAndAppUUID(string $chave, string $appUUID): ?AppConfig
@@ -130,7 +132,7 @@ class AppConfigRepository extends FilterRepository
      * Pesquisa uma configuração de um App por sua chave.
      *
      * @param string $chave
-     * @param string $appNome
+     * @param string $appUUID
      * @return string|null
      */
     public function findValorByChaveAndAppUUID(string $chave, string $appUUID): ?string

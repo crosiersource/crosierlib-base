@@ -19,7 +19,7 @@ class DateTimeUtils
      */
     public static function parseDateStr($dateStr): ?\DateTime
     {
-        $dateStr = trim($dateStr);
+        $dateStr = str_replace('  ', ' ', trim($dateStr));
         if (!$dateStr) {
             return null;
         }
@@ -370,7 +370,6 @@ class DateTimeUtils
      *
      * @param string $mesano
      * @return array
-     * @throws \Exception
      */
     public static function getDiasMesAno(string $mesano): array
     {
