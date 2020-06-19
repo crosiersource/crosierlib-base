@@ -390,7 +390,7 @@ abstract class FormListController extends BaseController
      *
      * @param array $dados
      */
-    public function handleDadosList(array &$dados): void
+    public function handleDadosList(array &$dados, ?int $totalRegistros = null): void
     {
 
     }
@@ -452,12 +452,14 @@ abstract class FormListController extends BaseController
 
         $parameters['orders'] = $parameters['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
 
-        $dados = $repo->findByFilters($filterDatas, $parameters['orders'], 0, null);
+        $countByFilter = $repo->doCountByFilters($filterDatas);
+
+        $dados = $repo->findByFilters($filterDatas, $parameters['orders'], $parameters['start'] ?? 0, $parameters['limit'] ?? null);
 
         if (isset($fnHandleDadosList)) {
-            $fnHandleDadosList($dados);
+            $fnHandleDadosList($dados, $countByFilter);
         } else {
-            $this->handleDadosList($dados);
+            $this->handleDadosList($dados, $countByFilter);
         }
 
         $parameters['dados'] = $dados;
