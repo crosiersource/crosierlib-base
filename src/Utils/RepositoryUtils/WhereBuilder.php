@@ -61,8 +61,15 @@ class WhereBuilder
             foreach ($filter->field as $field) {
 
                 if ($filter->jsonDataField) {
-                    $field = 'JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\')';
+                    $field = 'JSON_UNQUOTE(JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\'))';
+
+                    if ($filter->fieldType == 'date') {
+                        $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
+                    } elseif ($filter->fieldType == 'datetime') {
+                        $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
+                    }
                 }
+
 
                 switch ($filter->filterType) {
                     case 'EQ':
@@ -175,7 +182,7 @@ class WhereBuilder
                     }
                     break;
                 case 'BETWEEN_PORCENT':
-                    if ($filter->val['i'] ?? null) {
+                    if (isset($filter->val['i'])) {
                         if (!is_float($filter->val['i'])) {
                             $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
                             $filter->val['i'] = $fmt->parse($filter->val['i']);
@@ -184,7 +191,7 @@ class WhereBuilder
                         $val_i = floor($val_i) !== $val_i ? $val_i : (int)$val_i;
                         $qb->setParameter($fieldP . '_i', $val_i);
                     }
-                    if ($filter->val['f'] ?? null) {
+                    if (isset($filter->val['f'])) {
                         if (!is_float($filter->val['f'])) {
                             $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
                             $filter->val['f'] = $fmt->parse($filter->val['f']);
@@ -238,7 +245,7 @@ class WhereBuilder
         $fieldP = str_replace('.', '_', $filter->field[0]);
 
         if ($filter->filterType === 'BETWEEN_PORCENT') {
-            $field = 'CAST(' . $field  . ' AS DECIMAL(15,4))';
+            $field = 'CAST(' . $field . ' AS DECIMAL(15,4))';
         }
 
         if ($filter->val['i'] === null || $filter->val['i'] === '') {
@@ -287,6 +294,7 @@ class WhereBuilder
                 }
                 $filter->val['f']->setTime(23, 59, 59, 999999);
             }
+
             return;
         }
         if ($filter->filterType === 'BETWEEN_IDADE') {
