@@ -104,10 +104,9 @@ class Select2JsUtils
      * Transforma um array de entidades em um array de elementos com o formato exigido pelo Select2 utilizando um
      * formato e os argumentos que serão passados a função vsprintf().
      *
-     * @param array $entities
-     * @param string $vsprintfFormat
-     * @param array $atributos
-     * @param null $entitiesIdsSelecteds
+     * @param array $keyValues
+     * @param null $keysSelecteds
+     * @param string|null $placeholder
      * @return array
      */
     public static function arrayToSelect2Data(array $keyValues, $keysSelecteds = null, ?string $placeholder = '...'): array
@@ -129,7 +128,7 @@ class Select2JsUtils
             $rs[] = [
                 'id' => $key,
                 'text' => $value,
-                'selected' => $keysSelecteds ? in_array($entity['id'], $keysSelecteds, false) : false
+                'selected' => $keysSelecteds ? in_array($key, $keysSelecteds, false) : false
             ];
         }
 

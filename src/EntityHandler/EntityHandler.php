@@ -164,36 +164,38 @@ abstract class EntityHandler implements EntityHandlerInterface
      * Implementação vazia pois não é obrigatório.
      *
      * @param $entityId
-     * @throws \Exception
      */
     public function handleSavingEntityId($entityId): void
     {
-        /** @var EntityId $entityId */
-        $this->handleUppercaseFields($entityId);
 
-        if (!$entityId->getId()) {
-            $entityId->setInserted(new \DateTime('now'));
-        }
-        $entityId->setUpdated(new \DateTime('now'));
-
-        if ($this->security->getUser()) {
-            /** @var User $user */
-            $user = $this->security->getUser();
-            $entityId->setEstabelecimentoId($user->getEstabelecimentoId());
-            $entityId->setUserUpdatedId($user->getId());
+        try {
+            /** @var EntityId $entityId */
+            $this->handleUppercaseFields($entityId);
             if (!$entityId->getId()) {
-                $entityId->setUserInsertedId($user->getId());
+                $entityId->setInserted(new \DateTime('now'));
             }
-        } else {
-            if (!$entityId->getEstabelecimentoId()) {
-                $entityId->setEstabelecimentoId(1);
+            $entityId->setUpdated(new \DateTime('now'));
+            if ($this->security->getUser()) {
+                /** @var User $user */
+                $user = $this->security->getUser();
+                $entityId->setEstabelecimentoId($user->getEstabelecimentoId());
+                $entityId->setUserUpdatedId($user->getId());
+                if (!$entityId->getId()) {
+                    $entityId->setUserInsertedId($user->getId());
+                }
+            } else {
+                if (!$entityId->getEstabelecimentoId()) {
+                    $entityId->setEstabelecimentoId(1);
+                }
+                if (!$entityId->getUserInsertedId()) {
+                    $entityId->setUserInsertedId(1);
+                }
+                if (!$entityId->getUserUpdatedId()) {
+                    $entityId->setUserUpdatedId(1);
+                }
             }
-            if (!$entityId->getUserInsertedId()) {
-                $entityId->setUserInsertedId(1);
-            }
-            if (!$entityId->getUserUpdatedId()) {
-                $entityId->setUserUpdatedId(1);
-            }
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Erro ao handleSavingEntityId');
         }
     }
 
@@ -232,7 +234,7 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
             if ($mudou) {
                 $cfgAppConfig['valor'] = json_encode($jsonMetadata);
-                $cfgAppConfig['is_json'] = (bool) $cfgAppConfig['is_json'] ? 1 : 0;
+                $cfgAppConfig['is_json'] = (bool)$cfgAppConfig['is_json'] ? 1 : 0;
                 $conn->update('cfg_app_config', $cfgAppConfig, ['id' => $cfgAppConfig['id']]);
             }
         }
