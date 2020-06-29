@@ -16,9 +16,15 @@ class StringUtilsFilter extends AbstractExtension
     public function getFilters()
     {
         return [
+            new TwigFilter('mascarar', [$this, 'mascarar']),
             new TwigFilter('mascararCnpjCpf', [$this, 'mascararCnpjCpf']),
             new TwigFilter('strpad', [$this, 'strpad']),
         ];
+    }
+
+    public function mascarar(string $valor, $mascara)
+    {
+        return StringUtils::mascarar($valor, $mascara);
     }
 
     public function mascararCnpjCpf(string $doc)

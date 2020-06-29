@@ -324,6 +324,7 @@ class DateTimeUtils
      */
     public static function incMes(\DateTime $dt, $inc = 1)
     {
+        $dt = clone $dt;
         $ehUltimoDiaDoMes = $dt->format('Y-m-d') === $dt->format('Y-m-t');
         $dtProx = clone $dt;
         if ($ehUltimoDiaDoMes) {
