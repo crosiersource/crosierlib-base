@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -42,6 +43,8 @@ class BaseController extends AbstractController
     /** @var Security */
     private $security;
 
+    protected SyslogBusiness $syslog;
+
     /**
      * BaseController constructor.
      * @param EntityManagerInterface $doctrine
@@ -57,7 +60,8 @@ class BaseController extends AbstractController
                                 LoggerInterface $logger,
                                 RequestStack $requestStack,
                                 EntMenuLocatorRepository $entMenuLocatorRepository,
-                                Security $security)
+                                Security $security,
+                                SyslogBusiness $syslog)
     {
         $this->doctrine = $doctrine;
         $this->storedViewInfoBusiness = $storedViewInfoBusiness;
@@ -66,6 +70,7 @@ class BaseController extends AbstractController
         $this->requestStack = $requestStack;
         $this->entMenuLocatorRepository = $entMenuLocatorRepository;
         $this->security = $security;
+        $this->syslog = $syslog;
     }
 
     /**
@@ -103,5 +108,14 @@ class BaseController extends AbstractController
             throw new \RuntimeException($e->getMessage(), 0, $e);
         }
     }
+
+    /**
+     * @return SyslogBusiness
+     */
+    public function getSyslog(): SyslogBusiness
+    {
+        return $this->syslog;
+    }
+
 
 }

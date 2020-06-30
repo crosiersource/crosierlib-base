@@ -438,7 +438,7 @@ abstract class FormListController extends BaseController
             $filterParams = array_replace_recursive($filterParams, $parameters['fixedFilters']);
         }
 
-        $parameters['page_title'] = $parameters['listPageTitle'];
+        $parameters['page_title'] = $parameters['listPageTitle'] ?? '';
 
         /** @var FilterRepository $repo */
         $repo = $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
