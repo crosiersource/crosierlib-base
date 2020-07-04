@@ -51,7 +51,14 @@ class JsonType extends AbstractType implements DataMapperInterface
                     case "fone":
                         if (strpos(($metadata['css_class'] ?? ''), 'fone') === FALSE) {
                             $metadata['css_class'] = $metadata['css_class'] ?? '';
-                            $metadata['css_class'] .= ' fone';
+                            $metadata['css_class'] .= ' telefone';
+                        }
+                        $this->buildTextType($builder, $nome, $metadata);
+                        break;
+                    case "email":
+                        if (strpos(($metadata['css_class'] ?? ''), 'email') === FALSE) {
+                            $metadata['css_class'] = $metadata['css_class'] ?? '';
+                            $metadata['css_class'] .= ' email';
                         }
                         $this->buildTextType($builder, $nome, $metadata);
                         break;
@@ -433,6 +440,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "decimal5":
             case "preco":
             case "fone":
+            case "email":
             case "compo":
             case "select":
             case "uf":
@@ -486,6 +494,7 @@ class JsonType extends AbstractType implements DataMapperInterface
         switch ($metadata['tipo']) {
             case "string":
             case "fone":
+            case "email":
             case "textarea":
             case "html":
             case "int":

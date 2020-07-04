@@ -41,7 +41,19 @@ class MunicipioController extends AbstractController
         try {
             $cep = $request->get('cep');
 
-            $uri = 'http://cep.republicavirtual.com.br/web_cep.php';
+            // {
+            //     "cep": "84053-000",
+            //     "logradouro": "Avenida Dom Pedro II",
+            //     "complemento": "",
+            //     "bairro": "Nova Rússia",
+            //     "localidade": "Ponta Grossa",
+            //     "uf": "PR",
+            //     "unidade": "",
+            //     "ibge": "4119905",
+            //     "gia": ""
+            // }
+
+            $uri = 'https://viacep.com.br/ws/' . $cep . '/json/';
             $client = new Client();
             $response = $client->request('GET', $uri,
                 [
