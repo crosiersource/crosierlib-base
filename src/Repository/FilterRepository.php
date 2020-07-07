@@ -109,9 +109,6 @@ abstract class FilterRepository extends EntityRepository
      *
      *
      * @param array $filtersSimpl
-     * @param null $orders (no padrão do datatables.js)
-     * @param int $start
-     * @param int $limit
      * @return mixed
      * @throws ViewException
      */
@@ -151,6 +148,8 @@ abstract class FilterRepository extends EntityRepository
     /**
      * @param array $filtersSimpl
      * @param null $orders
+     * @return mixed|null
+     * @throws ViewException
      */
     public function findOneByFiltersSimpl(array $filtersSimpl, $orders = null)
     {

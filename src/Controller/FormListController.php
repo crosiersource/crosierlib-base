@@ -3,7 +3,6 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 
-use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -379,6 +378,7 @@ abstract class FormListController extends BaseController
      *
      * @param array $params
      * @return array|null
+     * @noinspection PhpUnusedParameterInspection
      */
     public function getFilterDatas(array $params): ?array
     {

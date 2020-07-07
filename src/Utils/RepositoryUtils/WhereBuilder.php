@@ -5,13 +5,13 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use NumberFormatter;
 
 /**
  * Class WhereBuilder
  *
- * @package CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils
  * @author Carlos Eduardo Pauluk
  */
 class WhereBuilder
@@ -44,190 +44,22 @@ class WhereBuilder
                 continue;
             }
 
-
             $filtrando = true;
+            $orX = self::buildAndCondition($qb, $filter);
 
-            // Adiciona o prefixo padrão 'e.' para os nomes de campos que não tiverem
-            foreach ($filter->field as $key => $fieldName) {
-                if (strpos($fieldName, '.') === FALSE) {
-                    $fieldName = 'e.' . $fieldName;
-                }
-                $filter->field[$key] = $fieldName;
-            }
-
-            $orX = $qb->expr()->orX();
-
-            $fieldP = ':' . str_replace('.', '_', $filter->field[0]);
-            foreach ($filter->field as $field) {
-
-                if ($filter->jsonDataField) {
-                    $field = 'JSON_UNQUOTE(JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\'))';
-
-                    if ($filter->fieldType == 'date') {
-                        $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
-                    } elseif ($filter->fieldType == 'datetime') {
-                        $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
-                    }
-                }
-
-
-                switch ($filter->filterType) {
-                    case 'EQ':
-                    case 'IS_EMPTY':
-                        if ($filter->fieldType === 'date') {
-                            $orX->add($qb->expr()
-                                ->eq('date(' . $field . ')', $fieldP));
-                            break;
-                        }
-                        $orX->add($qb->expr()
-                            ->eq($field, $fieldP));
-                        break;
-                    case 'EQ_DIAMES':
-                        $orX->add($qb->expr()
-                            ->eq('DATE_FORMAT(' . $field . ', \'%d/%m\')', $fieldP));
-                        break;
-                    case 'EQ_BOOL':
-                        $orX->add($qb->expr()
-                            ->eq($field, $fieldP));
-                        break;
-                    case 'NEQ':
-                    case 'IS_NOT_EMPTY':
-                        $orX->add($qb->expr()
-                            ->neq($field, $fieldP));
-                        break;
-                    case 'LT':
-                        $orX->add($qb->expr()
-                            ->lt($field, $fieldP));
-                        break;
-                    case 'LTE':
-                        $orX->add($qb->expr()
-                            ->lte($field, $fieldP));
-                        break;
-                    case 'GT':
-                        $orX->add($qb->expr()
-                            ->gt($field, $fieldP));
-                        break;
-                    case 'GTE':
-                        $orX->add($qb->expr()
-                            ->gte($field, $fieldP));
-                        break;
-                    case 'IS_NULL':
-                        $orX->add($qb->expr()
-                            ->isNull($field));
-                        break;
-                    case 'IS_NOT_NULL':
-                        $orX->add($qb->expr()
-                            ->isNotNull($field));
-                        break;
-                    case 'IN':
-                        $orX->add($qb->expr()
-                            ->in($field, $fieldP));
-                        break;
-                    case 'NOT_IN':
-                        $orX->add($qb->expr()
-                            ->notIn($field, $fieldP));
-                        break;
-                    case 'LIKE':
-                    case 'LIKE_START':
-                    case 'LIKE_END':
-                    case 'LIKE_ONLY':
-                        $orX->add($qb->expr()
-                            ->like($qb->expr()->lower($field), $fieldP));
-                        break;
-                    case 'NOT_LIKE':
-                        $orX->add($qb->expr()
-                            ->notLike($field, $fieldP));
-                        break;
-                    case 'BETWEEN':
-                    case 'BETWEEN_DATE':
-                    case 'BETWEEN_IDADE':
-                    case 'BETWEEN_MESANO':
-                    case 'BETWEEN_PORCENT':
-                    case 'BETWEEN_DATE_CONCAT':
-                        $orX->add(self::handleBetween($field, $filter, $qb));
-                        break;
-
-                    default:
-                        throw new ViewException('Tipo de filtro desconhecido.');
-                }
-            }
             $andX->add($orX);
+
         }
         if (!$filtrando) {
             return null;
         }
         $qb->where($andX);
 
-        // $qb->getDql()
         foreach ($filters as $filter) {
-
             if (!self::checkHasVal($filter)) {
                 continue;
             }
-
-            $fieldP = str_replace('.', '_', $filter->field[0]);
-//            foreach ($field_array as $field) {
-
-            switch ($filter->filterType) {
-                case 'BETWEEN':
-                case 'BETWEEN_DATE':
-                case 'BETWEEN_DATE_CONCAT':
-                case 'BETWEEN_IDADE':
-                case 'BETWEEN_MESANO':
-                    if ($filter->val['i'] !== null && $filter->val['i'] !== '') {
-                        $qb->setParameter($fieldP . '_i', $filter->val['i']);
-                    }
-                    if ($filter->val['f'] !== null && $filter->val['f'] !== '') {
-                        $qb->setParameter($fieldP . '_f', $filter->val['f']);
-                    }
-                    break;
-                case 'BETWEEN_PORCENT':
-                    if (isset($filter->val['i'])) {
-                        if (!is_float($filter->val['i'])) {
-                            $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
-                            $filter->val['i'] = $fmt->parse($filter->val['i']);
-                        }
-                        $val_i = round((float)bcdiv($filter->val['i'], 100, 6), 6);
-                        $val_i = floor($val_i) !== $val_i ? $val_i : (int)$val_i;
-                        $qb->setParameter($fieldP . '_i', $val_i);
-                    }
-                    if (isset($filter->val['f'])) {
-                        if (!is_float($filter->val['f'])) {
-                            $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
-                            $filter->val['f'] = $fmt->parse($filter->val['f']);
-                        }
-                        $val_f = round((float)bcdiv($filter->val['f'], 100, 6), 6);
-                        $val_f = floor($val_f) !== $val_f ? $val_f : (int)$val_f;
-                        $qb->setParameter($fieldP . '_f', $val_f);
-                    }
-                    break;
-                case 'LIKE':
-                    $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
-                    break;
-                case 'LIKE_START':
-                    $qb->setParameter($fieldP, strtolower($filter->val) . '%');
-                    break;
-                case 'LIKE_END':
-                    $qb->setParameter($fieldP, '%' . strtolower($filter->val));
-                    break;
-                case 'LIKE_ONLY':
-                case 'NOT_LIKE':
-                    $qb->setParameter($fieldP, $filter->val);
-                    break;
-                case 'EQ_BOOL':
-                    $qb->setParameter($fieldP, $filter->val === 'true');
-                    break;
-                case 'IS_NULL':
-                case 'IS_NOT_NULL':
-                    break;
-                case 'EQ_DIAMES':
-                    $qb->setParameter($fieldP, $filter->val);
-                    break;
-                default:
-                    $qb->setParameter($fieldP, $filter->val);
-                    break;
-            }
-//            }
+            self::placeValues($qb, $filter);
         }
         return null;
 
@@ -387,5 +219,193 @@ class WhereBuilder
             }
         }
         return $ordersBy;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param FilterData $filter
+     * @return Orx
+     * @throws ViewException
+     */
+    public static function buildAndCondition(QueryBuilder $qb, FilterData $filter): Orx
+    {
+        // Adiciona o prefixo padrão 'e.' para os nomes de campos que não tiverem
+        foreach ($filter->field as $key => $fieldName) {
+            if (strpos($fieldName, '.') === FALSE) {
+                $fieldName = 'e.' . $fieldName;
+            }
+            $filter->field[$key] = $fieldName;
+        }
+
+        $orX = $qb->expr()->orX();
+
+        $fieldP = ':' . str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '');
+        foreach ($filter->field as $field) {
+
+            if ($filter->jsonDataField) {
+                $field = 'JSON_UNQUOTE(JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\'))';
+
+                if ($filter->fieldType == 'date') {
+                    $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
+                } elseif ($filter->fieldType == 'datetime') {
+                    $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
+                }
+            }
+
+
+            switch ($filter->filterType) {
+                case 'EQ':
+                case 'IS_EMPTY':
+                    if ($filter->fieldType === 'date') {
+                        $orX->add($qb->expr()
+                            ->eq('date(' . $field . ')', $fieldP));
+                        break;
+                    }
+                    $orX->add($qb->expr()
+                        ->eq($field, $fieldP));
+                    break;
+                case 'EQ_DIAMES':
+                    $orX->add($qb->expr()
+                        ->eq('DATE_FORMAT(' . $field . ', \'%d/%m\')', $fieldP));
+                    break;
+                case 'EQ_BOOL':
+                    $orX->add($qb->expr()
+                        ->eq($field, $fieldP));
+                    break;
+                case 'NEQ':
+                case 'IS_NOT_EMPTY':
+                    $orX->add($qb->expr()
+                        ->neq($field, $fieldP));
+                    break;
+                case 'LT':
+                    $orX->add($qb->expr()
+                        ->lt($field, $fieldP));
+                    break;
+                case 'LTE':
+                    $orX->add($qb->expr()
+                        ->lte($field, $fieldP));
+                    break;
+                case 'GT':
+                    $orX->add($qb->expr()
+                        ->gt($field, $fieldP));
+                    break;
+                case 'GTE':
+                    $orX->add($qb->expr()
+                        ->gte($field, $fieldP));
+                    break;
+                case 'IS_NULL':
+                    $orX->add($qb->expr()
+                        ->isNull($field));
+                    break;
+                case 'IS_NOT_NULL':
+                    $orX->add($qb->expr()
+                        ->isNotNull($field));
+                    break;
+                case 'IN':
+                    $orX->add($qb->expr()
+                        ->in($field, $fieldP));
+                    break;
+                case 'NOT_IN':
+                    $orX->add($qb->expr()
+                        ->notIn($field, $fieldP));
+                    break;
+                case 'LIKE':
+                case 'LIKE_START':
+                case 'LIKE_END':
+                case 'LIKE_ONLY':
+                    $orX->add($qb->expr()
+                        ->like($qb->expr()->lower($field), $fieldP));
+                    break;
+                case 'NOT_LIKE':
+                    $orX->add($qb->expr()
+                        ->notLike($field, $fieldP));
+                    break;
+                case 'BETWEEN':
+                case 'BETWEEN_DATE':
+                case 'BETWEEN_IDADE':
+                case 'BETWEEN_MESANO':
+                case 'BETWEEN_PORCENT':
+                case 'BETWEEN_DATE_CONCAT':
+                    $orX->add(self::handleBetween($field, $filter, $qb));
+                    break;
+
+                default:
+                    throw new ViewException('Tipo de filtro desconhecido.');
+            }
+
+            if ($filter->getOrFilterData()) {
+                $orX->add(self::buildAndCondition($qb, $filter->getOrFilterData()));
+            }
+        }
+        return $orX;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param FilterData $filter
+     */
+    public static function placeValues(QueryBuilder $qb, FilterData $filter): void
+    {
+        $fieldP = str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '');
+
+        switch ($filter->filterType) {
+            case 'BETWEEN':
+            case 'BETWEEN_DATE':
+            case 'BETWEEN_DATE_CONCAT':
+            case 'BETWEEN_IDADE':
+            case 'BETWEEN_MESANO':
+                if ($filter->val['i'] !== null && $filter->val['i'] !== '') {
+                    $qb->setParameter($fieldP . '_i', $filter->val['i']);
+                }
+                if ($filter->val['f'] !== null && $filter->val['f'] !== '') {
+                    $qb->setParameter($fieldP . '_f', $filter->val['f']);
+                }
+                break;
+            case 'BETWEEN_PORCENT':
+                if (isset($filter->val['i'])) {
+                    if (!is_float($filter->val['i'])) {
+                        $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+                        $filter->val['i'] = $fmt->parse($filter->val['i']);
+                    }
+                    $val_i = round((float)bcdiv($filter->val['i'], 100, 6), 6);
+                    $val_i = floor($val_i) !== $val_i ? $val_i : (int)$val_i;
+                    $qb->setParameter($fieldP . '_i', $val_i);
+                }
+                if (isset($filter->val['f'])) {
+                    if (!is_float($filter->val['f'])) {
+                        $fmt = new NumberFormatter('pt_BR', NumberFormatter::DECIMAL);
+                        $filter->val['f'] = $fmt->parse($filter->val['f']);
+                    }
+                    $val_f = round((float)bcdiv($filter->val['f'], 100, 6), 6);
+                    $val_f = floor($val_f) !== $val_f ? $val_f : (int)$val_f;
+                    $qb->setParameter($fieldP . '_f', $val_f);
+                }
+                break;
+            case 'LIKE':
+                $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
+                break;
+            case 'LIKE_START':
+                $qb->setParameter($fieldP, strtolower($filter->val) . '%');
+                break;
+            case 'LIKE_END':
+                $qb->setParameter($fieldP, '%' . strtolower($filter->val));
+                break;
+            case 'EQ_BOOL':
+                $qb->setParameter($fieldP, $filter->val === 'true');
+                break;
+            case 'IS_NULL':
+            case 'IS_NOT_NULL':
+                break;
+            case 'EQ_DIAMES':
+            case 'LIKE_ONLY':
+            case 'NOT_LIKE':
+            default:
+                $qb->setParameter($fieldP, $filter->val);
+                break;
+        }
+
+        if ($filter->getOrFilterData()) {
+            self::placeValues($qb, $filter->getOrFilterData());
+        }
     }
 }

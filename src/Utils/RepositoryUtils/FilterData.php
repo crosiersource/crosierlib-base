@@ -24,6 +24,10 @@ class FilterData
 
     public bool $jsonDataField = false;
 
+    private $orFilterData = null;
+
+    public $isOrFilterData = false;
+
     public static $filterTypes = array(
         'EQ' => 1,
         'EQ_DIAMES' => 1,
@@ -65,7 +69,8 @@ class FilterData
                                 $viewFieldName = null,
                                 ?array $params = null,
                                 $fieldType = null,
-                                bool $jsonDataField = false)
+                                bool $jsonDataField = false,
+                                ?FilterData $orFilterData = null)
     {
         // sempre será tratado como array
         $this->setField($field);
@@ -75,6 +80,9 @@ class FilterData
         }
         $this->fieldType = $fieldType;
         $this->jsonDataField = $jsonDataField;
+        if ($orFilterData) {
+            $this->setOrFilterData($orFilterData);
+        }
     }
 
     /**
@@ -155,6 +163,24 @@ class FilterData
     {
         $this->fieldType = $fieldType;
         return $this;
+    }
+
+    /**
+     * @param FilterData|null $orFilterData
+     */
+    public function setOrFilterData(?FilterData $orFilterData): FilterData
+    {
+        $this->orFilterData = $orFilterData;
+        $this->orFilterData->isOrFilterData = true; // usado na nomenclatura dos campos/valores no WhereBuilder
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getOrFilterData()
+    {
+        return $this->orFilterData;
     }
 
 
