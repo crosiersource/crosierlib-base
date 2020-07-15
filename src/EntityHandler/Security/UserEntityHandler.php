@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Security;
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
@@ -11,8 +12,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Class UserEntityHandler
- * @package App\EntityHandler\Security
  * @author Carlos Eduardo Pauluk
  */
 class UserEntityHandler extends EntityHandler
@@ -22,20 +21,20 @@ class UserEntityHandler extends EntityHandler
     private $passwordEncoder;
 
     /**
-     * UserEntityHandler constructor.
      * @param EntityManagerInterface $doctrine
      * @param Security $security
      * @param ParameterBagInterface $parameterBag
+     * @param SyslogBusiness $syslog
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(EntityManagerInterface $doctrine, Security $security, ParameterBagInterface $parameterBag, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $doctrine,
+                                Security $security,
+                                ParameterBagInterface $parameterBag,
+                                SyslogBusiness $syslog,
+                                UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->doctrine = $doctrine;
-        $this->security = $security;
-        $this->parameterBag = $parameterBag;
+        parent::__construct($doctrine, $security, $parameterBag, $syslog->setApp('core')->setComponent(self::class));
         $this->passwordEncoder = $passwordEncoder;
-        parent::__construct($doctrine, $security, $parameterBag);
-
     }
 
     public function beforeSave($user)

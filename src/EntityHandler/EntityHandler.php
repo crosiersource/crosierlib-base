@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -21,32 +22,29 @@ use Symfony\Component\Security\Core\Security;
 abstract class EntityHandler implements EntityHandlerInterface
 {
 
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $doctrine;
+    protected EntityManagerInterface $doctrine;
+
+    protected Security $security;
+
+    protected ParameterBagInterface $parameterBag;
+
+    protected SyslogBusiness $syslog;
 
     /**
-     * @var Security
-     */
-    protected $security;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    protected $parameterBag;
-
-    /**
-     * EntityHandler constructor.
      * @param EntityManagerInterface $doctrine
      * @param Security $security
      * @param ParameterBagInterface $parameterBag
+     * @param SyslogBusiness $syslog
      */
-    public function __construct(EntityManagerInterface $doctrine, Security $security, ParameterBagInterface $parameterBag)
+    public function __construct(EntityManagerInterface $doctrine,
+                                Security $security,
+                                ParameterBagInterface $parameterBag,
+                                SyslogBusiness $syslog)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
         $this->parameterBag = $parameterBag;
+        $this->syslog = $syslog;
     }
 
     /**
@@ -216,8 +214,8 @@ abstract class EntityHandler implements EntityHandlerInterface
             $mudou = null;
             foreach ($jsonMetadata['campos'] as $campo => $metadata) {
                 if (isset($metadata['sugestoes']) &&
-                        (isset($metadata['tipo']) && $metadata['tipo'] === 'tags') or
-                        (isset($metadata['class']) && strpos($metadata['class'], 's2allownew') !== FALSE)) {
+                    (isset($metadata['tipo']) && $metadata['tipo'] === 'tags') or
+                    (isset($metadata['class']) && strpos($metadata['class'], 's2allownew') !== FALSE)) {
                     $valoresNaBase = $conn->fetchAll('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
                     foreach ($valoresNaBase as $v) {
                         $valExploded = explode(',', $v['val']);

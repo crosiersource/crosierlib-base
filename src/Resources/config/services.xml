@@ -12,6 +12,7 @@
             <argument type="service" id="doctrine.orm.default_entity_manager"/>
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
@@ -576,10 +577,11 @@
         <!-- UserEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
-            <argument index="0" type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument index="1" type="service" id="security.helper"/>
-            <argument index="2" type="service" id="parameter_bag"/>
-            <argument index="3" type="service" id="security.user_password_encoder.generic"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="security.helper"/>
+            <argument type="service" id="parameter_bag"/>
+            <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+            <argument type="service" id="security.user_password_encoder.generic"/>
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
