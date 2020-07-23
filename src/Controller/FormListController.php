@@ -92,8 +92,8 @@ abstract class FormListController extends BaseController
                 }
             } else {
                 $errors = $form->getErrors(true, true);
-                foreach ($errors as $error) {
-                    $this->addFlash('error', $error->getMessage());
+                foreach ($errors as /** @var \Symfony\Component\Form\FormError $error */ $error) {
+                    $this->addFlash('error', $error->getMessage() . ' - ' . $error->getOrigin()->getName());
                 }
             }
         }
