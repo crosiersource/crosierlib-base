@@ -464,6 +464,8 @@ abstract class FormListController extends BaseController
 
         $countByFilter = $repo->doCountByFilters($filterDatas);
 
+        $parameters['totalRegistros'] = $countByFilter;
+        
         $dados = $repo->findByFilters($filterDatas, $parameters['orders'], $parameters['start'] ?? 0, $parameters['limit'] ?? null);
 
         if (isset($fnHandleDadosList)) {
