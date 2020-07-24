@@ -450,6 +450,16 @@ abstract class FormListController extends BaseController
             $filterDatas = $this->getSomenteFilterDatasComValores($filterParams, $fnGetFilterDatas);
         }
 
+        if ($request->get('filter_order') && ($parameters['colunas'] ?? false)) {
+            $filterOrders = json_decode($request->get('filter_order'), true);
+            $parameters['orders'] = [];
+            foreach ($filterOrders as $filterOrder) {
+                $idx = $filterOrder[0]-1;
+                $idx = $idx < 0 ? 0 : $idx;
+                $parameters['orders'][$parameters['colunas'][$idx]] = strtoupper($filterOrder[1]);
+            }
+        }
+        
         $parameters['orders'] = $parameters['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
 
         $countByFilter = $repo->doCountByFilters($filterDatas);
