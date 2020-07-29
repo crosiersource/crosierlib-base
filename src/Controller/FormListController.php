@@ -454,8 +454,7 @@ abstract class FormListController extends BaseController
             $filterOrders = json_decode($request->get('filter_order'), true);
             $parameters['orders'] = [];
             foreach ($filterOrders as $filterOrder) {
-                $idx = $filterOrder[0]-1;
-                $idx = $idx < 0 ? 0 : $idx;
+                $idx = $filterOrder[0];
                 $parameters['orders'][$parameters['colunas'][$idx]] = strtoupper($filterOrder[1]);
             }
         }
