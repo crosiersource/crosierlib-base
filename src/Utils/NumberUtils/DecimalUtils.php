@@ -25,6 +25,9 @@ class DecimalUtils
      */
     public static function parseStr($str)
     {
+        if ((float)$str === 0.0) {
+            return 0.0;
+        }
         if (!$str) {
             return null;
         }
