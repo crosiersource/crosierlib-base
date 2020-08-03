@@ -166,8 +166,12 @@ class WhereBuilder
             return;
         }
 
-        if ($filter->fieldType === 'date' && !($filter->val instanceof \DateTime)) {
-            $filter->val = DateTimeUtils::parseDateStr($filter->val)->format('Y-m-d');
+        if ($filter->fieldType === 'date') {
+            if ($filter->val instanceof \DateTime) {
+                $filter->val = $filter->val->format('Y-m-d');
+            } else {
+                $filter->val = DateTimeUtils::parseDateStr($filter->val)->format('Y-m-d');
+            }
         }
     }
 
