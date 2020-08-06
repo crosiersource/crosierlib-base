@@ -26,7 +26,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    private $menuUUID;
+    public $menuUUID;
 
     /**
      *
@@ -36,7 +36,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    private $urlRegexp;
+    public $urlRegexp;
 
     /**
      *
@@ -46,7 +46,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    private $naoContendo;
+    public $naoContendo;
 
     /**
      *
@@ -56,7 +56,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    private $quem;
+    public $quem;
 
     /**
      * @return string|null
