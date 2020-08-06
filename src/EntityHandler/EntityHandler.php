@@ -116,6 +116,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         $newE->setUserUpdatedId(null);
         $this->beforeClone($newE);
         $this->save($newE);
+        $this->afterClone($newE, $e);
         return $newE;
     }
 
@@ -125,6 +126,17 @@ abstract class EntityHandler implements EntityHandlerInterface
      * @param $entityId
      */
     public function beforeClone($entityId)
+    {
+    }
+
+    /**
+     * Implementação vazia pois não é obrigatório.
+     *
+     * @param $newEntityId
+     * @param $entityId
+     * @throws ViewException
+     */
+    public function afterClone($newEntityId, $entityId)
     {
     }
 
