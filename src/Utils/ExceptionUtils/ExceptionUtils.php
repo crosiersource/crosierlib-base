@@ -21,7 +21,7 @@ class ExceptionUtils
      * @param \Exception $e
      * @return string
      */
-    public static function treatException(\Exception $e): string
+    public static function treatException(\Throwable $e): string
     {
         if ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
             return self::treatDriverException($e);
