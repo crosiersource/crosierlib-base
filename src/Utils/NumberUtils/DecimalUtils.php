@@ -32,7 +32,8 @@ class DecimalUtils
             return null;
         }
         $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
-        return $fmt->parse($str);
+        $formatted = $fmt->parse($str);
+        return $formatted ? $formatted : null;
     }
 
     /**
