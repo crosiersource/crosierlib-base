@@ -22,15 +22,16 @@
                         {% block btns %}
 
                             {% if preventSubmit == false %}
-                                <button type="button" class="btn btn-primary"
-                                        onclick="window.location.href='{{ url(formRoute, formRouteParams|default([])) }}'">
-                                    <i class="fas fa-file" aria-hidden="true"></i> Novo
-                                </button>
+                                <a type="button" class="btn btn-info"
+                                   href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
+                                    <i class="fas fa-file" aria-hidden="true"></i>
+                                </a>
                             {% endif %}
 
                             {% if listRoute is defined %}
-                                <a role="button" class="btn btn-secondary" href="{{ url(listRoute) }}">
-                                    <i class="fas fa-list"></i> Listar
+                                <a role="button" class="btn btn-outline-secondary" href="{{ url(listRoute) }}"
+                                   title="Listar">
+                                    <i class="fas fa-list"></i>
                                 </a>
                             {% endif %}
 
