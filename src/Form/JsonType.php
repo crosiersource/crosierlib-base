@@ -448,7 +448,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "compo":
             case "select":
             case "uf":
-                $form->setData($val !== '' ? $val : null);
+                $form->setData($val);// !== '' ? $val : null);
                 break;
             case "tags":
                 if (!is_array($val)) {
@@ -494,7 +494,7 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function setViewData(array &$viewData, string $nomeDoCampo, array $metadata, $val = null)
     {
-        if (!$val) return;
+        // if ($val === null) return;
         switch ($metadata['tipo']) {
             case "string":
             case "fone":
@@ -516,24 +516,40 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-                if (!is_numeric($val)) {
-                    $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
-                    $number = $fmt->parse($val);
-                    $viewData[$nomeDoCampo] = $number;
+                if ($val) {
+                    if (!is_numeric($val)) {
+                        $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+                        $number = $fmt->parse($val);
+                        $viewData[$nomeDoCampo] = $number;
+                    } else {
+                        $viewData[$nomeDoCampo] = $val;
+                    }
                 } else {
-                    $viewData[$nomeDoCampo] = $val;
+                    $viewData[$nomeDoCampo] = null;
                 }
                 break;
             case 'date':
-                if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
-                $viewData[$nomeDoCampo] = $val->format('Y-m-d');
+                if ($val) {
+                    if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
+                    $viewData[$nomeDoCampo] = $val->format('Y-m-d');
+                } else {
+                    $viewData[$nomeDoCampo] = null;
+                }
                 break;
             case 'datetime':
-                if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
-                $viewData[$nomeDoCampo] = $val->format('Y-m-d H:m:i');
+                if ($val) {
+                    if (!$val instanceof \DateTime) throw new \LogicException($nomeDoCampo . ' is not DateTime');
+                    $viewData[$nomeDoCampo] = $val->format('Y-m-d H:m:i');
+                } else {
+                    $viewData[$nomeDoCampo] = null;
+                }
                 break;
             case "compo":
-                $viewData[$nomeDoCampo] = implode('|', $val);
+                if ($val) {
+                    $viewData[$nomeDoCampo] = implode('|', $val);
+                } else {
+                    $viewData[$nomeDoCampo] = null;
+                }
                 break;
             default:
                 throw new \LogicException('tipo N/D para campo ' . $nomeDoCampo . ': ' . $metadata['tipo']);
