@@ -32,6 +32,8 @@ class JsonType extends AbstractType implements DataMapperInterface
 
     private ?array $jsonData = null;
 
+    private bool $disabled = false;
+
     /**
      * {@inheritdoc}
      */
@@ -41,6 +43,7 @@ class JsonType extends AbstractType implements DataMapperInterface
 
         $this->jsonMetadata = $options['jsonMetadata'] ?? null;
         $this->jsonData = $options['jsonData'] ?? null;
+        $this->disabled = $options['disabled'] ?? false;
 
         if ($this->jsonMetadata) {
             foreach ($this->jsonMetadata['campos'] as $nome => $metadata) {
@@ -123,7 +126,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false,
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
             'attr' => [
                 'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? '')
             ]
@@ -142,7 +145,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false,
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
             'attr' => [
                 'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? ''),
                 'style' => isset($metadata['height']) ? ('height: ' . $metadata['height']) : null
@@ -165,7 +168,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'attr' => [
                 'class' => 'summernote'
             ],
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -181,7 +184,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'mapped' => false,
             'label' => $metadata['label'] ?? $nome,
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -202,7 +205,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'attr' => [
                 'class' => 'crsr-dec' . $metadata['tipo'][7]
             ],
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -223,7 +226,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'attr' => [
                 'class' => 'crsr-money'
             ],
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -245,7 +248,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'class' => 'crsr-date'
             ],
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -265,7 +268,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'format' => 'dd/MM/yyyy HH:mm:ss',
             'attr' => ['class' => 'crsr-datetime'],
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -288,7 +291,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'class' => 'autoSelect2'
             ],
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -324,7 +327,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'data-token-separator' => ',',
             ],
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -344,7 +347,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             'attr' => [
             ],
             'required' => $metadata['required'] ?? false,
-            'disabled' => $metadata['disabled'] ?? false
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
@@ -386,6 +389,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
             ],
             'required' => $metadata['required'] ?? false,
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
         ]);
     }
 
