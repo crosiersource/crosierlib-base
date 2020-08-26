@@ -508,7 +508,11 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $viewData[$nomeDoCampo] = $val;
                 break;
             case "tags":
-                $viewData[$nomeDoCampo] = implode(',', $val);
+                if ($val && is_array($val) && !(count($val) === 1 && !$val[0])) {
+                    $viewData[$nomeDoCampo] = implode(',', $val);
+                } else {
+                    $viewData[$nomeDoCampo] = null;
+                }
                 break;
             case "decimal1":
             case "decimal2":
