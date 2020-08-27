@@ -435,6 +435,13 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "string":
             case "textarea":
             case "html":
+            case "fone":
+            case "email":
+            case "compo":
+            case "select":
+            case "uf":
+                $form->setData($val);
+                break;
             case "int":
             case "bool":
             case "decimal1":
@@ -443,12 +450,7 @@ class JsonType extends AbstractType implements DataMapperInterface
             case "decimal4":
             case "decimal5":
             case "preco":
-            case "fone":
-            case "email":
-            case "compo":
-            case "select":
-            case "uf":
-                $form->setData($val);// !== '' ? $val : null);
+                $form->setData($val !== '' ? $val : null);
                 break;
             case "tags":
                 if (!is_array($val)) {
