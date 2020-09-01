@@ -107,6 +107,7 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     public function doClone($e)
     {
+        $this->getDoctrine()->beginTransaction();
         /** @var EntityId $newE */
         $newE = clone $e;
         $newE->setId(null);
@@ -117,6 +118,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         $this->beforeClone($newE);
         $this->save($newE);
         $this->afterClone($newE, $e);
+        $this->getDoctrine()->commit();
         return $newE;
     }
 
@@ -133,10 +135,10 @@ abstract class EntityHandler implements EntityHandlerInterface
      * Implementação vazia pois não é obrigatório.
      *
      * @param $newEntityId
-     * @param $entityId
+     * @param $oldEntityId
      * @throws ViewException
      */
-    public function afterClone($newEntityId, $entityId)
+    public function afterClone($newEntityId, $oldEntityId)
     {
     }
 
