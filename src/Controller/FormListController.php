@@ -50,10 +50,11 @@ abstract class FormListController extends BaseController
      * @param EntityId|null $entityId
      * @param array $parameters
      * @param bool $preventSubmit
+     * @param \Closure|null $fnHandleRequestOnValid
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws ViewException
      */
-    public function doForm(Request $request, EntityId $entityId = null, $parameters = [], $preventSubmit = false): Response
+    public function doForm(Request $request, EntityId $entityId = null, array $parameters = [], bool $preventSubmit = false, ?\Closure $fnHandleRequestOnValid = null): Response
     {
         if (!isset($parameters['typeClass'])) {
             throw new ViewException('typeClass não informado');
@@ -78,7 +79,11 @@ abstract class FormListController extends BaseController
             if ($form->isValid()) {
                 try {
                     $entity = $form->getData();
-                    $this->handleRequestOnValid($request, $entity);
+                    if ($fnHandleRequestOnValid) {
+                        $fnHandleRequestOnValid($request, $entity);
+                    } else {
+                        $this->handleRequestOnValid($request, $entity);
+                    }
                     $entityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     $this->afterSave($entity);
