@@ -80,9 +80,9 @@ abstract class FormListController extends BaseController
                 try {
                     $entity = $form->getData();
                     if ($fnHandleRequestOnValid) {
-                        $fnHandleRequestOnValid($request, $entity);
+                        $fnHandleRequestOnValid($request, $entity, $parameters);
                     } else {
-                        $this->handleRequestOnValid($request, $entity);
+                        $this->handleRequestOnValid($request, $entity, $parameters);
                     }
                     $entityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
@@ -137,7 +137,7 @@ abstract class FormListController extends BaseController
      * @param Request $request
      * @param $entity
      */
-    public function handleRequestOnValid(Request $request, $entity): void
+    public function handleRequestOnValid(Request $request, $entity, ?array &$parameters = []): void
     {
 
     }

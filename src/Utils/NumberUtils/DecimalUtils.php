@@ -89,4 +89,29 @@ class DecimalUtils
         return $div * $neg;
     }
 
+
+    /**
+     * Gera parcelas jogando a diferença para a primeira ou a última.
+     *
+     * @param float $total
+     * @param int $qtdeParcelas
+     * @param bool|null $primeiraMaior
+     * @return array
+     */
+    public static function gerarParcelas(float $total, int $qtdeParcelas, ?bool $primeiraMaior = true) {
+        $div = bcdiv($total, $qtdeParcelas, 2);
+        $totDiv = bcmul($div, $qtdeParcelas, 2);
+        $diff = bcsub($total, $totDiv, 2);
+        $parcelas = [];
+        for ($i=0 ; $i<$qtdeParcelas ; $i++) {
+            $parcelas[$i] = $totDiv;
+        }
+        if ($primeiraMaior) {
+            $parcelas[0] = bcadd($div, $diff, 2);
+        } else {
+            $parcelas[count($parcelas)-1] = bcadd($div, $diff, 2);
+        }
+        return $parcelas;
+    }
+
 }
