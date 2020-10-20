@@ -129,7 +129,8 @@ class JsonType extends AbstractType implements DataMapperInterface
             'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
             'attr' => [
                 'class' => isset($metadata['notuppercase']) && $metadata['notuppercase'] === true ? 'notuppercase' : '' . ($metadata['css_class'] ?? '')
-            ]
+            ],
+            'trim' => isset($metadata['trim']) && (bool)$metadata['trim'] === false ? false : true
         ]);
     }
 
