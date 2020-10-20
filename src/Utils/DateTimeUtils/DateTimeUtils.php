@@ -64,7 +64,7 @@ class DateTimeUtils
         }
 
         if (strlen($dateStr) === 19) { // dd/mm/YYYY 12:34:00
-            if (preg_match('/\d{4}-\d{2}-\d{2}/ \d{2}\:\d{2}\:\d{2}', $dateStr)) {
+            if (preg_match('/\d{4}-\d{2}-\d{2} \d{2}\:\d{2}\:\d{2}/', $dateStr)) {
                 $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $dateStr);
             } else {
                 $dt = \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
