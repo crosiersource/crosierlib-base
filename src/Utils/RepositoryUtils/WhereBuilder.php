@@ -402,7 +402,11 @@ class WhereBuilder
                 break;
             case 'IN':
             case 'NOT_IN':
-                $filter->val = explode(',', mb_strtolower(implode(',', $filter->val)));
+                if (is_array($filter->val)) {
+                    $filter->val = explode(',', mb_strtolower(implode(',', $filter->val)));
+                } else {
+                    $filter->val = mb_strtolower($filter->val));
+                }
                 $qb->setParameter($fieldP, $filter->val);
                 break;
             case 'EQ_DIAMES':
