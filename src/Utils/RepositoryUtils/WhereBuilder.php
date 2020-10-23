@@ -307,11 +307,11 @@ class WhereBuilder
                     break;
                 case 'IN':
                     $orX->add($qb->expr()
-                        ->in($field, $fieldP));
+                        ->in($qb->expr()->lower($field), $fieldP));
                     break;
                 case 'NOT_IN':
                     $orX->add($qb->expr()
-                        ->notIn($field, $fieldP));
+                        ->notIn($qb->expr()->lower($field), $fieldP));
                     break;
                 case 'LIKE':
                 case 'LIKE_START':
@@ -322,7 +322,7 @@ class WhereBuilder
                     break;
                 case 'NOT_LIKE':
                     $orX->add($qb->expr()
-                        ->notLike($field, $fieldP));
+                        ->notLike($qb->expr()->lower($field), $fieldP));
                     break;
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
@@ -386,19 +386,24 @@ class WhereBuilder
                 }
                 break;
             case 'LIKE':
-                $qb->setParameter($fieldP, '%' . strtolower($filter->val) . '%');
+                $qb->setParameter($fieldP, '%' . mb_strtolower($filter->val) . '%');
                 break;
             case 'LIKE_START':
-                $qb->setParameter($fieldP, strtolower($filter->val) . '%');
+                $qb->setParameter($fieldP, mb_strtolower($filter->val) . '%');
                 break;
             case 'LIKE_END':
-                $qb->setParameter($fieldP, '%' . strtolower($filter->val));
+                $qb->setParameter($fieldP, '%' . mb_strtolower($filter->val));
                 break;
             case 'EQ_BOOL':
                 $qb->setParameter($fieldP, $filter->val === 'true');
                 break;
             case 'IS_NULL':
             case 'IS_NOT_NULL':
+                break;
+            case 'IN':
+            case 'NOT_IN':
+                $filter->val = explode(',', mb_strtolower(implode(',', $filter->val)));
+                $qb->setParameter($fieldP, $filter->val);
                 break;
             case 'EQ_DIAMES':
             case 'LIKE_ONLY':
