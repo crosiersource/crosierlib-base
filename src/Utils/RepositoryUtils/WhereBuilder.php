@@ -305,11 +305,19 @@ class WhereBuilder
                     $orX->add($qb->expr()
                         ->isNotNull($field));
                     break;
-                case 'IN': // FIXME: criar um IN_STRING pq o doctrine pode usar o IN em caso de entidades fazendo as conversões para o id
-                    $orX->add($qb->expr()->in($field, $fieldP));
+                case 'IN':
+                    if ($filter->fieldType === 'string') {
+                        $orX->add($qb->expr()->in($qb->expr()->lower($field), $fieldP));
+                    } else {
+                        $orX->add($qb->expr()->in($field, $fieldP));
+                    }
                     break;
                 case 'NOT_IN':
-                    $orX->add($qb->expr()->notIn($field, $fieldP));
+                    if ($filter->fieldType === 'string') {
+                        $orX->add($qb->expr()->in($qb->expr()->lower($field), $fieldP));
+                    } else {
+                        $orX->add($qb->expr()->notIn($field, $fieldP));
+                    }
                     break;
                 case 'LIKE':
                 case 'LIKE_START':
@@ -398,15 +406,17 @@ class WhereBuilder
             case 'IS_NULL':
             case 'IS_NOT_NULL':
                 break;
-//            case 'IN':
-//            case 'NOT_IN':
-//                if (is_array($filter->val)) {
-//                    $filter->val = explode(',', mb_strtolower(implode(',', $filter->val)));
-//                } else {
-//                    $filter->val = [mb_strtolower($filter->val)];
-//                }
-//                $qb->setParameter($fieldP, $filter->val);
-//                break;
+            case 'IN':
+            case 'NOT_IN':
+                if ($filter->fieldType === 'string') {
+                    if (is_array($filter->val)) {
+                        $filter->val = explode(',', mb_strtolower(implode(',', $filter->val)));
+                    } else {
+                        $filter->val = [mb_strtolower($filter->val)];
+                    }
+                }
+                $qb->setParameter($fieldP, $filter->val);
+                break;
             case 'EQ_DIAMES':
             case 'LIKE_ONLY':
             case 'NOT_LIKE':
