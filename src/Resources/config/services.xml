@@ -626,6 +626,14 @@
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
         </service>
 
+        <!-- DiaUtilBusiness -->
+        <service id="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"
+                 class="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness">
+            <argument type="service" id="doctrine.dbal.default_connection"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness"
+                 alias="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"/>
+
 
     </services>
 </container>

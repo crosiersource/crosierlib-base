@@ -28,7 +28,7 @@ class AppConfig implements EntityId
      *
      * @var string|null
      */
-    private $chave;
+    private ?string $chave;
 
     /**
      *
@@ -38,7 +38,7 @@ class AppConfig implements EntityId
      *
      * @var string|null
      */
-    private $valor;
+    private ?string $valor;
 
     /**
      * @ORM\Column(name="is_json", type="boolean", nullable=false)
@@ -54,7 +54,7 @@ class AppConfig implements EntityId
      * @NotUppercase()
      * @Groups("entity")
      */
-    private $appUUID;
+    private ?string $appUUID;
 
     public function __construct(?string $chave = null, ?string $appUUID = null)
     {

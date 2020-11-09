@@ -3,6 +3,8 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 
 
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+
 /**
  * Class DateTimeUtils.
  *
@@ -144,10 +146,10 @@ class DateTimeUtils
         // 01 - ultimoDia
         // 16 - ultimoDia
         // 16 - 15
-        return ($dtIniDia === $dtFimDia) OR
-            ($dtIniDia === 1 && $dtFimDia === 15) OR
-            ($dtIniDia === 1 && $dtFimEhUltimoDiaDoMes) OR
-            ($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) OR
+        return ($dtIniDia === $dtFimDia) or
+            ($dtIniDia === 1 && $dtFimDia === 15) or
+            ($dtIniDia === 1 && $dtFimEhUltimoDiaDoMes) or
+            ($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) or
             ($dtIniDia === 16 && $dtFimDia === 15);
 
     }
@@ -341,7 +343,7 @@ class DateTimeUtils
     /**
      * Retorna o primeiro dia do mês a partir de uma data.
      *
-     * @param \DateTime $dt
+     * @param \DateTime|null $dt
      * @return bool|\DateTime
      */
     public static function getPrimeiroDiaMes(\DateTime $dt = null)
@@ -403,7 +405,6 @@ class DateTimeUtils
      */
     public static function getDatasMesAno(string $mesano): array
     {
-        $datas = [];
         $dtIni = \DateTime::createFromFormat('Ymd', $mesano . '01');
         $dtIni->setTime(0, 0, 0, 0);
 
@@ -411,6 +412,53 @@ class DateTimeUtils
         $dtFim->setTime(23, 59, 59, 99999);
 
         return ['i' => $dtIni, 'f' => $dtFim];
+    }
+
+    /**
+     * @param \DateTime $dtIni
+     * @param \DateTime $dtFim
+     * @return array
+     * @throws ViewException
+     */
+    public static function getDatesList(\DateTime $dtIni, \DateTime $dtFim): array
+    {
+        if ($dtFim->getTimestamp() < $dtIni->getTimestamp()) {
+            throw new ViewException('dtFim < dtIni');
+        }
+        $list = [];
+        $dtAux = clone($dtIni);
+        $dtAux->setTime(12, 0, 0, 0);
+        $dtFim->setTime(12, 0, 0, 0);
+        $list[] = clone($dtAux);
+
+        while (true) {
+            $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') + 1));
+            if ($dtAux->getTimestamp() > $dtFim->getTimestamp()) {
+                break;
+            }
+            $list[] = clone($dtAux);
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param \DateTime $dt
+     * @return string
+     */
+    public static function getDiaDaSemana(\DateTime $dt)
+    {
+        $d = $dt->format('w');
+        $dias = [
+            '0' => 'Domingo',
+            '1' => 'Segunda',
+            '2' => 'Terça',
+            '3' => 'Quarta',
+            '4' => 'Quinta',
+            '5' => 'Sexta',
+            '6' => 'Sábado'
+        ];
+        return $dias[(int)$d];
     }
 
 }
