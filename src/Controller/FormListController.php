@@ -164,7 +164,7 @@ abstract class FormListController extends BaseController
     public function redirectTo(Request $request, EntityId $entityId, string $formRoute, ?array $formRouteParams = []): ?\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($request->getSession()->has('refstoback') &&
-            $request->getSession()->get('refstoback')[$formRoute]) {
+            ($request->getSession()->get('refstoback')[$formRoute] ?? false)) {
 
             $tos = $request->getSession()->get('refstoback');
             $url = $tos[$formRoute];
