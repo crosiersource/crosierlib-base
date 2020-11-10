@@ -88,10 +88,10 @@ abstract class FormListController extends BaseController
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     $this->afterSave($entity);
                     return $this->redirectTo($request, $entity, $parameters['formRoute'], $parameters['routeParams'] ?? []); // , $parameters);
-                } catch (ViewException $e) {
-                    $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
                     $msg = ExceptionUtils::treatException($e);
+                    $this->logger->error($msg);
+                    $this->logger->error($e->getMessage());
                     $this->addFlash('error', $msg);
                     $this->addFlash('error', 'Erro ao salvar!');
                 }
