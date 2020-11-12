@@ -131,8 +131,8 @@ class WhereBuilder
         }
         if ($filter->filterType === 'BETWEEN_IDADE') {
 
-            $f = $filter->val['f']; // auxiliar, pois poderá ser alterado
-            if ($filter->val['i']) {
+            $f = $filter->val['f'] ?? null; // auxiliar, pois poderá ser alterado
+            if ($filter->val['i'] ?? null) {
                 $max = new \DateTime('now');
                 $max->sub(new \DateInterval('P' . (int)$filter->val['i'] . 'Y'));
                 $filter->val['f'] = $max->format('Y-m-d');
