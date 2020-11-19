@@ -22,37 +22,32 @@ use Symfony\Component\Security\Core\Security;
 class BaseController extends AbstractController
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var StoredViewInfoBusiness */
-    protected $storedViewInfoBusiness;
+    protected StoredViewInfoBusiness $storedViewInfoBusiness;
 
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /** @var EntMenuLocatorRepository */
-    private $entMenuLocatorRepository;
+    private EntMenuLocatorRepository $entMenuLocatorRepository;
 
-    /** @var Security */
-    private $security;
+    private Security $security;
 
     protected SyslogBusiness $syslog;
 
     /**
      * BaseController constructor.
      * @param EntityManagerInterface $doctrine
+     * @param StoredViewInfoBusiness $storedViewInfoBusiness
      * @param SessionInterface $session
      * @param LoggerInterface $logger
      * @param RequestStack $requestStack
      * @param EntMenuLocatorRepository $entMenuLocatorRepository
      * @param Security $security
+     * @param SyslogBusiness $syslog
      */
     public function __construct(EntityManagerInterface $doctrine,
                                 StoredViewInfoBusiness $storedViewInfoBusiness,
