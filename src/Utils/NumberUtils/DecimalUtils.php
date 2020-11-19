@@ -38,6 +38,22 @@ class DecimalUtils
     }
 
     /**
+     * Formata um float de acordo com o padrão brasileiro.
+     *
+     * @param $float
+     * @return false|float|int|mixed|null
+     */
+    public static function formatFloat($float, $decimals = 2)
+    {
+        if (!$float) {
+            return null;
+        }
+        $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+        $formatted = $fmt->format($float);
+        return $formatted;
+    }
+
+    /**
      * @param $number
      * @param int $precision
      * @param int $tipo
