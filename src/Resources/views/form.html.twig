@@ -21,7 +21,7 @@
 
                         {% block btns %}
 
-                            {% if preventSubmit == false %}
+                            {% if preventSubmit|default(false) == false %}
                                 <a type="button" class="btn btn-info"
                                    href="{{ url(formRoute, formRouteParams|default([])) }}" title="Novo">
                                     <i class="fas fa-file" aria-hidden="true"></i>
@@ -49,7 +49,7 @@
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
 
-                {% if preventSubmit == false %}
+                {% if preventSubmit|default(false) == false %}
                     <div class="row">
                         <div class="col text-right">
                             <button type="submit" class="btn btn-primary" value="Salvar">

@@ -27,12 +27,10 @@ use Symfony\Component\Serializer\Serializer;
 abstract class FormListController extends BaseController
 {
 
-    /** @var LoggerInterface */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /** @var EntityHandler */
     // deve ser setado a partir do setEntityHandler da subclasse com '@required'
-    protected $entityHandler;
+    protected EntityHandler $entityHandler;
 
     /**
      * @required
@@ -403,7 +401,7 @@ abstract class FormListController extends BaseController
     /**
      * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados já serializados em JSON.
      *
-     * @param array $dados
+     * @param array $r
      */
     public function handleSerializedList(array &$r): void
     {
@@ -463,13 +461,13 @@ abstract class FormListController extends BaseController
                 $parameters['orders'][$parameters['colunas'][$idx]] = strtoupper($filterOrder[1]);
             }
         }
-        
+
         $parameters['orders'] = $parameters['orders'] ?? ['updated' => 'DESC', 'id' => 'DESC'];
 
         $countByFilter = $repo->doCountByFilters($filterDatas);
 
         $parameters['totalRegistros'] = $countByFilter;
-        
+
         $dados = $repo->findByFilters($filterDatas, $parameters['orders'], $parameters['start'] ?? 0, $parameters['limit'] ?? null);
 
         if (isset($fnHandleDadosList)) {

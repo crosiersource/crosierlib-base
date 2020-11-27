@@ -21,10 +21,12 @@
 
                 <div class="d-sm-flex flex-nowrap ml-auto">
 
-                    <a role="button" class="btn btn-primary ml-1" title="Novo"
-                       href="{{ url(formRoute) }}">
-                        <i class="fas fa-file" aria-hidden="true"></i>
-                    </a>
+                    {% if formRoute|default(false) %}
+                        <a role="button" class="btn btn-primary ml-1" title="Novo"
+                           href="{{ url(formRoute) }}">
+                            <i class="fas fa-file" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
 
                 </div>
             </div>
