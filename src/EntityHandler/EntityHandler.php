@@ -271,7 +271,7 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $property->setValue($entityId, mb_strtoupper($property->getValue($entityId)));
             }
         } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Erro em handleUppercaseFields');
+            throw new \RuntimeException('Erro em handleUppercaseFields', 0, $e);
         }
     }
 

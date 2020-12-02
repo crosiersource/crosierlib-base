@@ -61,11 +61,12 @@ class Select2JsUtils
      *  });
      *
      * @param array $entities
-     * @param \Closure $fn
+     * @param \Closure|string $keyText
      * @param null $entitiesIdsSelecteds
+     * @param $keyId
      * @return array
      */
-    public static function toSelect2DataFn(array $entities, \Closure $fn, $entitiesIdsSelecteds = null): array
+    public static function toSelect2DataFn(array $entities, $keyText, $entitiesIdsSelecteds = null, $keyId = 'id'): array
     {
         try {
             if ($entitiesIdsSelecteds) {
@@ -75,22 +76,41 @@ class Select2JsUtils
             }
             $select2Data = [];
             foreach ($entities as $entity) {
-                $text = $fn($entity);
+                if (is_callable($keyText)) {
+                    $text = $keyText($entity);
+                } else {
+                    $text = $entity[$keyText];
+                }
+
                 if ($entity instanceof EntityId) {
+
+                    if (is_callable($keyId)) {
+                        $id = $keyId($entity);
+                    } else {
+                        $id = $entity->getId();
+                    }
+
                     $select2Data[] = [
                         'id' => $entity->getId(),
                         'text' => $text,
                         'selected' => $entitiesIdsSelecteds ? in_array($entity->getId(), $entitiesIdsSelecteds, false) : false
                     ];
                 } else {
-                    if (!isset($entity['id'])) {
+
+                    if (is_callable($keyId)) {
+                        $id = $keyId($entity);
+                    } else {
+                        $id = $entity[$keyId];
+                    }
+
+                    if (!$id) {
                         throw new \RuntimeException('id não encontrado');
                     }
-                    $select2Data[] = [
-                        'id' => $entity['id'],
+                    $select2Data[] = array_merge([
+                        'id' => $id,
                         'text' => $text,
-                        'selected' => $entitiesIdsSelecteds ? in_array($entity['id'], $entitiesIdsSelecteds, false) : false
-                    ];
+                        'selected' => $entitiesIdsSelecteds ? in_array($id, $entitiesIdsSelecteds, false) : false
+                    ], $entity);
                 }
             }
             return $select2Data;

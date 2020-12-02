@@ -61,7 +61,7 @@ class AppConfigRepository extends FilterRepository
     public function findConfigByChaveAndAppNome(string $chave, string $appNome): ?AppConfig
     {
         try {
-            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac JOIN CrosierSource\CrosierLibBaseBundle\Entity\Config\App app WITH ac.app = app WHERE app.nome = :appNome AND ac.chave = :chave';
+            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac JOIN CrosierSource\CrosierLibBaseBundle\Entity\Config\App app WITH ac.appUUID = app.UUID WHERE app.nome = :appNome AND ac.chave = :chave';
             $qry = $this->getEntityManager()->createQuery($dql);
             $qry->setParameter('appNome', $appNome);
             $qry->setParameter('chave', $chave);
