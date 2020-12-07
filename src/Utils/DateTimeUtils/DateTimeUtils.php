@@ -461,4 +461,16 @@ class DateTimeUtils
         return $dias[(int)$d];
     }
 
+    /**
+     * @param \DateTime $dtFim
+     * @param \DateTime $dtIni
+     * @return int
+     */
+    public static function diffInMinutes(\DateTime $dtFim, \DateTime $dtIni): int
+    {
+        $diff = $dtFim->diff($dtIni);
+        $minTotal = ($diff->days * 1440) + ($diff->h * 60) + $diff->i;
+        return $minTotal;
+    }
+
 }
