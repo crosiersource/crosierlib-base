@@ -98,6 +98,22 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
+
+    /**
+     * @param EntityId $e
+     * @return EntityId
+     */
+    public function cloneEntityId(EntityId $e)
+    {
+        $newE = clone $e;
+        $newE->setId(null);
+        $newE->setInserted(null);
+        $newE->setUpdated(null);
+        $newE->setUserInsertedId(null);
+        $newE->setUserUpdatedId(null);
+        return $newE;
+    }
+
     /**
      * Copia o objeto removendo informações específicas.
      *
@@ -109,12 +125,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
         $this->getDoctrine()->beginTransaction();
         /** @var EntityId $newE */
-        $newE = clone $e;
-        $newE->setId(null);
-        $newE->setInserted(null);
-        $newE->setUpdated(null);
-        $newE->setUserInsertedId(null);
-        $newE->setUserUpdatedId(null);
+        $newE = $this->cloneEntityId($e);
         $this->beforeClone($newE);
         $this->save($newE);
         $this->afterClone($newE, $e);
