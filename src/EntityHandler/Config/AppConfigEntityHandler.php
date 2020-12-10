@@ -18,4 +18,13 @@ class AppConfigEntityHandler extends EntityHandler
     {
         return AppConfig::class;
     }
+
+    public function beforeSave(/** @var AppConfig $appConfig */ $appConfig)
+    {
+        if (strpos($appConfig->getChave(), 'json') !== FALSE) {
+            $appConfig->isJson = true;
+        }
+    }
+
+
 }

@@ -112,5 +112,14 @@ class AppConfig implements EntityId
         return $this;
     }
 
+    public function getValorJsonDecoded(): ?array
+    {
+        if ($this->isJson) {
+            return json_decode($this->getValor(), true);
+        } else {
+            return null;
+        }
+    }
+
 
 }

@@ -29,8 +29,12 @@ abstract class FormListController extends BaseController
 
     protected LoggerInterface $logger;
 
-    // deve ser setado a partir do setEntityHandler da subclasse com '@required'
+    /**
+     * deve ser setado a partir do setEntityHandler da subclasse com '@ required'
+     * @var EntityHandler $entityHandler
+     */
     protected $entityHandler;
+
 
     /**
      * @required
