@@ -105,12 +105,14 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     public function cloneEntityId(EntityId $e)
     {
+        $this->beforeClone($e);
         $newE = clone $e;
         $newE->setId(null);
         $newE->setInserted(null);
         $newE->setUpdated(null);
         $newE->setUserInsertedId(null);
         $newE->setUserUpdatedId(null);
+        $newE->setEstabelecimentoId(null);
         return $newE;
     }
 
@@ -126,9 +128,8 @@ abstract class EntityHandler implements EntityHandlerInterface
         $this->getDoctrine()->beginTransaction();
         /** @var EntityId $newE */
         $newE = $this->cloneEntityId($e);
-        $this->beforeClone($newE);
-        $this->save($newE);
         $this->afterClone($newE, $e);
+        $this->save($newE);
         $this->getDoctrine()->commit();
         return $newE;
     }
