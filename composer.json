@@ -1,6 +1,5 @@
 {
   "name": "crosiersource/crosierlib-base",
-  "description": "Pacote base do Crosier",
   "type": "symfony-bundle",
   "license": "MIT",
   "authors": [
@@ -26,9 +25,9 @@
     "symfony/debug-bundle": "5.1.*",
     "symfony/form": "5.1.*",
     "symfony/monolog-bundle": "^3.0",
-    "symfony/orm-pack": "1.*",
+    "symfony/orm-pack": "2.*",
     "symfony/security-bundle": "5.1.*",
-    "symfony/serializer-pack": "1.*",
+    "symfony/serializer-pack": "^1",
     "symfony/validator": "5.1.*",
     "scienta/doctrine-json-functions": "~4.1",
     "symfony/webpack-encore-bundle": "^1.7"
@@ -41,6 +40,12 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": false,
+      "require": "5.1.*"
     }
   }
 }

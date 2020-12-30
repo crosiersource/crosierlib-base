@@ -51,7 +51,7 @@ trait APIAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        if (strpos($request->getPathInfo(), '/api/') === 0) {
+        if (strpos($request->getPathInfo(), '/api') === 0) {
             $this->logger->info('APIAuthenticator support!' . $request->getUri());
             if (!$request->headers->has('X-Authorization')) {
                 $this->logger->error('APIAuthenticator sem header X-Authorization');
