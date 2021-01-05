@@ -292,7 +292,7 @@ abstract class FormListController extends BaseController
                 $orders[$column] = $dir;
             }
             $draw = (int)$rParams['draw'];
-            parse_str($rParams['formPesquisar'], $formPesquisar);
+            parse_str($rParams['formPesquisar'] ?? null, $formPesquisar);
             if (is_array($defaultFilters)) {
                 $formPesquisar['filter'] = array_replace_recursive($formPesquisar['filter'], $defaultFilters['filter']);
             }
@@ -344,10 +344,8 @@ abstract class FormListController extends BaseController
 
     /**
      * Possibilidade de ser sobreescrito...
-     *
-     * @return \Doctrine\Common\Persistence\ObjectRepository
      */
-    public function getRepository(): \Doctrine\Common\Persistence\ObjectRepository
+    public function getRepository()
     {
         return $this->getDoctrine()->getRepository($this->getEntityHandler()->getEntityClass());
     }
