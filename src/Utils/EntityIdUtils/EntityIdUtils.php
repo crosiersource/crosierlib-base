@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
@@ -74,7 +75,7 @@ class EntityIdUtils
     {
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
+            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
             return $serializer->normalize($entityId, 'json',
                 [
@@ -98,7 +99,7 @@ class EntityIdUtils
     {
         try {
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new PhpDocExtractor());
+            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
             $entityNormalizer = new EntityNormalizer($this->em);
             $serializer = new Serializer([new DateTimeNormalizer(), new ArrayDenormalizer(), $entityNormalizer, $normalizer]);
             return $serializer->denormalize($entityArray, $type, 'json',
