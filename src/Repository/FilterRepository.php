@@ -67,7 +67,11 @@ abstract class FilterRepository extends EntityRepository
                     $col = 'e.' . $col;
                 }
                 if (strpos($col, 'jsonData') !== FALSE) {
-                    $col = 'JSON_EXTRACT(e.jsonData, \'$.' . substr($col, 11) . '\')';
+                    if (strpos($col, '.dt_') !== FALSE) {
+                        $col = 'CAST(JSON_UNQUOTE(JSON_EXTRACT(e.jsonData, \'$.' . substr($col, 11) . '\')) AS DATE)';
+                    } else {
+                        $col = 'JSON_EXTRACT(e.jsonData, \'$.' . substr($col, 11) . '\')';
+                    }
                 }
                 $qb->addOrderBy($col, $dir);
             }
