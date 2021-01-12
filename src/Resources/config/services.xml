@@ -635,5 +635,17 @@
                  alias="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"/>
 
 
+
+        <!-- EntityHandlerDataPersister -->
+        <service id="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"
+                 class="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <tag name="api_platform.data_persister"/>
+        </service>
+        <service id="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister"
+                 alias="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"/>
+
+
     </services>
 </container>
