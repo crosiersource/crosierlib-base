@@ -1,34 +1,33 @@
 {% extends '@CrosierLibBase/base.html.twig' %}
 
-
 {% block body %}
 
+    {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
+    <div class="c-wrapper c-fixed-components">
 
+        {{ include('@CrosierLibBase/header.html.twig') }}
 
+        <div class="c-body">
+            <main class="c-main">
+                <div class="container-fluid">
+                    <div class="fade-in">
+                        <main class="main">
+                            <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}"></div>
 
+                            {% block page_content %}
 
-    {{ include('@CrosierLibBase/header.html.twig') }}
+                            {% endblock %}
 
-    <div class="app-body">
-
-        {{ include('@CrosierLibBase/menuLateral.html.twig') }}
-
-        <main class="main">
-            <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}"></div>
-
-            {% block page_content %}
-
-            {% endblock %}
-
-
-            <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
-            <div id="at" data-value="{{ app.user.apiToken }}"></div>
-        </main>
-
-
+                            <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
+                            <div id="at" data-value="{{ app.user.apiToken }}"></div>
+                        </main>
+                    </div>
+                </div>
+            </main>
+            {{ include('@CrosierLibBase/footer.html.twig') }}
+        </div>
     </div>
-    {{ include('@CrosierLibBase/footer.html.twig') }}
 
 
 {% endblock %}

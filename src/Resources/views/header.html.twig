@@ -1,80 +1,10 @@
-<header class="app-header navbar blurriers" style="filter: blur(2px) grayscale(2)">
-    <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="{{ getEnv('CROSIERCORE_URL') }}">
-        <img class="navbar-brand-full ml-4" src="{{ getEnv('CROSIER_LOGO') }}" width="160" height="36"
-             alt="Crosier Logo">
-    </a>
-    <button style="margin-left: 40px" class="navbar-toggler sidebar-toggler d-md-down-none" type="button"
-            data-toggle="sidebar-lg-show">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <ul class="nav navbar-nav d-md-down-none">
-        <li class="nav-item px-3">
-            <a class="nav-link" href="#">{{ getEnv('APP_TITULO') }}</a>
-        </li>
-    </ul>
-    <ul class="nav navbar-nav ml-auto">
-
-        <li class="nav-item dropdown">
-            <a href="{{ getEnv('CROSIERCORE_URL') }}">
-                <img src="{{ crosierAsset('build/static/images/CROSIER_400x89.png') }}" width="80" height="18"
-                     alt="Crosier Logo" class="d-none d-md-block">
-            </a>
-        </li>
-
-        <li class="nav-item dropdown ml-4">
-            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-               aria-expanded="false">
-                <i class="fas fa-user"></i> {{ app.user.username }}
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-header text-center">
-                    <strong>Account</strong>
-                </div>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-bell-o"></i> Updates
-                    <span class="badge badge-info">42</span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-envelope-o"></i> Messages
-                    <span class="badge badge-success">42</span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-tasks"></i> Tasks
-                    <span class="badge badge-danger">42</span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-comments"></i> Comments
-                    <span class="badge badge-warning">42</span>
-                </a>
-                <div class="dropdown-header text-center">
-                    <strong>Settings</strong>
-                </div>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-user"></i> Profile</a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-wrench"></i> Settings</a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-usd"></i> Payments
-                    <span class="badge badge-secondary">42</span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-file"></i> Projects
-                    <span class="badge badge-primary">42</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-shield"></i> Lock Account</a>
-            </div>
-        </li>
-        <li class="nav-item d-md-down-none">
+<header class="c-header c-header-light c-header-fixed c-header-with-subheader">
+    <ul class="c-header-nav ml-auto mr-4">
+        <li class="c-header-nav-item d-md-down-none mx-2">
             <button type="button" class="btn btn-success mr-2 ml-2"
                     onclick="window.location.href = '{{ getEnv('CROSIERCORE_URL') }}/logout'"><i
                         class="fas fa-sign-out-alt"></i> Sair
             </button>
         </li>
     </ul>
-
 </header>

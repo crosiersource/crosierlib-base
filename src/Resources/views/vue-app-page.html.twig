@@ -1,0 +1,16 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+{% block up_scripts %}
+    {{ encore_entry_link_tags(jsEntry) }}
+{% endblock %}
+
+{% block page_content %}
+
+    <div id="app">
+    </div>
+
+{% endblock %}
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags(jsEntry) }}
+{% endblock %}

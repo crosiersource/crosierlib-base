@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
 
-
-
     <script>
         window.paceOptions = {
             ajax: {
@@ -35,19 +33,17 @@
     {% endblock %}
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<body class="c-app blurriers" style="filter: blur(2px) grayscale(2)">
 
 <div id="preloader"></div>
+
 
 {% block body %}
 {% endblock %}
 
+
 {{ include('@CrosierLibBase/Util/flashes.html.twig') }}
-
-
-
 {{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
-
 
 </body>
 
