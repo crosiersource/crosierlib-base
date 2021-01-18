@@ -53,6 +53,9 @@ trait APIAuthenticatorTrait
     {
         if (strpos($request->getPathInfo(), '/api') === 0) {
             $this->logger->info('APIAuthenticator support!' . $request->getUri());
+            if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
+                return true;
+            }
             if (!$request->headers->has('X-Authorization')) {
                 $this->logger->error('APIAuthenticator sem header X-Authorization');
             } elseif (!$this->security->getUser()) {
