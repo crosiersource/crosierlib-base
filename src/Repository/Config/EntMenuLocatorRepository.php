@@ -38,7 +38,8 @@ class EntMenuLocatorRepository extends FilterRepository
     public function getMenuByUrl(string $url, User $user): array
     {
         $cache = new FilesystemAdapter('entmenulocator', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-        $url_ = $string=preg_replace("/[^A-Za-z0-9]/", '', $url);
+        $url_ = preg_replace("/[^A-Za-z0-9]/", '', $url);
+
         return $cache->get('getMenuByUrl_' . $url_ . '_' . $user->getId(), function (ItemInterface $item) use ($url, $user) {
             try {
                 $sql = 'SELECT menu_uuid, quem, nao_contendo FROM cfg_entmenu_locator WHERE :url REGEXP url_regexp ORDER BY length(url_regexp), length(quem)';
@@ -46,7 +47,7 @@ class EntMenuLocatorRepository extends FilterRepository
                 /** @var PDOStatement $stmt */
                 $stmt = $conn->executeQuery($sql, ['url' => $url]);
                 $entMenuUUID = null;
-                while ($r = $stmt->fetch()) {
+                while ($r = $stmt->fetchAssociative()) {
                     $naoContendo = $r['nao_contendo'] ?? null;
                     if ($naoContendo) {
                         $naoContendoExps = explode(',', $naoContendo);
