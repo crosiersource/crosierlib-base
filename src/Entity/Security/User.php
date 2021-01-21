@@ -79,7 +79,6 @@ class User implements EntityId, UserInterface, \Serializable
      */
     private $userRoles;
 
-
     /**
      * @NotUppercase()
      * @ORM\Column(name="api_token", type="string", length=255, unique=true)

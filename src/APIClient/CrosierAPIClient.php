@@ -5,8 +5,11 @@ namespace CrosierSource\CrosierLibBaseBundle\APIClient;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -18,16 +21,11 @@ use Symfony\Component\Security\Core\Security;
 abstract class CrosierAPIClient
 {
 
-    /**
-     * @var Security
-     */
-    protected $security;
+    protected Security $security;
 
-    /** @var LoggerInterface */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /** @var string */
-    protected $baseURI;
+    protected string $baseURI;
 
 
     public function __construct(Security $security, LoggerInterface $logger)
@@ -41,7 +39,7 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return null|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function post($uri, $params = null, $asQueryString = false): ?string
     {
@@ -56,14 +54,14 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function doRequest($uri, $method, $params = null, $asQueryString = false): ?string
     {
         try {
             $authHeader = $this->getAuthHeader();
             if (!$this->getBaseURI()) {
-                throw new \RuntimeException('baseURI não definido');
+                throw new RuntimeException('baseURI não definido');
             }
             $uri = $this->getBaseURI() . $uri;
             $cParams = [];
@@ -79,16 +77,16 @@ abstract class CrosierAPIClient
                 ]
             );
             return $response->getBody()->getContents();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('URI: ' . $uri);
             $this->logger->error($e->getMessage());
-            throw new \RuntimeException('Erro - ' . $uri, 0, $e);
+            throw new RuntimeException('Erro - ' . $uri, 0, $e);
         }
     }
 
     /**
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAuthHeader()
     {
@@ -96,7 +94,7 @@ abstract class CrosierAPIClient
         $user = $this->security->getUser();
         if (!$user->getApiToken()) {
             $this->logger->error('user sem apiToken');
-            throw new \RuntimeException('user sem apiToken');
+            throw new RuntimeException('user sem apiToken');
         }
         $apiToken = $user && $user->getApiToken() ? $user->getApiToken() : ' ???';
         $authHeader['X-Authorization'] = 'Bearer ' . $apiToken;
@@ -126,7 +124,7 @@ abstract class CrosierAPIClient
      * @param null $params
      * @param bool $asQueryString
      * @return null|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function get($uri, $params = null, $asQueryString = true): ?string
     {
