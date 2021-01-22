@@ -42,7 +42,7 @@ class EntMenuLocatorRepository extends FilterRepository
 
         return $cache->get('getMenuByUrl_' . $url_ . '_' . $user->getId(), function (ItemInterface $item) use ($url, $user) {
             try {
-                $sql = 'SELECT menu_uuid, quem, nao_contendo FROM cfg_entmenu_locator WHERE :url REGEXP url_regexp ORDER BY length(url_regexp), length(quem)';
+                $sql = 'SELECT menu_uuid, quem, nao_contendo FROM cfg_entmenu_locator WHERE :url REGEXP url_regexp ORDER BY length(url_regexp) DESC, length(quem)';
                 $conn = $this->getEntityManager()->getConnection();
                 /** @var PDOStatement $stmt */
                 $stmt = $conn->executeQuery($sql, ['url' => $url]);
