@@ -24,8 +24,8 @@
                     <hr/>
                 </li>
 
-            {% elseif ent.tipo == 'LABEL' %}
-                <li class="c-sidebar-nav-title">{{ filho.label }}</li>
+            {% elseif ent.tipo == 'TITLE' %}
+                <li class="c-sidebar-nav-title" style="margin-top: 0; padding: 0.3rem 0.3rem 0.3rem 1rem; {{ ent.cssStyle != null ? ent.cssStyle : '' }}">{{ ent.label }}</li>
 
             {% elseif ent.tipo == 'DROPDOWN' %}
                 <li class="c-sidebar-nav-item c-sidebar-nav-dropdown" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
