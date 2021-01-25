@@ -2,7 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Twig;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\WebpackEncoreBundle\Asset\TagRenderer;
@@ -26,15 +26,31 @@ class CrosierCoreAssetExtension extends AbstractExtension
 
     private Packages $assetsManager;
 
+    private ?GuzzleClient $guzzleClient = null;
 
-    public function __construct(LoggerInterface $logger, TagRenderer $tagRenderer, Packages $assetsManager)
+    private ?string $baseURI = null;
+
+    /**
+     * CrosierCoreAssetExtension constructor.
+     * @param LoggerInterface $logger
+     * @param TagRenderer $tagRenderer
+     * @param Packages $assetsManager
+     * @throws \Exception
+     */
+    public function __construct(LoggerInterface $logger,
+                                TagRenderer $tagRenderer,
+                                Packages $assetsManager)
     {
         $this->tagRenderer = $tagRenderer;
         $this->logger = $logger;
         $this->assetsManager = $assetsManager;
+        $this->baseURI = trim($_SERVER['CROSIERCORE_URL']);
+        if (!$this->baseURI) {
+            throw new \Exception('CROSIERCORE_URL não definido');
+        }
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('crosierAsset', [$this, 'getCrosierAsset']),
@@ -47,9 +63,39 @@ class CrosierCoreAssetExtension extends AbstractExtension
      * @param string $asset
      * @return string
      */
-    public function getAsset(string $asset)
+    public function getAsset(string $asset): string
     {
         return $this->assetsManager->getUrl($asset);
+    }
+
+    /**
+     * @return GuzzleClient
+     * @throws \Exception
+     */
+    private function getGuzzleClient(): GuzzleClient
+    {
+        if (!$this->guzzleClient) {
+
+            $cParams = [
+                'base_uri' => $this->baseURI,
+                'timeout' => 10.0,
+            ];
+
+            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
+                $cParams['verify'] = false;
+            } else if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
+                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
+            }
+            if ($_SERVER['GUZZLE_PROXY'] ?? false) {
+                $cParams['proxy'] = [
+                    'http' => $_SERVER['GUZZLE_PROXY'], // Use this proxy with "http"
+                    'https' => $_SERVER['GUZZLE_PROXY'], // Use this proxy with "https",
+                ];
+            }
+
+            $this->guzzleClient = new GuzzleClient($cParams);
+        }
+        return $this->guzzleClient;
     }
 
     /**
@@ -65,28 +111,15 @@ class CrosierCoreAssetExtension extends AbstractExtension
         // else
 
         try {
-            $base_uri = trim($_SERVER['CROSIERCORE_URL']);
-            if (!$base_uri) {
-                throw new \Exception('CROSIERCORE_URL não definido');
-            }
-
-            $cParams = [
-                'base_uri' => $base_uri,
-                'timeout' => 10.0,
-            ];
-            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
-                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
-            }
-            $client = new Client($cParams);
-            $uri = $base_uri . '/getCrosierAssetUrl?asset=' . urlencode($asset);
-            $response = $client->request('GET', $uri);
+            $uri = $this->baseURI . '/getCrosierAssetUrl?asset=' . urlencode($asset);
+            $response = $this->getGuzzleClient()->request('GET', $uri);
             $jsonResponse = $response->getBody()->getContents();
             $decoded = json_decode($jsonResponse, true);
-            return $base_uri . $decoded['url'];
+            return $this->baseURI . $decoded['url'];
         } catch (\Throwable $e) {
             $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
             $this->logger->error($e->getMessage());
-            return 'NOTFOUND/' . $asset;
+            return 'NOTFOUND111/' . $asset;
         }
     }
 
@@ -118,29 +151,14 @@ class CrosierCoreAssetExtension extends AbstractExtension
         }
         // else
         try {
+            $uri = $this->baseURI . '/getRenderCrosierWebpackScriptTags?entryName=' . urlencode($entryName);
 
-            $base_uri = trim($_SERVER['CROSIERCORE_URL']);
-            if (!$base_uri) {
-                throw new \Exception('CROSIERCORE_URL não definido');
-            }
-
-            $cParams = [
-                'base_uri' => $base_uri,
-                'timeout' => 10.0,
-            ];
-            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
-                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
-            }
-            $client = new Client($cParams);
-            $uri = $base_uri . '/getRenderCrosierWebpackScriptTags?entryName=' . urlencode($entryName);
-
-            $response = $client->request('GET', $uri);
-            $r = (string) $response->getBody()->getContents();
-            return $r;
+            $response = $this->getGuzzleClient()->request('GET', $uri);
+            return (string)$response->getBody()->getContents();
         } catch (\Throwable $e) {
             $this->logger->error('Erro no renderCrosierWebpackScriptTags() - entryName: ' . $entryName);
             $this->logger->error($e->getMessage());
-            return 'NOTFOUND/' . $entryName;
+            return 'NOTFOUND222/' . $entryName;
         }
     }
 
@@ -173,27 +191,13 @@ class CrosierCoreAssetExtension extends AbstractExtension
         // else
         try {
             $entryName = trim($entryName);
-            $base_uri = trim($_SERVER['CROSIERCORE_URL']);
-            if (!$base_uri) {
-                throw new \Exception('CROSIERCORE_URL não definido');
-            }
-
-            $cParams = [
-                'base_uri' => $base_uri,
-                'timeout' => 10.0,
-            ];
-            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
-                $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
-            }
-            $client = new Client($cParams);
-            $uri = $base_uri . '/getRenderCrosierWebpackLinkTags?entryName=' . urlencode($entryName);
-            $response = $client->request('GET', $uri);
-            $r = (string) $response->getBody()->getContents();
-            return $r;
+            $uri = $this->baseURI . '/getRenderCrosierWebpackLinkTags?entryName=' . urlencode($entryName);
+            $response = $this->getGuzzleClient()->request('GET', $uri);
+            return (string)$response->getBody()->getContents();
         } catch (\Throwable $e) {
             $this->logger->error('Erro no getRenderCrosierWebpackLinkTags() - entryName: ' . $entryName);
             $this->logger->error($e->getMessage());
-            return 'NOTFOUND/' . $entryName;
+            return 'NOTFOUND333/' . $entryName;
         }
     }
 

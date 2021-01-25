@@ -105,8 +105,8 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     public function cloneEntityId(EntityId $e)
     {
-        $this->beforeClone($e);
         $newE = clone $e;
+        $this->beforeClone($newE);
         $newE->setId(null);
         $newE->setInserted(null);
         $newE->setUpdated(null);

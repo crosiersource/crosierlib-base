@@ -51,8 +51,11 @@ trait APIAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        if (strpos($request->getPathInfo(), '/api/') === 0) {
-            $this->logger->info('APIAuthenticator support!' . $request->getUri());
+        if (strpos($request->getPathInfo(), '/api') === 0) {
+//            $this->logger->info('APIAuthenticator support!' . $request->getUri());
+//            if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'] ?? '', ['dev','test'], true)) {
+//                return true;
+//            }
             if (!$request->headers->has('X-Authorization')) {
                 $this->logger->error('APIAuthenticator sem header X-Authorization');
             } elseif (!$this->security->getUser()) {
@@ -64,20 +67,20 @@ trait APIAuthenticatorTrait
 
     public function getCredentials(Request $request)
     {
-        // Lógica para poder liberar acesso em ambiente de dev.
-        if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
-            $this->logger->info('APIAuthenticator com APP_ENV = dev');
-            return 1;
-        } else {
+//        // Lógica para poder liberar acesso em ambiente de dev.
+//        if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && in_array($_SERVER['APP_ENV'] ?? '', ['dev','test'], true)) {
+//            $this->logger->info('APIAuthenticator com APP_ENV = dev|test');
+//            return 1; // admin
+//        } else {
             $authorizationHeader = $request->headers->get('X-Authorization');
             return $authorizationHeader ? substr($authorizationHeader, 7) : '';
-        }
+//        }
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         // Lógica para poder liberar acesso em ambiente de dev.
-        if ($credentials && isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'dev') {
+        if ($credentials && in_array($_SERVER['APP_ENV'] ?? '', ['dev','test'], true)) {
             return $this->userRepository->find(1); // admin
         } else {
             /** @var User $user */
