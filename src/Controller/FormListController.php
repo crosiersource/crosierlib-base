@@ -475,9 +475,9 @@ abstract class FormListController extends BaseController
         $dados = $repo->findByFilters($filterDatas, $parameters['orders'], $parameters['start'] ?? 0, $parameters['limit'] ?? null);
 
         if (isset($fnHandleDadosList)) {
-            $fnHandleDadosList($dados, $countByFilter);
+            $fnHandleDadosList($dados, $countByFilter, $filterDatas);
         } else {
-            $this->handleDadosList($dados, $countByFilter);
+            $this->handleDadosList($dados, $countByFilter, $filterDatas);
         }
 
         $parameters['dados'] = $dados;
