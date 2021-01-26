@@ -394,6 +394,7 @@ abstract class FormListController extends BaseController
      * A ser sobreescrito, caso seja necessário efetuar algum tratamento nos dados retornados da pesquisa.
      *
      * @param array $dados
+     * @param int|null $totalRegistros
      */
     public function handleDadosList(array &$dados, ?int $totalRegistros = null): void
     {
@@ -473,7 +474,7 @@ abstract class FormListController extends BaseController
         $dados = $repo->findByFilters($filterDatas, $parameters['orders'], $parameters['start'] ?? 0, $parameters['limit'] ?? null);
 
         if (isset($fnHandleDadosList)) {
-            $fnHandleDadosList($dados, $countByFilter);
+            $fnHandleDadosList($dados, $countByFilter, $filterDatas);
         } else {
             $this->handleDadosList($dados, $countByFilter);
         }
