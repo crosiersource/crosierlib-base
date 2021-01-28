@@ -14,7 +14,7 @@ use Transliterator;
 class StringUtils
 {
 
-    const PATTERN_DATA = "@(?<data>\\d{2}/\\d{2}/\\d{4}|\\d{2}/\\d{2}/\\d{2}|\\d{2}/\\d{2}){1}@";
+    const PATTERN_DATA = "@(?<data>\\d{2}/\\d{2}/\\d{4}|\\d{2}/\\d{2}/\\d{2}|\\d{2}/\\d{2}|\\d{4}\-\\d{2}\-\\d{2}){1}@";
 
     const PATTERN_MONEY =
         "@" .
@@ -166,6 +166,12 @@ class StringUtils
     {
         json_decode($str);
         return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public static function strposRegex(string $subject, string $pattern)
+    {
+        preg_match('/' . $pattern . '/', $subject, $matches, PREG_OFFSET_CAPTURE);
+        return $matches[0][1] ?? null;
     }
 
 

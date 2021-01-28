@@ -13,7 +13,11 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 class DateTimeUtils
 {
 
-    public static $DATAHORACOMPLETAPATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
+    const DATAHORACOMPLETA_PATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
+//01/02/2021 14:59:59
+
+    const DATAHORACOMPLETACOMFUSO_PATTERN = "@\d{4}-\d{2}-\d{2}(T){1}\d{2}:\d{2}:\d{2}\.\d{3}[+-]{1}\d{2}:\d{2}@";
+//2020-05-02T10:54:44.000-04:00
 
     /**
      * @param $dateStr
@@ -25,6 +29,11 @@ class DateTimeUtils
         if (!$dateStr) {
             return null;
         }
+
+        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN, $dateStr)) {
+            return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);
+        }
+
         if (strlen($dateStr) === 5) { // dd/mm
             $dt = \DateTime::createFromFormat('d/m', $dateStr);
             $dt->setTime(12, 0);
@@ -53,7 +62,7 @@ class DateTimeUtils
             return $dt;
         }
 
-        if (preg_match(self::$DATAHORACOMPLETAPATTERN, $dateStr, $matches)) {
+        if (preg_match(self::DATAHORACOMPLETA_PATTERN, $dateStr, $matches)) {
             $pattern = 'd/m/';
             $pattern .= strlen($matches['Y']) === 2 ? 'y' : 'Y';
             $pattern .= isset($matches['H']) ? ' H:i' : '';
