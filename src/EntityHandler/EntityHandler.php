@@ -8,7 +8,6 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -126,7 +125,6 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function doClone($e)
     {
         $this->getDoctrine()->beginTransaction();
-        /** @var EntityId $newE */
         $newE = $this->cloneEntityId($e);
         $this->afterClone($newE, $e);
         $this->save($newE);
@@ -179,7 +177,8 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->afterSave($entityId);
             $this->handleJsonMetadata();
         } catch (\Exception $e) {
-            throw new ViewException('Erro ao salvar (' . $e->getMessage() . ')', 0, $e);
+            $msg = ExceptionUtils::treatException($e);
+            throw new ViewException('Erro ao salvar (' . $msg . ')', 0, $e);
         }
         return $entityId;
     }
@@ -191,7 +190,6 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     public function handleSavingEntityId($entityId): void
     {
-
         try {
             /** @var EntityId $entityId */
             $this->handleUppercaseFields($entityId);
@@ -219,7 +217,8 @@ abstract class EntityHandler implements EntityHandlerInterface
                 }
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException('Erro ao handleSavingEntityId');
+            $msg = ExceptionUtils::treatException($e);
+            throw new \RuntimeException('Erro ao handleSavingEntityId (' . $msg . ')');
         }
     }
 
@@ -230,9 +229,8 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
         $tableName = $this->doctrine->getClassMetadata($this->getEntityClass())->getTableName();
 
-        /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
-        $rConfig = $conn->fetchAll('SELECT * FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => $tableName . '_json_metadata']);
+        $rConfig = $conn->fetchAllAssociative('SELECT * FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => $tableName . '_json_metadata']);
 
         if ($rConfig) {
             $cfgAppConfig = $rConfig[0];
@@ -242,7 +240,7 @@ abstract class EntityHandler implements EntityHandlerInterface
                 if (isset($metadata['sugestoes']) &&
                     (isset($metadata['tipo']) && $metadata['tipo'] === 'tags') or
                     (isset($metadata['class']) && strpos($metadata['class'], 's2allownew') !== FALSE)) {
-                    $valoresNaBase = $conn->fetchAll('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
+                    $valoresNaBase = $conn->fetchAllAssociative('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
                     foreach ($valoresNaBase as $v) {
                         $valExploded = explode(',', $v['val']);
                         foreach ($valExploded as $val) {
@@ -283,7 +281,8 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $property->setValue($entityId, mb_strtoupper($property->getValue($entityId)));
             }
         } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Erro em handleUppercaseFields', 0, $e);
+            $msg = ExceptionUtils::treatException($e);
+            throw new \RuntimeException('Erro em handleUppercaseFields (' . $msg . ')', 0, $e);
         }
     }
 

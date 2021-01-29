@@ -38,6 +38,9 @@ class ExceptionUtils
         if ($e->getPrevious() instanceof ClientException) {
             return $e->getPrevious()->getMessage();
         }
+        if ($e instanceof \ReflectionException) {
+            return $e->getMessage();
+        }
         return '';
     }
 
