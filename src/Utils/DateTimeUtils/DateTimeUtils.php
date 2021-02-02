@@ -16,7 +16,7 @@ class DateTimeUtils
     const DATAHORACOMPLETA_PATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
 //01/02/2021 14:59:59
 
-    const DATAHORACOMPLETACOMFUSO_PATTERN = "@\d{4}-\d{2}-\d{2}(T){1}\d{2}:\d{2}:\d{2}\.\d{3}[+-]{1}\d{2}:\d{2}@";
+    const DATAHORACOMPLETACOMFUSO_PATTERN = "@\d{4}-\d{2}-\d{2}(T){1}\d{2}:\d{2}:\d{2}\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}@";
 //2020-05-02T10:54:44.000-04:00
 
     /**
