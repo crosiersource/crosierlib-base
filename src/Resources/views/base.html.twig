@@ -7,14 +7,14 @@
     <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
 
     <script>
-        window.paceOptions = {
-            ajax: {
-                trackMethods: ['GET', 'POST'],
-                ignoreURLs: ['getNewMessages']
-            },
-            document: true,
-            eventLag: true
-        };
+        // window.paceOptions = {
+        //     ajax: {
+        //         trackMethods: [],
+        //         ignoreURLs: ['getNewMessages', 'api*']
+        //     },
+        //     document: true,
+        //     eventLag: true
+        // };
     </script>
 
     <script src="{{ getEnv('CROSIERCORE_URL') }}/build/static/pace.min.js"></script>
@@ -33,9 +33,9 @@
     {% endblock %}
 </head>
 
-<body class="c-app blurriers" style="filter: blur(2px) grayscale(2)">
+<body class="c-app">
 
-<div id="preloader"></div>
+
 
 
 {% block body %}
