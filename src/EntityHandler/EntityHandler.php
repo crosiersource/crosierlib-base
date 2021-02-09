@@ -237,9 +237,8 @@ abstract class EntityHandler implements EntityHandlerInterface
             $jsonMetadata = json_decode($cfgAppConfig['valor'], true);
             $mudou = null;
             foreach ($jsonMetadata['campos'] as $campo => $metadata) {
-                if (isset($metadata['sugestoes']) &&
-                    (isset($metadata['tipo']) && $metadata['tipo'] === 'tags') or
-                    (isset($metadata['class']) && strpos($metadata['class'], 's2allownew') !== FALSE)) {
+                if ( (($metadata['tipo'] ?? '') === 'tags') &&
+                    (isset($metadata['sugestoes']) or (strpos(($metadata['class'] ?? ''), 's2allownew') !== FALSE))) {
                     $valoresNaBase = $conn->fetchAllAssociative('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
                     foreach ($valoresNaBase as $v) {
                         $valExploded = explode(',', $v['val']);

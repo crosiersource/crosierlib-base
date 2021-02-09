@@ -343,20 +343,22 @@ class JsonType extends AbstractType implements DataMapperInterface
      */
     private function buildTagsDinamType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
-        $val = $this->jsonData[$nome] ?? '';
-        if (is_array($val)) {
-            $val = implode(',', $this->jsonData[$nome]);
+        $choices = null;
+        if (isset($this->jsonData[$nome])) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
+            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
+            sort($choices);
         }
+        $choices = $choices ? array_combine($choices, $choices) : null;
+
         $builder->add($nome, ChoiceType::class, [
             'mapped' => false,
             'multiple' => true,
             'label' => $metadata['label'] ?? $nome,
-
+            'choices' => $choices,
             'attr' => [
-                'multiple' => 'multiple',
                 'data-route-url' => $metadata['endpoint'] . '?campo=' . $nome,
                 'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
-                'data-val' => $val,
+
                 'data-tags' => 'true',
                 'data-token-separator' => ',',
             ],
