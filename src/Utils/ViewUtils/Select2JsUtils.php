@@ -155,4 +155,41 @@ class Select2JsUtils
         return $rs;
     }
 
+
+    /**
+     * Transforma um array de entidades em um array de elementos com o formato exigido pelo Select2 utilizando um
+     * formato e os argumentos que serão passados a função vsprintf().
+     *
+     * @param array $arr
+     * @param null $keysSelecteds
+     * @param string|null $placeholder
+     * @return array
+     */
+    public static function arrayToSelect2DataKeyEqualValue(array $arr, $keysSelecteds = null, ?string $placeholder = '...'): array
+    {
+        if ($keysSelecteds) {
+            if (!is_array($keysSelecteds)) {
+                $keysSelecteds = [$keysSelecteds];
+            }
+        }
+
+        $rs = [];
+        if ($placeholder !== null) {
+            $rs[] = [
+                'id' => '',
+                'text' => $placeholder,
+                'selected' => false
+            ];
+        }
+        foreach ($arr as $value) {
+            $rs[] = [
+                'id' => $value,
+                'text' => $value,
+                'selected' => $keysSelecteds ? in_array($value, $keysSelecteds, false) : false
+            ];
+        }
+
+        return $rs;
+    }
+
 }
