@@ -6,6 +6,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Security;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,13 +50,28 @@ trait APIAuthenticatorTrait
         $this->security = $security;
     }
 
+    private function getXAuthorization(HeaderBag $headers): ?string
+    {
+        foreach ($headers->all() as $key => $value) {
+            if (strtolower($key) === 'x-authorization') {
+                return $value[0];
+            }
+        }
+        return null;
+    }
+
     public function supports(Request $request)
     {
         if (strpos($request->getPathInfo(), '/api') === 0) {
-            if (!$request->headers->has('X-Authorization')) {
-                $this->logger->error('APIAuthenticator sem header X-Authorization');
-            } elseif (!$this->security->getUser()) {
+            if ($this->getXAuthorization($request->headers)) {
                 return true;
+            } else {
+                if (!$this->security->getUser()) {
+                    // só irá autenticar caso não tenha usuário já autenticado na sessão
+                    return true;
+                }
+                $this->logger->error('APIAuthenticator sem header X-Authorization');
+                // throw new CustomUserMessageAuthenticationException('Bearer token n/d');
             }
         }
         return false;
@@ -63,41 +79,24 @@ trait APIAuthenticatorTrait
 
     public function getCredentials(Request $request)
     {
-//        // Lógica para poder liberar acesso em ambiente de dev.
-//        if ($request->getPathInfo() !== '/api/sec/checkLoginState/' && in_array($_SERVER['APP_ENV'] ?? '', ['dev','test'], true)) {
-//            $this->logger->info('APIAuthenticator com APP_ENV = dev|test');
-//            return 1; // admin
-//        } else {
-        $authorizationHeader = $request->headers->get('X-Authorization');
+        $authorizationHeader = $this->getXAuthorization($request->headers);
         return $authorizationHeader ? substr($authorizationHeader, 7) : '';
-//        }
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        // Lógica para poder liberar acesso em ambiente de dev.
-        if ($credentials && in_array($_SERVER['APP_ENV'] ?? '', ['dev', 'test'], true)) {
-            return $this->userRepository->find(1); // admin
-        } else {
-            /** @var User $user */
-            $user = $this->userRepository->findOneBy([
-                'apiToken' => $credentials
-            ]);
+        /** @var User $user */
+        $user = $this->userRepository->findOneBy(['apiToken' => $credentials]);
 
-            if (!$user) {
-                throw new CustomUserMessageAuthenticationException(
-                    'Token inválido.'
-                );
-            }
-
-            if ($user->getApiTokenExpiresAt() <= new \DateTime()) {
-                throw new CustomUserMessageAuthenticationException(
-                    'Token expirado.'
-                );
-            }
-
-            return $user;
+        if (!$user) {
+            throw new CustomUserMessageAuthenticationException('Token inválido.');
         }
+
+        if ($user->getApiTokenExpiresAt() <= new \DateTime()) {
+            throw new CustomUserMessageAuthenticationException('Token expirado.');
+        }
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -110,9 +109,6 @@ trait APIAuthenticatorTrait
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
@@ -121,7 +117,6 @@ trait APIAuthenticatorTrait
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $this->logger->info('APIAuthenticator onAuthenticationSuccess()');
-        // allow the request to continue
     }
 
     /**

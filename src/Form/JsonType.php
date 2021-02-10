@@ -96,6 +96,9 @@ class JsonType extends AbstractType implements DataMapperInterface
                     case "tags":
                         $this->buildTagsType($builder, $nome, $metadata);
                         break;
+                    case "tags_dinam":
+                        $this->buildTagsDinamType($builder, $nome, $metadata);
+                        break;
                     case "compo":
                         $this->buildCompoType($builder, $nome, $metadata);
                         break;
@@ -338,6 +341,38 @@ class JsonType extends AbstractType implements DataMapperInterface
      * @param string $nome
      * @param array $metadata
      */
+    private function buildTagsDinamType(FormBuilderInterface $builder, string $nome, array $metadata)
+    {
+        $choices = null;
+        if (isset($this->jsonData[$nome])) { // se foi passado algum(ns) valor(es) (ao submeter o formulário)
+            $choices = is_array($this->jsonData[$nome]) ? $this->jsonData[$nome] : explode(',', $this->jsonData[$nome]);
+            sort($choices);
+        }
+        $choices = $choices ? array_combine($choices, $choices) : null;
+
+        $builder->add($nome, ChoiceType::class, [
+            'mapped' => false,
+            'multiple' => true,
+            'label' => $metadata['label'] ?? $nome,
+            'choices' => $choices,
+            'attr' => [
+                'data-route-url' => $metadata['endpoint'] . '?campo=' . $nome,
+                'class' => 'autoSelect2 ' . ($metadata['class'] ?? ''),
+
+                'data-tags' => 'true',
+                'data-token-separator' => ',',
+            ],
+            'required' => $metadata['required'] ?? false,
+            'disabled' => ($metadata['disabled'] ?? false) || $this->disabled,
+        ]);
+    }
+
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param string $nome
+     * @param array $metadata
+     */
     private function buildCompoType(FormBuilderInterface $builder, string $nome, array $metadata)
     {
         $builder->add($nome, CompoType::class, [
@@ -454,6 +489,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $form->setData($val !== '' ? $val : null);
                 break;
             case "tags":
+            case "tags_dinam":
                 if (!is_array($val)) {
                     $form->setData(explode(',', $val));
                 } else {
@@ -511,6 +547,7 @@ class JsonType extends AbstractType implements DataMapperInterface
                 $viewData[$nomeDoCampo] = $val;
                 break;
             case "tags":
+            case "tags_dinam":
                 if ($val && is_array($val) && !(count($val) === 1 && !$val[0])) {
                     $viewData[$nomeDoCampo] = implode(',', $val);
                 } else {

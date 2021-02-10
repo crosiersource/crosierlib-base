@@ -56,7 +56,7 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\Column(name="ativo", type="boolean")
      * @Groups("entity")
      */
-    private $isActive;
+    private $isActive = true;
 
     /**
      *
@@ -179,6 +179,14 @@ class User implements EntityId, UserInterface, \Serializable
             $roles[] = $role->getRole();
         }
         return $roles;
+    }
+
+    public function addRole(Role $role)
+    {
+        if (!$this->userRoles->contains($role)) {
+            $this->userRoles[] = $role;
+        }
+        return $this;
     }
 
     public function serialize()
