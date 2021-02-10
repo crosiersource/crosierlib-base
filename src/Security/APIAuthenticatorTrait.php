@@ -62,18 +62,9 @@ trait APIAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        if (strpos($request->getPathInfo(), '/api') === 0) {
-            if ($this->getXAuthorization($request->headers)) {
-                return true;
-            } else {
-                if (!$this->security->getUser()) {
-                    // só irá autenticar caso não tenha usuário já autenticado na sessão
-                    return true;
-                }
-                $this->logger->error('APIAuthenticator sem header X-Authorization');
-                // throw new CustomUserMessageAuthenticationException('Bearer token n/d');
-            }
-        }
+        if (strpos($request->getPathInfo(), '/api') === 0 && $this->getXAuthorization($request->headers)) {
+            return true;
+        } // else
         return false;
     }
 

@@ -11,6 +11,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
@@ -45,16 +46,22 @@ trait CrosierCoreAuthenticatorTrait
     private $logger;
 
     /**
+     * @var Security
+     */
+    private $security;
+
+    /**
      * CrosierCoreAuthenticatorTrait constructor.
      * @param UserRepository $userRepository
      * @param RouterInterface $router
      * @param LoggerInterface $logger
      */
-    public function __construct(UserRepository $userRepository, RouterInterface $router, LoggerInterface $logger)
+    public function __construct(UserRepository $userRepository, RouterInterface $router, LoggerInterface $logger, Security $security)
     {
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     /**
@@ -80,22 +87,23 @@ trait CrosierCoreAuthenticatorTrait
 
     public function supports(Request $request)
     {
-        return false;
+        return $this->security->getUser() ? true : false;
     }
 
     public function getCredentials(Request $request)
     {
-        return null;
+        return $this->security->getUser();
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return null;
+        return $credentials;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return false;
+        $this->logger->info('CrosierCoreAuthenticatorTrait checkCredentials()');
+        return true;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
