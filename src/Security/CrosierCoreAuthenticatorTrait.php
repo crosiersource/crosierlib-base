@@ -82,12 +82,12 @@ trait CrosierCoreAuthenticatorTrait
 
     public function supportsRememberMe()
     {
-        return true;
+        return false;
     }
 
     public function supports(Request $request)
     {
-        return $this->security->getUser() ? true : false;
+        return false;
     }
 
     public function getCredentials(Request $request)
