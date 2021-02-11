@@ -80,7 +80,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
 
             $cParams = [
                 'base_uri' => $this->baseURI,
-                'timeout' => 4.0,
+                'timeout' => 15.0,
             ];
 
 //            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
@@ -112,7 +112,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
             return $this->getAsset($asset);
         }
 
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache = new FilesystemAdapter('CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
         $r = $cache->get('getCrosierAsset_' . md5($asset), function (ItemInterface $item) use ($asset) {
             try {
                 $uri = $this->baseURI . '/getCrosierAssetUrl?asset=' . urlencode($asset);
@@ -157,7 +157,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
             return $this->getRenderCrosierWebpackScriptTags($entryName);
         }
 
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache = new FilesystemAdapter('CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
         $r = $cache->get('renderCrosierWebpackScriptTags_' . md5($entryName), function (ItemInterface $item) use ($entryName) {
             // else
             try {
@@ -201,7 +201,7 @@ class CrosierCoreAssetExtension extends AbstractExtension
             return $this->getRenderCrosierWebpackLinkTags($entryName);
         }
 
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache = new FilesystemAdapter('CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
         $r = $cache->get('renderCrosierWebpackLinkTags_' . md5($entryName), function (ItemInterface $item) use ($entryName) {
             try {
                 $entryName = trim($entryName);

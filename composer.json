@@ -1,52 +1,52 @@
 {
-  "name": "crosiersource/crosierlib-base",
-  "type": "symfony-bundle",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Carlos Eduardo Pauluk",
-      "email": "carlospauluk@gmail.com"
+    "name": "crosiersource/crosierlib-base",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carlos Eduardo Pauluk",
+            "email": "carlospauluk@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "7.4.*",
+        "ext-bcmath": "*",
+        "ext-ctype": "*",
+        "ext-curl": "*",
+        "ext-gd": "*",
+        "ext-iconv": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "ext-zip": "*",
+        "php-http/guzzle6-adapter": "^1.1",
+        "symfony/cache": "5.2.*",
+        "symfony/console": "5.2.*",
+        "symfony/debug-bundle": "5.2.*",
+        "symfony/form": "5.2.*",
+        "symfony/monolog-bundle": "^3.0",
+        "symfony/orm-pack": "2.*",
+        "symfony/security-bundle": "5.2.*",
+        "symfony/serializer-pack": "^1",
+        "symfony/validator": "5.2.*",
+        "scienta/doctrine-json-functions": "~4.1",
+        "symfony/webpack-encore-bundle": "^1.7",
+        "api-platform/core": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "CrosierSource\\CrosierLibBaseBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "5.2.*"
+        }
     }
-  ],
-  "require": {
-    "php": "7.4.*",
-    "ext-bcmath": "*",
-    "ext-ctype": "*",
-    "ext-curl": "*",
-    "ext-gd": "*",
-    "ext-iconv": "*",
-    "ext-intl": "*",
-    "ext-json": "*",
-    "ext-simplexml": "*",
-    "ext-zip": "*",
-    "php-http/guzzle6-adapter": "^1.1",
-    "symfony/cache": "5.2.*",
-    "symfony/console": "5.2.*",
-    "symfony/debug-bundle": "5.2.*",
-    "symfony/form": "5.2.*",
-    "symfony/monolog-bundle": "^3.0",
-    "symfony/orm-pack": "2.*",
-    "symfony/security-bundle": "5.2.*",
-    "symfony/serializer-pack": "^1",
-    "symfony/validator": "5.2.*",
-    "scienta/doctrine-json-functions": "~4.1",
-    "symfony/webpack-encore-bundle": "^1.7",
-    "api-platform/core": "^2.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "CrosierSource\\CrosierLibBaseBundle\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
-    }
-  },
-  "extra": {
-    "symfony": {
-      "allow-contrib": false,
-      "require": "5.2.*"
-    }
-  }
 }
