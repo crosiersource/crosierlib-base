@@ -5,6 +5,8 @@ namespace CrosierSource\CrosierLibBaseBundle\Twig;
 use GuzzleHttp\Client as GuzzleClient;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\WebpackEncoreBundle\Asset\TagRenderer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -78,12 +80,13 @@ class CrosierCoreAssetExtension extends AbstractExtension
 
             $cParams = [
                 'base_uri' => $this->baseURI,
-                'timeout' => 10.0,
+                'timeout' => 4.0,
             ];
 
-            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
-                $cParams['verify'] = false;
-            } else if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
+//            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
+//                $cParams['verify'] = false;
+//            } else
+            if (isset($_SERVER['CROSIERCORE_SELFSIGNEDCERT'])) {
                 $cParams['verify'] = $_SERVER['CROSIERCORE_SELFSIGNEDCERT'];
             }
             if ($_SERVER['GUZZLE_PROXY'] ?? false) {
@@ -108,19 +111,23 @@ class CrosierCoreAssetExtension extends AbstractExtension
         if ($_SERVER['CROSIERAPP_UUID'] === '175bd6d3-6c29-438a-9520-47fcee653cc5') {
             return $this->getAsset($asset);
         }
-        // else
 
-        try {
-            $uri = $this->baseURI . '/getCrosierAssetUrl?asset=' . urlencode($asset);
-            $response = $this->getGuzzleClient()->request('GET', $uri);
-            $jsonResponse = $response->getBody()->getContents();
-            $decoded = json_decode($jsonResponse, true);
-            return $this->baseURI . $decoded['url'];
-        } catch (\Throwable $e) {
-            $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
-            $this->logger->error($e->getMessage());
-            return 'NOTFOUND111/' . $asset;
-        }
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $r = $cache->get('getCrosierAsset_' . md5($asset), function (ItemInterface $item) use ($asset) {
+            try {
+                $uri = $this->baseURI . '/getCrosierAssetUrl?asset=' . urlencode($asset);
+                $response = $this->getGuzzleClient()->request('GET', $uri);
+                $jsonResponse = $response->getBody()->getContents();
+                $decoded = json_decode($jsonResponse, true);
+                return $this->baseURI . $decoded['url'];
+            } catch (\Throwable $e) {
+                $this->logger->error('Erro no getCrosierAsset(\$asset = $asset)');
+                $this->logger->error($e->getMessage());
+                return 'NOTFOUND111/' . $asset;
+            }
+        });
+
+        return $r;
     }
 
 
@@ -149,17 +156,22 @@ class CrosierCoreAssetExtension extends AbstractExtension
         if ($_SERVER['CROSIERAPP_UUID'] === '175bd6d3-6c29-438a-9520-47fcee653cc5') {
             return $this->getRenderCrosierWebpackScriptTags($entryName);
         }
-        // else
-        try {
-            $uri = $this->baseURI . '/getRenderCrosierWebpackScriptTags?entryName=' . urlencode($entryName);
 
-            $response = $this->getGuzzleClient()->request('GET', $uri);
-            return (string)$response->getBody()->getContents();
-        } catch (\Throwable $e) {
-            $this->logger->error('Erro no renderCrosierWebpackScriptTags() - entryName: ' . $entryName);
-            $this->logger->error($e->getMessage());
-            return 'NOTFOUND222/' . $entryName;
-        }
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $r = $cache->get('renderCrosierWebpackScriptTags_' . md5($entryName), function (ItemInterface $item) use ($entryName) {
+            // else
+            try {
+                $uri = $this->baseURI . '/getRenderCrosierWebpackScriptTags?entryName=' . urlencode($entryName);
+                $response = $this->getGuzzleClient()->request('GET', $uri);
+                return (string)$response->getBody()->getContents();
+            } catch (\Throwable $e) {
+                $this->logger->error('Erro no renderCrosierWebpackScriptTags() - entryName: ' . $entryName);
+                $this->logger->error($e->getMessage());
+                return 'NOTFOUND222/' . $entryName;
+            }
+        });
+
+        return $r;
     }
 
 
@@ -188,17 +200,21 @@ class CrosierCoreAssetExtension extends AbstractExtension
         if ($_SERVER['CROSIERAPP_UUID'] === '175bd6d3-6c29-438a-9520-47fcee653cc5') {
             return $this->getRenderCrosierWebpackLinkTags($entryName);
         }
-        // else
-        try {
-            $entryName = trim($entryName);
-            $uri = $this->baseURI . '/getRenderCrosierWebpackLinkTags?entryName=' . urlencode($entryName);
-            $response = $this->getGuzzleClient()->request('GET', $uri);
-            return (string)$response->getBody()->getContents();
-        } catch (\Throwable $e) {
-            $this->logger->error('Erro no getRenderCrosierWebpackLinkTags() - entryName: ' . $entryName);
-            $this->logger->error($e->getMessage());
-            return 'NOTFOUND333/' . $entryName;
-        }
+
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.CrosierCoreAssetExtension', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $r = $cache->get('renderCrosierWebpackLinkTags_' . md5($entryName), function (ItemInterface $item) use ($entryName) {
+            try {
+                $entryName = trim($entryName);
+                $uri = $this->baseURI . '/getRenderCrosierWebpackLinkTags?entryName=' . urlencode($entryName);
+                $response = $this->getGuzzleClient()->request('GET', $uri);
+                return (string)$response->getBody()->getContents();
+            } catch (\Throwable $e) {
+                $this->logger->error('Erro no getRenderCrosierWebpackLinkTags() - entryName: ' . $entryName);
+                $this->logger->error($e->getMessage());
+                return 'NOTFOUND333/' . $entryName;
+            }
+        });
+        return $r;
     }
 
 
