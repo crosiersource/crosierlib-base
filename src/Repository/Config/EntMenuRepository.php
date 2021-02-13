@@ -28,7 +28,7 @@ class EntMenuRepository extends FilterRepository
      */
     public function getMenusPais(): array
     {
-        return $this->findBy(['paiUUID' => null, 'tipo' => 'PAI'], ['ordem' => 'ASC']);
+        return $this->findBy(['paiUUID' => null, 'tipo' => 'PAI'], ['label' => 'ASC']);
     }
 
 

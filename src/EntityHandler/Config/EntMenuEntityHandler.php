@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 
 /**
  * Class EntMenuEntityHandler
@@ -27,12 +28,22 @@ class EntMenuEntityHandler extends EntityHandler
                 $entMenu->setOrdem(9999999);
             }
         }
+        
+        if ($entMenu->getPai()) {
+            $entMenu->setAppUUID($entMenu->getPai()->getAppUUID());
+            $entMenu->setPaiUUID($entMenu->getPai()->getUUID());
+        }
+        
         if (!$entMenu->getPaiUUID()) {
             $entMenu->setTipo('PAI');
         }
         if ($entMenu->getTipo() === 'PAI') {
             $entMenu->setPaiUUID(null);
         }
+        if (!$entMenu->getUUID()) {
+            $entMenu->setUUID(StringUtils::guidv4());
+        }
+        
     }
 
     public function getEntityClass()
