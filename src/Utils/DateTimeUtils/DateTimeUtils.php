@@ -430,22 +430,34 @@ class DateTimeUtils
      * @throws ViewException
      */
     public static function getDatesList(\DateTime $dtIni, \DateTime $dtFim): array
-    {
-        if ($dtFim->getTimestamp() < $dtIni->getTimestamp()) {
-            throw new ViewException('dtFim < dtIni');
-        }
+    {        
         $list = [];
+        $invert = false;
+        if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
+            $invert = true;
+        }
+
         $dtAux = clone($dtIni);
         $dtAux->setTime(12, 0, 0, 0);
         $dtFim->setTime(12, 0, 0, 0);
         $list[] = clone($dtAux);
-
-        while (true) {
-            $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') + 1));
-            if ($dtAux->getTimestamp() > $dtFim->getTimestamp()) {
-                break;
+        
+        if ($invert) {
+            while (true) {
+                $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') - 1));
+                if ($dtAux->getTimestamp() < $dtFim->getTimestamp()) {
+                    break;
+                }
+                $list[] = clone($dtAux);
             }
-            $list[] = clone($dtAux);
+        } else {
+            while (true) {
+                $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') + 1));
+                if ($dtAux->getTimestamp() > $dtFim->getTimestamp()) {
+                    break;
+                }
+                $list[] = clone($dtAux);
+            }
         }
 
         return $list;
@@ -479,7 +491,7 @@ class DateTimeUtils
     {
         $diff = $dtFim->diff($dtIni);
         $minTotal = ($diff->days * 1440) + ($diff->h * 60) + $diff->i;
-        return $minTotal;
+        return ($diff->invert) ? $minTotal : ($minTotal * -1);
     }
 
 }
