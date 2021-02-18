@@ -31,7 +31,7 @@
         "symfony/validator": "5.2.*",
         "scienta/doctrine-json-functions": "~4.1",
         "symfony/webpack-encore-bundle": "^1.7",
-        "api-platform/core": "2.6.1"
+        "api-platform/core": "2.6.2"
     },
     "autoload": {
         "psr-4": {
