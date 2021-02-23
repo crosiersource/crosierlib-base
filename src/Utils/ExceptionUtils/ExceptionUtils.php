@@ -21,27 +21,30 @@ class ExceptionUtils
      * @param \Exception $e
      * @return string
      */
-    public static function treatException(\Throwable $e): string
+    public static function treatException(\Throwable $e, ?string $preMsg = null): string
     {
         if ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
-            return self::treatDriverException($e);
+            $msgT = self::treatDriverException($e);
+        } elseif ($e->getPrevious() instanceof \Doctrine\DBAL\Exception\DriverException) {
+            $msgT = self::treatDriverException($e->getPrevious());
+        } elseif ($e instanceof ViewException) {
+            $msgT = $e->getMessage();
+        } elseif ($e->getPrevious() instanceof ViewException) {
+            $msgT = $e->getPrevious()->getMessage();
+        } elseif ($e->getPrevious() instanceof ClientException) {
+            $msgT = $e->getPrevious()->getMessage();
+        } elseif ($e instanceof \ReflectionException) {
+            $msgT = $e->getMessage();
+        } else {
+            $msgT = '';
         }
-        if ($e->getPrevious() instanceof \Doctrine\DBAL\Exception\DriverException) {
-            return self::treatDriverException($e->getPrevious());
+        if ($preMsg) {
+            $msg = $preMsg;
+            $msg .= $msgT ? (' (' . $msgT . ')') : '';
+        } else {
+            $msg = $msgT;
         }
-        if ($e instanceof ViewException) {
-            return $e->getMessage();
-        }
-        if ($e->getPrevious() instanceof ViewException) {
-            return $e->getPrevious()->getMessage();
-        }
-        if ($e->getPrevious() instanceof ClientException) {
-            return $e->getPrevious()->getMessage();
-        }
-        if ($e instanceof \ReflectionException) {
-            return $e->getMessage();
-        }
-        return '';
+        return $msg;
     }
 
     /**
