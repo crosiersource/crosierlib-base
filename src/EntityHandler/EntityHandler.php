@@ -29,6 +29,8 @@ abstract class EntityHandler implements EntityHandlerInterface
 
     protected SyslogBusiness $syslog;
 
+    protected bool $isTransacionalSave = false;
+
     /**
      * @param EntityManagerInterface $doctrine
      * @param Security $security
@@ -151,6 +153,8 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function afterClone($newEntityId, $oldEntityId)
     {
     }
+    
+    
 
     /**
      * Executa o persist/update e o flush.
@@ -163,6 +167,9 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function save(EntityId $entityId, $flush = true)
     {
         try {
+            if ($this->isTransacionalSave) {
+                $this->doctrine->beginTransaction();
+            }
             $this->handleSavingEntityId($entityId);
             $this->beforeSave($entityId);
             if ($entityId->getId()) {
@@ -174,9 +181,15 @@ abstract class EntityHandler implements EntityHandlerInterface
             if ($flush) {
                 $this->doctrine->flush();
             }
-            $this->afterSave($entityId);
+            $this->afterSave($entityId);            
             $this->handleJsonMetadata();
-        } catch (\Exception $e) {
+            if ($this->isTransacionalSave) {
+                $this->doctrine->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($this->isTransacionalSave) {
+                $this->doctrine->rollback();
+            }
             $msg = ExceptionUtils::treatException($e);
             throw new ViewException('Erro ao salvar (' . $msg . ')', 0, $e);
         }
