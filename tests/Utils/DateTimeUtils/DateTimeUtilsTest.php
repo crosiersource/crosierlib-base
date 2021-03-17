@@ -121,6 +121,98 @@ class DateTimeUtilsTest extends TestCase
             $this->assertEquals($t['dtIni_inc'], $periodo_inc['dtIni'], print_r($t, true));
             $this->assertEquals($t['dtFim_inc'], $periodo_inc['dtFim'], print_r($t, true));
         }
+    }
+
+    public function test_getMonthsList()
+    {
+
+        $testes = [
+            [
+                'dtIni' => '01/01/2021',
+                'dtFim' => '31/12/2021',
+                'result' => [
+                    '01/01/2021',
+                    '01/02/2021',
+                    '01/03/2021',
+                    '01/04/2021',
+                    '01/05/2021',
+                    '01/06/2021',
+                    '01/07/2021',
+                    '01/08/2021',
+                    '01/09/2021',
+                    '01/10/2021',
+                    '01/11/2021',
+                    '01/12/2021',
+                ]
+            ],
+            [
+                'dtIni' => '01/10/2021',
+                'dtFim' => '02/02/2022',
+                'result' => [
+                    '01/10/2021',
+                    '01/11/2021',
+                    '01/12/2021',
+                    '01/01/2022',
+                    '01/02/2022',
+                ]
+            ],
+            [
+                'dtIni' => '01/01/2021',
+                'dtFim' => '01/01/2021',
+                'result' => [
+                    '01/01/2021',
+                ]
+            ],
+            [
+                'dtIni' => '02/02/2021',
+                'dtFim' => '02/02/2021',
+                'result' => [
+                    '01/02/2021',
+                ]
+            ],
+            [
+                'dtIni' => '02/03/2021',
+                'dtFim' => '02/01/2021',
+                'result' => [
+                    '01/03/2021',
+                    '01/02/2021',
+                    '01/01/2021',
+                ]
+            ],
+            [
+                'dtIni' => '31/12/2021',
+                'dtFim' => '01/01/2021',
+                'result' => [
+                    '01/12/2021',
+                    '01/11/2021',
+                    '01/10/2021',
+                    '01/09/2021',
+                    '01/08/2021',
+                    '01/07/2021',
+                    '01/06/2021',
+                    '01/05/2021',
+                    '01/04/2021',
+                    '01/03/2021',
+                    '01/02/2021',
+                    '01/01/2021',
+                ]
+            ],
+        ];
+
+
+        foreach ($testes as $t) {
+
+            $dtIni = DateTimeUtils::parseDateStr($t['dtIni']);
+            $dtFim = DateTimeUtils::parseDateStr($t['dtFim']);
+
+            $list = DateTimeUtils::getMonthsList($dtIni, $dtFim);
+            $r = [];
+            /** @var \DateTime $mes */
+            foreach ($list as $mes) {
+                $r[] = $mes->format('d/m/Y');
+            }
+            $this->assertEquals($r, $t['result']);
+        }
 
 
     }

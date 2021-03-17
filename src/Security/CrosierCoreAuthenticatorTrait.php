@@ -3,16 +3,17 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Security;
 
-use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
@@ -29,33 +30,10 @@ trait CrosierCoreAuthenticatorTrait
 
     use TargetPathTrait;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private RouterInterface $router;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private LoggerInterface $logger;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * CrosierCoreAuthenticatorTrait constructor.
-     * @param UserRepository $userRepository
-     * @param RouterInterface $router
-     * @param LoggerInterface $logger
-     */
-    public function __construct(UserRepository $userRepository, RouterInterface $router, LoggerInterface $logger)
-    {
-        $this->userRepository = $userRepository;
-        $this->router = $router;
-        $this->logger = $logger;
-    }
 
     /**
      * Ver documentação do pai.
@@ -78,7 +56,7 @@ trait CrosierCoreAuthenticatorTrait
         return true;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): ?bool
     {
         return false;
     }
@@ -98,14 +76,37 @@ trait CrosierCoreAuthenticatorTrait
         return false;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function authenticate(Request $request): PassportInterface
+    {
+        throw new AuthenticationException('CrosierCoreAuthenticator do not authenticate');
+    }
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         throw new CustomUserMessageAuthenticationException('Erro na autenticação');
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
+    }
+
+    /**
+     * @required
+     * @param RouterInterface $router
+     */
+    public function setRouter(RouterInterface $router): void
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * @required
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
 

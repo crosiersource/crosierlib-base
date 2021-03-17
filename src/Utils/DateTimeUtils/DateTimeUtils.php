@@ -430,7 +430,7 @@ class DateTimeUtils
      * @throws ViewException
      */
     public static function getDatesList(\DateTime $dtIni, \DateTime $dtFim): array
-    {        
+    {
         $list = [];
         $invert = false;
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
@@ -441,7 +441,7 @@ class DateTimeUtils
         $dtAux->setTime(12, 0, 0, 0);
         $dtFim->setTime(12, 0, 0, 0);
         $list[] = clone($dtAux);
-        
+
         if ($invert) {
             while (true) {
                 $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') - 1));
@@ -453,6 +453,51 @@ class DateTimeUtils
         } else {
             while (true) {
                 $dtAux->setDate($dtAux->format('Y'), $dtAux->format('m'), ((int)$dtAux->format('d') + 1));
+                if ($dtAux->getTimestamp() > $dtFim->getTimestamp()) {
+                    break;
+                }
+                $list[] = clone($dtAux);
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * Retorna uma lista de "meses" (sendo representados sempre pelo primeiro dia de cada mês).
+     *
+     * @param \DateTime $dtIni
+     * @param \DateTime $dtFim
+     * @return array
+     */
+    public static function getMonthsList(\DateTime $dtIni, \DateTime $dtFim): array
+    {
+        $dtIni->setDate($dtIni->format('Y'), $dtIni->format('m'), 1);
+        $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m'), 1);
+        
+        $list = [];
+        $invert = false;
+        if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
+            $invert = true;
+        }
+
+        $dtAux = clone($dtIni);
+        $dtAux->setTime(12, 0, 0, 0);
+        $dtFim->setTime(12, 0, 0, 0);
+
+        $list[] = clone($dtAux);
+
+        if ($invert) {
+            while (true) {
+                $dtAux->setDate($dtAux->format('Y'), ((int)$dtAux->format('m')) - 1, 1);
+                if ($dtAux->getTimestamp() < $dtFim->getTimestamp()) {
+                    break;
+                }
+                $list[] = clone($dtAux);
+            }
+        } else {
+            while (true) {
+                $dtAux->setDate($dtAux->format('Y'), ((int)$dtAux->format('m')) + 1, 1);
                 if ($dtAux->getTimestamp() > $dtFim->getTimestamp()) {
                     break;
                 }
