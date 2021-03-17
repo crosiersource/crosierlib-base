@@ -4,7 +4,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
-use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 /**
  * Trait APIAuthenticatorTrait.
@@ -28,27 +30,9 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 trait APIAuthenticatorTrait
 {
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var Security
-     */
-    private $security;
-
-    public function __construct(UserRepository $userRepository, LoggerInterface $logger, Security $security)
-    {
-        $this->userRepository = $userRepository;
-        $this->logger = $logger;
-        $this->security = $security;
-    }
+    private LoggerInterface $logger;
 
     private function getXAuthorization(HeaderBag $headers): ?string
     {
@@ -60,7 +44,7 @@ trait APIAuthenticatorTrait
         return null;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): ?bool
     {
         if (strpos($request->getPathInfo(), '/api') === 0 && $this->getXAuthorization($request->headers)) {
             return true;
@@ -68,46 +52,44 @@ trait APIAuthenticatorTrait
         return false;
     }
 
-    public function getCredentials(Request $request)
+    public function authenticate(Request $request): PassportInterface
     {
         $authorizationHeader = $this->getXAuthorization($request->headers);
-        return $authorizationHeader ? substr($authorizationHeader, 7) : '';
-    }
+        $apiToken = $authorizationHeader ? substr($authorizationHeader, 7) : '';
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
         /** @var User $user */
-        $user = $this->userRepository->findOneBy(['apiToken' => $credentials]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['apiToken' => $apiToken]);
 
-        if (!$user) {
-            throw new CustomUserMessageAuthenticationException('Token inválido.');
-        }
-
-        if ($user->getApiTokenExpiresAt() <= new \DateTime()) {
+        if ($user && ($user->getApiTokenExpiresAt() <= new \DateTime())) {
             throw new CustomUserMessageAuthenticationException('Token expirado.');
         }
 
-        return $user;
+        return new SelfValidatingPassport(new UserBadge($apiToken));
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $this->logger->info('APIAuthenticator checkCredentials()');
-        return true;
+        if ($exception instanceof TooManyLoginAttemptsAuthenticationException) {
+            $errMsg = [
+                'messageKey' => 'Login bloqueado (Causa: muitas tentativas de login)'
+            ];
+        } elseif ($exception instanceof BadCredentialsException) {
+            $errMsg = [
+                'messageKey' => 'Usuário ou senha inválidos'
+            ];
+        } else {
+            $errMsg = [
+                'messageKey' => 'Erro ao efetuar login'
+            ];
+        }
+
+        return new JsonResponse($errMsg, Response::HTTP_FORBIDDEN);
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-        ];
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $this->logger->info('APIAuthenticator onAuthenticationSuccess()');
+        return null;
     }
 
     /**
@@ -123,9 +105,23 @@ trait APIAuthenticatorTrait
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    public function supportsRememberMe()
+    /**
+     * @required
+     * @param EntityManagerInterface $em
+     */
+    public function setEm(EntityManagerInterface $em): void
     {
-        $this->logger->info('APIAuthenticator supportsRememberMe()');
-        return false;
+        $this->em = $em;
     }
+
+    /**
+     * @required
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+
 }
