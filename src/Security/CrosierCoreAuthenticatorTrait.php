@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
@@ -44,6 +43,7 @@ trait CrosierCoreAuthenticatorTrait
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
+        $request->getSession()->set('uri_to_redirect_after_login', $request->getUri());
         $url = $_SERVER['CROSIERCORE_URL'] ?? null;
         if (!$url) {
             throw new \RuntimeException('CROSIERCORE_URL não informada');
@@ -78,12 +78,12 @@ trait CrosierCoreAuthenticatorTrait
 
     public function authenticate(Request $request): PassportInterface
     {
-        throw new AuthenticationException('CrosierCoreAuthenticator do not authenticate');
+        throw new AuthenticationException('authenticate - CrosierCoreAuthenticator do not authenticate');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        throw new CustomUserMessageAuthenticationException('Erro na autenticação');
+        throw new AuthenticationException('onAuthenticationFailure - CrosierCoreAuthenticator do not authenticate');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
