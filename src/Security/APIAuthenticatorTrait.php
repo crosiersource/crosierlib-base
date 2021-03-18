@@ -123,5 +123,4 @@ trait APIAuthenticatorTrait
         $this->logger = $logger;
     }
 
-
 }
