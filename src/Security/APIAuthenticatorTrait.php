@@ -69,6 +69,8 @@ trait APIAuthenticatorTrait
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        $this->logger->error('onAuthenticationFailure... ' . $exception->getMessage());
+        $this->logger->error('(key:data) ... ' . $exception->getMessageKey() . ': ' . $exception->getMessageData());
         if ($exception instanceof TooManyLoginAttemptsAuthenticationException) {
             $errMsg = [
                 'messageKey' => 'Login bloqueado (Causa: muitas tentativas de login)'
@@ -122,6 +124,5 @@ trait APIAuthenticatorTrait
     {
         $this->logger = $logger;
     }
-    
 
 }
