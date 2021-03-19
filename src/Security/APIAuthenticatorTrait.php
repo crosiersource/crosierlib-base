@@ -70,7 +70,7 @@ trait APIAuthenticatorTrait
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $this->logger->error('onAuthenticationFailure... ' . $exception->getMessage());
-        $this->logger->error('(key:data) ... ' . $exception->getMessageKey() . ': ' . $exception->getMessageData());
+        $this->logger->error('(key:data) ... ' . $exception->getMessageKey() . ': ' . implode(PHP_EOL, $exception->getMessageData()));
         if ($exception instanceof TooManyLoginAttemptsAuthenticationException) {
             $errMsg = [
                 'messageKey' => 'Login bloqueado (Causa: muitas tentativas de login)'
