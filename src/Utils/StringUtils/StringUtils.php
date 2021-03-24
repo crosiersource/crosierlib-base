@@ -168,10 +168,26 @@ class StringUtils
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+    
     public static function strposRegex(string $subject, string $pattern)
     {
         preg_match('/' . $pattern . '/', $subject, $matches, PREG_OFFSET_CAPTURE);
         return $matches[0][1] ?? null;
+    }
+
+
+    public static function formataTelefone(string $numero)
+    {
+        $numero = preg_replace("/[^0-9]/", "", $numero);
+        if (strlen($numero) == 10) {
+            $numero = substr_replace($numero, '(', 0, 0);
+            $numero = substr_replace($numero, '9', 3, 0);
+            $numero = substr_replace($numero, ')', 3, 0);
+        } elseif (strlen($numero) == 11) {
+            $numero = substr_replace($numero, '(', 0, 0);
+            $numero = substr_replace($numero, ')', 3, 0);
+        }
+        return $numero;
     }
 
 
