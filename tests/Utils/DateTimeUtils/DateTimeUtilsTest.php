@@ -217,4 +217,89 @@ class DateTimeUtilsTest extends TestCase
 
     }
 
+
+    public function test_getWeeksList()
+    {
+
+        $testes = [
+            [
+                'dtIni' => '26/03/2021',
+                'dtFim' => '26/03/2021',
+                'result' => [
+                    ['21/03/2021', '27/03/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '21/03/2021',
+                'dtFim' => '27/03/2021',
+                'result' => [
+                    ['21/03/2021', '27/03/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '27/03/2021',
+                'dtFim' => '21/03/2021',
+                'result' => [
+                    ['21/03/2021', '27/03/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '18/03/2021',
+                'dtFim' => '16/03/2021',
+                'result' => [
+                    ['14/03/2021', '20/03/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '07/03/2021',
+                'dtFim' => '14/03/2021',
+                'result' => [
+                    ['07/03/2021', '13/03/2021'],
+                    ['14/03/2021', '20/03/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '13/01/2021',
+                'dtFim' => '01/01/2021',
+                'result' => [
+                    ['10/01/2021', '16/01/2021'],
+                    ['03/01/2021', '09/01/2021'],
+                    ['27/12/2020', '02/01/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '01/01/2021',
+                'dtFim' => '13/01/2021',
+                'result' => [
+                    ['27/12/2020', '02/01/2021'],
+                    ['03/01/2021', '09/01/2021'],
+                    ['10/01/2021', '16/01/2021'],
+                ]
+            ],
+            [
+                'dtIni' => '21/02/2021',
+                'dtFim' => '01/03/2021',
+                'result' => [
+                    ['21/02/2021', '27/02/2021'],
+                    ['28/02/2021', '06/03/2021'],
+                ]
+            ],
+        ];
+
+
+        foreach ($testes as $t) {
+            $dtIni = DateTimeUtils::parseDateStr($t['dtIni']);
+            $dtFim = DateTimeUtils::parseDateStr($t['dtFim']);
+
+            $list = DateTimeUtils::getWeeksList($dtIni, $dtFim);
+            foreach ($list as $k => $semana) {
+                $this->assertEquals($semana[0]->format('d/m/Y'), $t['result'][$k][0]);
+                $this->assertEquals($semana[1]->format('d/m/Y'), $t['result'][$k][1]);
+            }
+
+        }
+
+
+    }
+
 }

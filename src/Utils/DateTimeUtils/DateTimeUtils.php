@@ -474,7 +474,7 @@ class DateTimeUtils
     {
         $dtIni->setDate($dtIni->format('Y'), $dtIni->format('m'), 1);
         $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m'), 1);
-        
+
         $list = [];
         $invert = false;
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
@@ -506,6 +506,51 @@ class DateTimeUtils
         }
 
         return $list;
+    }
+
+
+    /**
+     * Retorna uma lista de "semanas" (sendo que o domingo é considerado o primeiro dia).
+     *
+     * @param \DateTime $dtIni
+     * @param \DateTime $dtFim
+     * @return array
+     */
+    public static function getWeeksList(\DateTime $dtIni, \DateTime $dtFim): array
+    {
+        // Mudo a dtIni para o domingo da mesma semana
+        $dtIni_diaDaSemana = $dtIni->format('w');
+        $dtIni->setDate($dtIni->format('Y'), $dtIni->format('m'), $dtIni->format('d') - $dtIni_diaDaSemana);
+
+        // Mudo a dtFim para o sábado da mesma semana
+        $dtFim_diaDaSemana = $dtFim->format('w');
+        $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m'), $dtFim->format('d') + (6 - $dtFim_diaDaSemana));
+
+        $list = [];
+        $invert = false;
+        if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
+            $invert = true;
+        }
+
+        $dtAuxIni = clone($dtIni);
+        $dtAuxIni->setTime(12, 0, 0, 0);
+        $dtAuxFim = clone($dtAuxIni);
+
+        $dtFim->setTime(12, 0, 0, 0);
+
+        $list = [];
+
+        while (true) {
+            $dtAuxFim->setDate($dtAuxFim->format('Y'), $dtAuxFim->format('m'), (int)$dtAuxFim->format('d') + 6);
+            $list[] = [clone($dtAuxIni), clone($dtAuxFim)];
+            if ($dtAuxFim->getTimestamp() >= $dtFim->getTimestamp()) {
+                break;
+            }
+            $dtAuxIni->setDate($dtAuxIni->format('Y'), $dtAuxIni->format('m'), (int)$dtAuxIni->format('d') + 7);
+            $dtAuxFim = clone($dtAuxIni);
+        }
+
+        return $invert ? array_reverse($list) : $list;
     }
 
     /**
