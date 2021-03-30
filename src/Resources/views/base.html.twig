@@ -21,20 +21,15 @@
 <body class="c-app">
 
 
-
-
 {% block body %}
 {% endblock %}
 
 
 {{ include('@CrosierLibBase/Util/flashes.html.twig') }}
-{{ include('@CrosierLibBase/Util/confirmationModal.html.twig') }}
 
 </body>
 
 
-<script src="{{ crosierAsset('bundles/fosjsrouting/js/router.min.js') }}"></script>
-<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
 
 {{ renderCrosierWebpackScriptTags('crosier/layout') }}
