@@ -168,10 +168,22 @@ class StringUtils
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+
     public static function strposRegex(string $subject, string $pattern)
     {
         preg_match('/' . $pattern . '/', $subject, $matches, PREG_OFFSET_CAPTURE);
         return $matches[0][1] ?? null;
+    }
+
+
+    public static function formataTelefone(string $numero)
+    {
+        $numero = preg_replace("/[^0-9]/", "", $numero);
+        $arrNumeros = str_split($numero);
+        $numero = (strlen($numero) == 11) ?
+            vsprintf('(%d%d) %d%d%d%d%d-%d%d%d%d', $arrNumeros) :
+            vsprintf('(%d%d) %d%d%d%d-%d%d%d%d', $arrNumeros);
+        return $numero;
     }
 
 
