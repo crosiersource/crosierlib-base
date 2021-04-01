@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/images/favicon.ico"/>
+
+    <title>{{ page_title is defined and page_title != '' ? page_title ~ ' - Crosier' : 'Crosier' }} </title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+
+        {{ renderCrosierWebpackLinkTags('crosier/layout') }}
+    {% endblock %}
+
+    {% block up_scripts %}
+    {% endblock %}
+</head>
+
+<body class="c-app">
+
+
+{% block body %}
+{% endblock %}
+
+
+{{ include('@CrosierLibBase/Util/flashes.html.twig') }}
+
+</body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
+
+{{ renderCrosierWebpackScriptTags('crosier/layout') }}
+
+{% block down_scripts %}
+{% endblock %}
+
+</html>
