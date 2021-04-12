@@ -30,7 +30,6 @@ class EntMenuEntityHandler extends EntityHandler
         }
         
         if ($entMenu->getPai()) {
-            $entMenu->setAppUUID($entMenu->getPai()->getAppUUID());
             $entMenu->setPaiUUID($entMenu->getPai()->getUUID());
         }
         
