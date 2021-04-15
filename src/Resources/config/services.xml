@@ -162,7 +162,7 @@
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler" public="true"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"/>
 
         <!-- AppRepository -->
@@ -183,7 +183,7 @@
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler" public="true"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"/>
 
         <!-- AppConfigRepository -->
@@ -221,38 +221,6 @@
         </service>
         <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
                  alias="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
-
-        <!-- EntMenuAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.config.ent_menu_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Config\EntMenuAPIClient"
-                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Config\EntMenuAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.config.ent_menu_api_client"/>
-
-        <!-- PessoaAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
-                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.pessoa_api_client"/>
-
-        <!-- DiaUtilAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient"
-                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\DiaUtilAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.dia_util_api_client"/>
-
-        <!-- PropAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.base.prop_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient"
-                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.base.prop_api_client"/>
 
 
         <!-- KernelSubscriber -->
@@ -345,131 +313,6 @@
                  alias="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"/>
 
 
-        <!-- CategoriaPessoaEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.categoria_pessoa_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\CategoriaPessoaEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\CategoriaPessoaEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.base.categoria_pessoa_entity_handler"/>
-
-        <!-- CategoriaPessoaRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.base.categoria_pessoa_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Base\CategoriaPessoaRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Base\CategoriaPessoaRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.base.categoria_pessoa_repository"/>
-
-
-        <!-- PessoaEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_entity_handler"/>
-
-        <!-- PessoaRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_repository"/>
-
-
-        <!-- PessoaContatoEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_contato_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaContatoEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaContatoEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_contato_entity_handler"/>
-
-        <!-- PessoaContatoRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_contato_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaContatoRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaContatoRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_contato_repository"/>
-
-        <!-- PessoaEnderecoEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_endereco_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEnderecoEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PessoaEnderecoEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.base.pessoa_endereco_entity_handler"/>
-
-        <!-- PessoaEnderecoRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_endereco_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaEnderecoRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaEnderecoRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.base.pessoa_endereco_repository"/>
-
-
-        <!-- PropEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.base.prop_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PropEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Base\PropEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.base.prop_entity_handler"/>
-
-        <!-- PropRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.base.prop_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Base\PropRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Base\PropRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.base.prop_repository"/>
-
-
-        <!-- ConfigEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.config_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ConfigEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ConfigEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.config_entity_handler"/>
-
-        <!-- ConfigRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.config_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\ConfigRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\ConfigRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.config_repository"/>
-
-
         <!-- EntMenuEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
@@ -521,27 +364,6 @@
                  alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
 
 
-        <!-- ProgramEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.program_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ProgramEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\ProgramEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.program_entity_handler"/>
-
-        <!-- ProgramRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.program_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\ProgramRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\ProgramRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.program_repository"/>
-
-
         <!-- PushMessageEntityHandler -->
         <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
                  class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
@@ -571,7 +393,7 @@
             <argument type="service" id="security.helper"/>
             <argument type="service" id="parameter_bag"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler" public="true"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"/>
 
         <!-- UserEntityHandler -->
@@ -583,7 +405,7 @@
             <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
             <argument type="service" id="security.user_password_encoder.generic"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler"
+        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler" public="true"
                  alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
 
         <!-- GroupEntityHandler -->
@@ -603,7 +425,7 @@
                  parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
             <tag name="doctrine.repository_service"/>
         </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository"
+        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository" public="true"
                  alias="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"/>
 
         <!-- DiaUtilController -->
@@ -612,12 +434,6 @@
             <argument type="service" id="service_container"/>
         </service>
 
-        <!-- PessoaController -->
-        <service id="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller"
-                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\PessoaController" public="true">
-            <argument type="service" id="service_container"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
-        </service>
 
         <!-- MunicipioController -->
         <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
