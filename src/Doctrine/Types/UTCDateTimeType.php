@@ -27,7 +27,7 @@ class UTCDateTimeType extends DateTimeType
         }
 
         $converted = \DateTime::createFromFormat(
-            $platform->getDateTimeFormatString(),
+            strlen($value) === 10 ? $platform->getDateFormatString() : $platform->getDateTimeFormatString(),
             $value,
             self::$utc ? self::$utc : self::$utc = new \DateTimeZone('UTC')
         );
