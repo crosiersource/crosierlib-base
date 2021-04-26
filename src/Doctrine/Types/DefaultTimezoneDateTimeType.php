@@ -6,7 +6,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeType;
 
-class UTCDateTimeType extends DateTimeType
+class DefaultTimezoneDateTimeType extends DateTimeType
 {
     /** @var \DateTimeZone|null */
     private static $utc;
@@ -14,7 +14,7 @@ class UTCDateTimeType extends DateTimeType
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if ($value instanceof \DateTime or $value instanceof \DateTimeImmutable) {
-            $value->setTimezone(self::getUtc());
+            $value->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
         return parent::convertToDatabaseValue($value, $platform);
@@ -29,7 +29,7 @@ class UTCDateTimeType extends DateTimeType
         $converted = \DateTime::createFromFormat(
             strlen($value) === 10 ? $platform->getDateFormatString() : $platform->getDateTimeFormatString(),
             $value,
-            self::$utc ? self::$utc : self::$utc = new \DateTimeZone('UTC')
+            new \DateTimeZone(date_default_timezone_get())
         );
 
         if (!$converted) {
@@ -41,11 +41,6 @@ class UTCDateTimeType extends DateTimeType
         }
 
         return $converted;
-    }
-
-    public static function getUtc(): \DateTimeZone
-    {
-        return self::$utc ? self::$utc : self::$utc = new \DateTimeZone('UTC');
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
