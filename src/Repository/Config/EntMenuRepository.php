@@ -139,6 +139,21 @@ class EntMenuRepository extends FilterRepository
         $entMenu->setNivel($nivel);
     }
 
+
+    public function fillFilhos(EntMenu $entMenu)
+    {
+        $ql = "SELECT e FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e WHERE e.paiUUID = :entMenuPaiUUID ORDER BY e.ordem";
+        $qry = $this->getEntityManager()->createQuery($ql);
+        $qry->setParameter('entMenuPaiUUID', $entMenu->getUUID());
+        $filhos = $qry->getResult();
+        if ($filhos) {
+            $entMenu->setFilhos($filhos);
+            foreach ($filhos as $filho) {
+                $this->fillFilhos($filho);
+            }
+        }
+    }
+
     /**
      * @param EntMenu $entMenu
      * @param array $json
@@ -194,7 +209,7 @@ class EntMenuRepository extends FilterRepository
 
         $pais = $qry->getResult();
 
-        $tree = array();
+        $tree = [];
 
         foreach ($pais as $pai) {
             $tree[] = $this->entMenuInJson($pai);
@@ -202,6 +217,7 @@ class EntMenuRepository extends FilterRepository
         }
         return $tree;
     }
+
 
     /**
      * @param EntMenu $pai
@@ -218,6 +234,85 @@ class EntMenuRepository extends FilterRepository
         } else {
             return;
         }
+    }
+
+
+    public function exportMenuEntries(EntMenu $entMenu): string
+    {
+        //$tree = $this->makeTree($entMenu);
+        $this->fillFilhos($entMenu);
+        $arr = [];
+        $this->exportYamlEntriesFilhos($entMenu, $arr);
+        $yaml = yaml_emit($arr);
+        return $yaml;
+    }
+
+    private function exportYamlEntriesFilhos(EntMenu $entMenu, array &$arr)
+    {
+        $a = [
+            'label' => $entMenu->getLabel(),
+            'UUID' => $entMenu->getUUID(),
+            'icon' => $entMenu->getIcon(),
+            'tipo' => $entMenu->getTipo(),
+            'appUUID' => $entMenu->getAppUUID(),
+            'cssStyle' => $entMenu->getCssStyle(),
+            'url' => $entMenu->getUrl(),
+        ];
+        
+        if ($entMenu->getFilhos()) {
+            $a['filhos'] = [];
+            foreach ($entMenu->getFilhos() as $entMenu) {
+                $this->exportYamlEntriesFilhos($entMenu, $a['filhos']);
+            }
+        }
+        $arr[] = $a;
+    }
+
+    private function exportYamlEntry(EntMenu $entMenu, int $nivel): string
+    {
+        $sep = '\t';
+        $campos = [];
+        $campos[] = $entMenu->getLabel();
+        $campos[] = $entMenu->getUUID();
+        $campos[] = $entMenu->getIcon();
+        $campos[] = $entMenu->getTipo();
+        $campos[] = $entMenu->getAppUUID();
+        $campos[] = $entMenu->getPaiUUID();
+        $campos[] = $entMenu->getOrdem();
+        $campos[] = $entMenu->getCssStyle();
+        $campos[] = $entMenu->getUrl();
+        $str = implode($sep, $campos);
+        return str_pad('', $nivel * 4, ' ', STR_PAD_LEFT) . $str . PHP_EOL;
+    }
+
+
+    private function exportEntriesFilhos(EntMenu $entMenu, string &$str, int $nivel)
+    {
+        $str .= $this->exportEntry($entMenu, $nivel);
+        if ($entMenu->getFilhos()) {
+            $nivel++;
+            foreach ($entMenu->getFilhos() as $entMenu) {
+                $this->exportEntriesFilhos($entMenu, $str, $nivel);
+            }
+        }
+    }
+
+
+    private function exportEntry(EntMenu $entMenu, int $nivel): string
+    {
+        $sep = '\t';
+        $campos = [];
+        $campos[] = $entMenu->getLabel();
+        $campos[] = $entMenu->getUUID();
+        $campos[] = $entMenu->getIcon();
+        $campos[] = $entMenu->getTipo();
+        $campos[] = $entMenu->getAppUUID();
+        $campos[] = $entMenu->getPaiUUID();
+        $campos[] = $entMenu->getOrdem();
+        $campos[] = $entMenu->getCssStyle();
+        $campos[] = $entMenu->getUrl();
+        $str = implode($sep, $campos);
+        return str_pad('', $nivel * 4, ' ', STR_PAD_LEFT) . $str . PHP_EOL;
     }
 
 

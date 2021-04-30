@@ -141,6 +141,12 @@ class EntMenu implements EntityId
      */
     private $nivel;
 
+    /**
+     * TRANSIENT.
+     * @var string
+     */
+    private string $yaml;
+
 
     public function __construct()
     {
@@ -399,6 +405,24 @@ class EntMenu implements EntityId
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getYaml(): string
+    {
+        return $this->yaml;
+    }
+
+    /**
+     * @param string $yaml
+     * @return EntMenu
+     */
+    public function setYaml(string $yaml): EntMenu
+    {
+        $this->yaml = $yaml;
+        return $this;
+    }
+    
 
 }
 
