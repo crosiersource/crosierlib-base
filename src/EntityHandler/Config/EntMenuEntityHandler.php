@@ -29,9 +29,9 @@ class EntMenuEntityHandler extends EntityHandler
             }
         }
         
-        if ($entMenu->getPai()) {
-            $entMenu->setPaiUUID($entMenu->getPai()->getUUID());
-        }
+//        if ($entMenu->getPai()) {
+//            $entMenu->setPaiUUID($entMenu->getPai()->getUUID());
+//        }
         
         if (!$entMenu->getPaiUUID()) {
             $entMenu->setTipo('PAI');
