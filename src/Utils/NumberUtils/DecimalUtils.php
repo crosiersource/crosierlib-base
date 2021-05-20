@@ -52,6 +52,11 @@ class DecimalUtils
             return null;
         }
         $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
+        if ($decimals) {
+            $fmt->setAttribute(\NumberFormatter::DECIMAL_ALWAYS_SHOWN, true);
+            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+        }
         $formatted = $fmt->format($float);
         return $formatted;
     }
