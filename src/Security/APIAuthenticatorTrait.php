@@ -61,6 +61,10 @@ trait APIAuthenticatorTrait
         /** @var User $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['apiToken' => $apiToken]);
 
+        if (!$user) {
+            throw new CustomUserMessageAuthenticationException('User n/d para apiToken.');
+        }
+        
         if ($user && ($user->getApiTokenExpiresAt() <= new \DateTime())) {
             throw new CustomUserMessageAuthenticationException('Token expirado.');
         }
