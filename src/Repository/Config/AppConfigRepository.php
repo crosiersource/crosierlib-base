@@ -138,13 +138,26 @@ class AppConfigRepository extends FilterRepository
     public function findValorByChaveAndAppUUID(string $chave, string $appUUID): ?string
     {
         try {
-            $dql = 'SELECT ac FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig ac WHERE ac.chave = :chave AND ac.appUUID = :appUUID';
-            $qry = $this->getEntityManager()->createQuery($dql);
-            $qry->setParameter('chave', $chave);
-            $qry->setParameter('appUUID', $appUUID);
-            /** @var AppConfig $r */
-            $r = $qry->getSingleResult();
-            return $r->getValor() ?? null;
+            $sql = 'SELECT valor FROM cfg_app_config ac WHERE ac.chave = :chave AND ac.app_uuid = :appUUID';
+            return $this->getEntityManager()->getConnection()->fetchAssociative($sql, ['chave' => $chave, 'appUUID' => $appUUID])['valor'] ?? null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+
+    /**
+     * Pesquisa uma configuração de um App por sua chave.
+     *
+     * @param string $chave
+     * @param string $appUUID
+     * @return string|null
+     */
+    public function findValorByChaveAndAppNome(string $chave, string $appNome): ?string
+    {
+        try {
+            $sql = 'SELECT valor FROM cfg_app_config ac, cfg_app a WHERE a.uuid = ac.app_uuid AND ac.chave = :chave AND a.nome = :appNome';
+            return $this->getEntityManager()->getConnection()->fetchAssociative($sql, ['chave' => $chave, 'appNome' => $appNome])['valor'] ?? null;
         } catch (\Exception $e) {
             return null;
         }

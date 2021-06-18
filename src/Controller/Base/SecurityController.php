@@ -25,7 +25,13 @@ class SecurityController extends AbstractController
 
     public function whoami(): JsonResponse
     {
-        return new JsonResponse(['id' => $this->getUser()->getId(), 'username' => $this->getUser()->getUsername()]);
+        return new JsonResponse(
+            [
+                'id' => $this->getUser()->getId(), 
+                'username' => $this->getUser()->getUsername(),
+                'roles' => $this->getUser()->getRoles()
+            ]
+        );
     }
     
 }

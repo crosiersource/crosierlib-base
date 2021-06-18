@@ -469,5 +469,11 @@
              alias="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"/>
 
 
+    <!-- EntityHandlerDataPersister -->
+    <service id="serializer.normalizer.datetime"
+             class="CrosierSource\CrosierLibBaseBundle\Normalizer\DateTimeNormalizer">
+      <tag name="serializer.normalizer"/>
+    </service>
+    
   </services>
 </container>
