@@ -71,11 +71,20 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function delete($entityId)
     {
         try {
+            if ($this->isTransacionalSave) {
+                $this->doctrine->beginTransaction();
+            }
             $this->beforeDelete($entityId);
             $this->doctrine->remove($entityId);
             $this->doctrine->flush();
             $this->afterDelete($entityId);
+            if ($this->isTransacionalSave) {
+                $this->doctrine->commit();
+            }
         } catch (\Exception $e) {
+            if ($this->isTransacionalSave) {
+                $this->doctrine->rollback();
+            }
             $msg = ExceptionUtils::treatException($e);
             throw new ViewException('Erro ao deletar' . ($msg ? ' (' . $msg . ')' : ''), 0, $e);
         }
