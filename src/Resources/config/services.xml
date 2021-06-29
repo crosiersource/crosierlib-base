@@ -4,464 +4,476 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
         http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <services>
-
-        <!-- EntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
-
-
-        <!-- .................................. -->
-        <!-- .................................. -->
-        <!-- .................................. -->
-
-        <!-- BuildInputExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="monolog.logger"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"/>
-
-        <!-- CrosierCoreAssetExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension">
-            <tag name="twig.extension"/>
-            <argument type="service" id="monolog.logger"/>
-            <argument type="service" id="webpack_encore.tag_renderer"/>
-            <argument type="service" id="assets.packages"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>
-
-        <!-- GetEnvExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension">
-            <argument type="service" id="service_container"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
-
-        <!-- StringUtilsExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension">
-            <argument type="service" id="service_container"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"/>
-
-        <!-- RouteExistsExtension -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
-            <argument type="service" id="service_container"/>
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
-
-        <!-- SerializeEntityFilter -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter">
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"/>
-
-        <!-- StringUtilsFilter -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.string_utils_filter"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsFilter">
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsFilter"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_filter"/>
-
-        <!-- DateTimeUtilsFilter -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter">
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"/>
-
-        <!-- TransliterateFilter -->
-        <service id="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"
-                 class="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter">
-            <tag name="twig.extension"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter"
-                 alias="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"/>
-
-        <!-- .................................. -->
-        <!-- .................................. -->
-        <!-- .................................. -->
-
-
-        <!-- UppercaseFieldsJsonBuilderCommand -->
-        <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
-                 class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="monolog.logger"/>
-            <tag name="console.command"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
-                 alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
-
-
-        <!-- AccessDeniedHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"/>
-
-
-        <!-- FilterRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.filter_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.filter_repository"/>
-
-        <!-- UserRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"/>
-
-        <!-- RoleRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"/>
-
-
-        <!-- AppEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler" public="true"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"/>
-
-        <!-- AppRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"/>
-
-
-        <!-- AppConfigEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler" public="true"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"/>
-
-        <!-- AppConfigRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"/>
-
-
-        <!-- CrosierAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="monolog.logger"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
-
-        <!-- CrosierEntityIdAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient">
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="monolog.logger"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"/>
-
-        <!-- SecurityAPIClient -->
-        <service id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"
-                 class="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
-                 parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
-                 alias="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
-
-
-        <!-- KernelSubscriber -->
-        <service id="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"
-                 class="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber">
-            <argument type="service" id="monolog.logger"/>
-            <argument type="service"
-                      id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
-            <tag name="kernel.event_listener" event="kernel.request"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber"
-                 alias="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"/>
-
-
-        <!-- PreUpdateListener -->
-        <service id="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"
-                 class="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener">
-            <argument type="service" id="monolog.logger"/>
-            <tag name="doctrine.event_listener" event="preUpdate" priority="500"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener"
-                 alias="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"/>
-
-
-        <!-- BaseController -->
-        <service id="crosier_source.crosier_lib_base_bundle.controller.base_controller"
-                 class="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
-            <!-- como que funciona sem os arguments?? -->
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Controller\BaseController"
-                 alias="crosier_source.crosier_lib_base_bundle.controller.base_controller"/>
-
-        <!-- FormListController -->
-        <service id="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"
-                 class="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
-                 parent="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
-                 alias="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"/>
-
-
-        <!-- StoredViewInfoEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
-
-        <!-- StoredViewInfoBusiness -->
-        <service id="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"
-                 class="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness">
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service"
-                      id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness"
-                 alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"/>
-
-
-        <!-- SyslogBusiness -->
-        <service id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
-                 class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="monolog.logger"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness"
-                 alias="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
-
-
-        <!-- EntityIdUtils -->
-        <service id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"
-                 class="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils"
-                 alias="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
-
-        <!-- EntityNormalizer -->
-        <service id="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"
-                 class="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer"
-                 alias="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"/>
-
-
-        <!-- EntMenuEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"/>
-
-        <!-- EntMenuRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_repository"/>
-
-        <!-- EntMenuBusiness -->
-        <service id="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"
-                 class="CrosierSource\CrosierLibBaseBundle\Business\Config\EntMenuBusiness">
-            <argument type="service"
-                      id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\EntMenuBusiness"
-                 alias="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"/>
-
-
-        <!-- EntMenuLocatorEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"/>
-
-        <!-- EntMenuLocatorRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
-
-
-        <!-- PushMessageEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
-
-        <!-- PushMessageRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"/>
-
-
-        <!-- RoleEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler" public="true"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"/>
-
-        <!-- UserEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
-            <argument type="service" id="security.user_password_encoder.generic"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler" public="true"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
-
-        <!-- GroupEntityHandler -->
-        <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"
-                 class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
-                 parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <argument type="service" id="security.helper"/>
-            <argument type="service" id="parameter_bag"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
-                 alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"/>
-
-        <!-- GroupRepository -->
-        <service id="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"
-                 class="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository"
-                 parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-            <tag name="doctrine.repository_service"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository" public="true"
-                 alias="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"/>
-
-        <!-- DiaUtilController -->
-        <service id="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller"
-                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\DiaUtilController" public="true">
-            <argument type="service" id="service_container"/>
-        </service>
-
-
-        <!-- MunicipioController -->
-        <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
-                 class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
-            <argument type="service" id="service_container"/>
-            <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
-        </service>
-
-        <!-- DiaUtilBusiness -->
-        <service id="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"
-                 class="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness">
-            <argument type="service" id="doctrine.dbal.default_connection"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness"
-                 alias="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"/>
-
-
-
-        <!-- EntityHandlerDataPersister -->
-        <service id="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"
-                 class="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister">
-            <argument type="service" id="service_container"/>
-            <argument type="service" id="doctrine.orm.default_entity_manager"/>
-            <tag name="api_platform.data_persister"/>
-        </service>
-        <service id="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister"
-                 alias="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"/>
-
-
-    </services>
+  <services>
+
+    <!-- EntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.entity_handler"/>
+
+
+    <!-- .................................. -->
+    <!-- .................................. -->
+    <!-- .................................. -->
+
+    <!-- BuildInputExtension -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="monolog.logger"/>
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\BuildInputExtension"
+             alias="crosier_source.crosier_lib_base_bundle.twig.build_input_extension"/>
+
+    <!-- CrosierCoreAssetExtension -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension">
+      <tag name="twig.extension"/>
+      <argument type="service" id="monolog.logger"/>
+      <argument type="service" id="webpack_encore.tag_renderer"/>
+      <argument type="service" id="assets.packages"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\CrosierCoreAssetExtension"
+             alias="crosier_source.crosier_lib_base_bundle.twig.crosier_core_asset_extension"/>
+
+    <!-- GetEnvExtension -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension">
+      <argument type="service" id="service_container"/>
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\GetEnvExtension"
+             alias="crosier_source.crosier_lib_base_bundle.twig.get_env_extension"/>
+
+    <!-- StringUtilsExtension -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension">
+      <argument type="service" id="service_container"/>
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsExtension"
+             alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_extension"/>
+
+    <!-- RouteExistsExtension -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension">
+      <argument type="service" id="service_container"/>
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\RouteExistsExtension"
+             alias="crosier_source.crosier_lib_base_bundle.twig.route_exists_extension"/>
+
+    <!-- SerializeEntityFilter -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\SerializeEntityFilter"
+             alias="crosier_source.crosier_lib_base_bundle.twig.serialize_entity_filter"/>
+
+    <!-- StringUtilsFilter -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.string_utils_filter"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsFilter">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\StringUtilsFilter"
+             alias="crosier_source.crosier_lib_base_bundle.twig.string_utils_filter"/>
+
+    <!-- DateTimeUtilsFilter -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\DateTimeUtilsFilter"
+             alias="crosier_source.crosier_lib_base_bundle.twig.date_time_utils_filter"/>
+
+    <!-- TransliterateFilter -->
+    <service id="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"
+             class="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Twig\TransliterateFilter"
+             alias="crosier_source.crosier_lib_base_bundle.twig.transliterate_filter"/>
+
+    <!-- .................................. -->
+    <!-- .................................. -->
+    <!-- .................................. -->
+
+
+    <!-- UppercaseFieldsJsonBuilderCommand -->
+    <service id="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"
+             class="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="monolog.logger"/>
+      <tag name="console.command"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Command\Base\UppercaseFieldsJsonBuilderCommand"
+             alias="crosier_source.crosier_lib_base_bundle.command.base.uppercase_fields_json_builder_command"/>
+
+
+    <!-- AccessDeniedHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"
+             class="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler">
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Security\AccessDeniedHandler"
+             alias="crosier_source.crosier_lib_base_bundle.security.access_denied_handler"/>
+
+
+    <!-- FilterRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.filter_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.filter_repository"/>
+
+    <!-- UserRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.security.user_repository"/>
+
+    <!-- RoleRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\RoleRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.security.role_repository"/>
+
+
+    <!-- AppEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"/>
+
+    <!-- AppRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"/>
+
+
+    <!-- AppConfigEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"/>
+
+    <!-- AppConfigRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.app_config_repository"/>
+
+
+    <!-- CrosierAPIClient -->
+    <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"
+             class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="monolog.logger"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient"
+             alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_api_client"/>
+
+    <!-- CrosierEntityIdAPIClient -->
+    <service id="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"
+             class="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient">
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="monolog.logger"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient"
+             alias="crosier_source.crosier_lib_base_bundle.api_client.crosier_entity_id_api_client"/>
+
+    <!-- SecurityAPIClient -->
+    <service id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"
+             class="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
+             parent="CrosierSource\CrosierLibBaseBundle\APIClient\CrosierAPIClient">
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\APIClient\Security\SecurityAPIClient"
+             alias="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
+
+
+    <!-- KernelSubscriber -->
+    <service id="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"
+             class="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber">
+      <argument type="service" id="monolog.logger"/>
+      <argument type="service"
+                id="crosier_source.crosier_lib_base_bundle.api_client.security.security_api_client"/>
+      <tag name="kernel.event_listener" event="kernel.request"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EventSubscriber\KernelSubscriber"
+             alias="crosier_source.crosier_lib_base_bundle.event_subscriber.kernel_subscriber"/>
+
+
+    <!-- PreUpdateListener -->
+    <service id="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"
+             class="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener">
+      <argument type="service" id="monolog.logger"/>
+      <tag name="doctrine.event_listener" event="preUpdate" priority="500"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener"
+             alias="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"/>
+
+
+    <!-- BaseController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.base_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
+      <!-- como que funciona sem os arguments?? -->
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Controller\BaseController"
+             alias="crosier_source.crosier_lib_base_bundle.controller.base_controller"/>
+
+    <!-- FormListController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
+             parent="CrosierSource\CrosierLibBaseBundle\Controller\BaseController">
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Controller\FormListController"
+             alias="crosier_source.crosier_lib_base_bundle.controller.form_list_controller"/>
+
+
+    <!-- StoredViewInfoEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
+
+    <!-- StoredViewInfoBusiness -->
+    <service id="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"
+             class="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness">
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service"
+                id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness"
+             alias="crosier_source.crosier_lib_base_bundle.business.config.stored_view_info_business"/>
+
+
+    <!-- SyslogBusiness -->
+    <service id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
+             class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="monolog.logger"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness"
+             alias="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+
+
+    <!-- EntityIdUtils -->
+    <service id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"
+             class="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils"
+             alias="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
+
+    <!-- EntityNormalizer -->
+    <service id="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"
+             class="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer"
+             alias="crosier_source.crosier_lib_base_bundle.normalizer.entity_normalizer"/>
+
+
+    <!-- EntMenuEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"/>
+
+    <!-- EntMenuRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_repository"/>
+
+    <!-- EntMenuBusiness -->
+    <service id="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"
+             class="CrosierSource\CrosierLibBaseBundle\Business\Config\EntMenuBusiness">
+      <argument type="service"
+                id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\EntMenuBusiness"
+             alias="crosier_source.crosier_lib_base_bundle.business.config.ent_menu_business"/>
+
+
+    <!-- EntMenuLocatorEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuLocatorEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_locator_entity_handler"/>
+
+    <!-- EntMenuLocatorRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
+
+
+    <!-- PushMessageEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
+
+    <!-- PushMessageRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"/>
+
+
+    <!-- RoleEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"/>
+
+    <!-- UserEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+      <argument type="service" id="security.user_password_encoder.generic"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
+
+    <!-- GroupEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"/>
+
+    <!-- GroupRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Security\GroupRepository" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"/>
+
+    <!-- DiaUtilController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\Base\DiaUtilController" public="true">
+      <argument type="service" id="service_container"/>
+    </service>
+
+
+    <!-- MunicipioController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
+      <argument type="service" id="service_container"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
+    </service>
+
+
+    <!-- SecurityController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.base.security_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\Base\SecurityController" public="true">
+      <argument type="service" id="service_container"/>
+    </service>
+
+    <!-- DiaUtilBusiness -->
+    <service id="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"
+             class="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness">
+      <argument type="service" id="doctrine.dbal.default_connection"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Business\Base\DiaUtilBusiness"
+             alias="crosier_source.crosier_lib_base_bundle.business.base.dia_util_business"/>
+
+
+    <!-- EntityHandlerDataPersister -->
+    <service id="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"
+             class="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister">
+      <argument type="service" id="service_container"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <tag name="api_platform.data_persister"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\DataPersister\EntityHandlerDataPersister"
+             alias="crosier_source.crosier_lib_base_bundle.data_persister.entity_handler_data_persister"/>
+
+
+    <!-- EntityHandlerDataPersister -->
+    <service id="serializer.normalizer.datetime"
+             class="CrosierSource\CrosierLibBaseBundle\Normalizer\DateTimeNormalizer">
+      <tag name="serializer.normalizer"/>
+    </service>
+    
+  </services>
 </container>

@@ -584,4 +584,16 @@ class DateTimeUtils
         return ($diff->invert) ? $minTotal : ($minTotal * -1);
     }
 
+    /**
+     * @param \DateTime $dtFim
+     * @param \DateTime $dtIni
+     * @return int
+     */
+    public static function diffInDias(\DateTime $dtFim, \DateTime $dtIni): int
+    {
+        $diff = $dtFim->diff($dtIni);
+        $total = $diff->days;
+        return ($diff->invert) ? $total : ($total * -1);
+    }
+
 }

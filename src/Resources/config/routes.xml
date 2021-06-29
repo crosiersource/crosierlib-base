@@ -4,47 +4,52 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <!-- DiaUtilController -->
-    <route id="base_diaUtil_findDiaUtil"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findDiaUtil"
-           path="/base/diaUtil/findDiaUtil/" >
-    </route>
+  <!-- DiaUtilController -->
+  <route id="base_diaUtil_findDiaUtil"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findDiaUtil"
+         path="/base/diaUtil/findDiaUtil/">
+  </route>
 
-    <route id="base_diaUtil_incPeriodo"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::incPeriodo"
-           path="/base/diaUtil/incPeriodo/" >
-    </route>
+  <route id="base_diaUtil_incPeriodo"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::incPeriodo"
+         path="/base/diaUtil/incPeriodo/">
+  </route>
 
-    <route id="base_diaUtil_findEnesimoDiaUtil"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findEnesimoDiaUtil"
-           path="/base/diaUtil/findEnesimoDiaUtil/" >
-    </route>
-
-
-
-    <!-- PessoaController -->
-    <route id="base_pessoa_findById"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findById"
-           path="/base/pessoa/findById/" >
-    </route>
-
-    <route id="base_pessoa_findByStr"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
-           path="/base/pessoa/findByStr/" >
-    </route>
-
-    <route id="base_pessoa_findByStrECateg"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
-           path="/base/pessoa/findByStr/" >
-    </route>
+  <route id="base_diaUtil_findEnesimoDiaUtil"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.dia_util_controller::findEnesimoDiaUtil"
+         path="/base/diaUtil/findEnesimoDiaUtil/">
+  </route>
 
 
+  <!-- PessoaController -->
+  <route id="base_pessoa_findById"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findById"
+         path="/base/pessoa/findById/">
+  </route>
 
-    <!-- MunicipioController -->
-    <route id="base_municipio_findEnderecoByCEP"
-           controller="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller::findEnderecoByCEP"
-           path="/base/municipio/findEnderecoByCEP/" >
-    </route>
+  <route id="base_pessoa_findByStr"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
+         path="/base/pessoa/findByStr/">
+  </route>
+
+  <route id="base_pessoa_findByStrECateg"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.pessoa_controller::findByStr"
+         path="/base/pessoa/findByStr/">
+  </route>
+
+
+  <!-- MunicipioController -->
+  <route id="base_municipio_findEnderecoByCEP"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller::findEnderecoByCEP"
+         path="/base/municipio/findEnderecoByCEP/">
+  </route>
+
+
+  <!-- SecurityController -->
+  <route id="api_whoami"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.security_controller::whoami"
+         path="/api/whoami">
+  </route>
 
 
 </routes>
