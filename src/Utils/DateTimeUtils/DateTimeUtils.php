@@ -596,4 +596,16 @@ class DateTimeUtils
         return ($diff->invert) ? $total : ($total * -1);
     }
 
+    /**
+     * Adiciona $days em $dt.
+     * @param \DateTime $dt
+     * @param int $days
+     * @return \DateTime
+     */
+    public static function addDays(\DateTime $dt, int $days): \DateTime {
+        $novaDt = clone $dt;
+        $novaDt->setDate($novaDt->format('Y'), $novaDt->format('m'), (int)$novaDt->format('d') + $days);
+        return $novaDt;
+    }
+
 }
