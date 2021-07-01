@@ -1,13 +1,43 @@
 <?php
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Config;
-
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
+
 
 /**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"entity","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
  *
+ *     itemOperations={
+ *          "get"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "put"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ * @ApiFilter(DateFilter::class, properties={"moment"})
+ * @ApiFilter(SearchFilter::class, properties={"app": "partial", "component": "partial", "act": "partial", "username": "partial", "obs": "partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntityChangeHandler")
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntityChangeRepository")
  * @ORM\Table(name="cfg_entity_change")
  *
