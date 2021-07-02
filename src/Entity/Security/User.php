@@ -91,9 +91,9 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      *
      * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Security\Group")
-     * @ORM\JoinColumn(name="group_id", nullable=false)
+     * @ORM\JoinColumn(name="group_id", nullable=true)
      *
-     * @var $group Group
+     * @var null|$group Group
      * @Groups("user")
      */
     private $group;
