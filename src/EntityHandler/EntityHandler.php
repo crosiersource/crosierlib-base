@@ -190,11 +190,12 @@ abstract class EntityHandler implements EntityHandlerInterface
             if ($flush) {
                 $this->doctrine->flush();
             }
-            $this->afterSave($entityId);            
+            $this->afterSave($entityId);
             $this->handleJsonMetadata();
             if ($this->isTransacionalSave) {
                 $this->doctrine->commit();
             }
+            $this->posAfterSave($entityId);
         } catch (\Throwable $e) {
             if ($this->isTransacionalSave) {
                 $this->doctrine->rollback();
@@ -324,6 +325,15 @@ abstract class EntityHandler implements EntityHandlerInterface
      * @param $entityId
      */
     public function afterSave($entityId)
+    {
+    }
+
+    /**
+     * Implementação vazia pois não é obrigatório.
+     *
+     * @param $entityId
+     */
+    public function posAfterSave($entityId)
     {
     }
 
