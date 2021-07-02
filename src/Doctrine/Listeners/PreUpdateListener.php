@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -54,13 +55,17 @@ class PreUpdateListener
                         $changes[$k] = $changes[0]->__toString() ?: $changes[0]->getId();
                     } elseif (is_numeric($changes[$k])) {
                         $changes[$k] = (float)$changes[$k];
-                    } else {
+                    } elseif (!is_array($changes[$k])) {
                         $changes[$k] = (string)$changes[$k];
                     }
                 }
-
-                if ((string)$changes[0] !== (string)$changes[1]) {
-                    $strChanges .= $field . ' de "' . $changes[0] . '" para "' . $changes[1] . '"' . PHP_EOL;
+                if ($field === 'jsonData') {
+                    $arrDiff = array_diff($changes[0], $changes[1]);
+                    foreach ($arrDiff as $k => $diff) {
+                        $strChanges .= 'jsonData.' . $k . ': de "' . $changes[0][$k] . '" para "' . $changes[1][$k] . '"' . PHP_EOL;
+                    }
+                } else if ((string)$changes[0] !== (string)$changes[1]) {
+                    $strChanges .= $field . ': de "' . $changes[0] . '" para "' . $changes[1] . '"' . PHP_EOL;
                 }
 
             }
