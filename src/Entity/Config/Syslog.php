@@ -2,15 +2,16 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Config;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 
 /**
@@ -19,12 +20,20 @@ use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
  *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/config/syslog/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={
+ *              "path"="/core/config/syslog/{id}", 
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "normalization_context"={"groups"={"entity","entityId", "obs"}},
+ *             },
  *          "put"={"path"="/core/config/syslog/{id}", "security"="is_granted('ROLE_ADMIN')"},
  *          "delete"={"path"="/core/config/syslog/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/config/syslog", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={
+ *              "path"="/core/config/syslog", 
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "normalization_context"={"groups"={"entity","entityId", "obsp"}},
+ *              },
  *          "post"={"path"="/core/config/syslog", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
@@ -35,7 +44,7 @@ use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
  * )
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
- * @ApiFilter(SearchFilter::class, properties={"app": "partial", "component": "partial", "act": "partial", "username": "partial", "obs": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "app": "exact", "tipo": "exact", "component": "partial", "act": "partial", "username": "exact", "obs": "partial"})
  * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\SyslogHandler")
@@ -55,6 +64,14 @@ class Syslog
      * @Groups("entityId")
      */
     public int $id;
+
+    /**
+     *
+     * @ORM\Column(name="tipo", type="string")
+     * @Groups("entity")
+     * @var string|null
+     */
+    public ?string $tipo = null;
 
     /**
      *
@@ -92,15 +109,15 @@ class Syslog
     /**
      *
      * @ORM\Column(name="moment", type="datetime")
-     * @Groups("entityId")
+     * @Groups("entity")
      * @var null|\DateTime
      */
-    private ?\DateTime $moment = null;
+    public ?\DateTime $moment = null;
 
     /**
      *
      * @ORM\Column(name="obs", type="string")
-     * @Groups("entity")
+     * @Groups("obs")
      * @var string|null
      */
     public ?string $obs = null;
@@ -121,6 +138,18 @@ class Syslog
      * @Groups("entity")
      */
     public ?array $jsonData = null;
+
+
+    /**
+     * 
+     * @Groups("obsp")
+     * @SerializedName("obs")
+     * @var null|string
+     */
+    public function getObsp(): ?string
+    {
+        return $this->obs ? (substr($this->obs, 0, 200) . '...') : null;
+    }
 
 
 }
