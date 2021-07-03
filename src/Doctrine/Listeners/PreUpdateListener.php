@@ -60,7 +60,7 @@ class PreUpdateListener
                     }
                 }
                 if ($field === 'jsonData') {
-                    $arrDiff = array_diff($changes[0], $changes[1]);
+                    $arrDiff = array_diff_assoc($changes[0], $changes[1]);
                     foreach ($arrDiff as $k => $diff) {
                         $strChanges .= 'jsonData.' . $k . ': de "' . $changes[0][$k] . '" para "' . $changes[1][$k] . '"' . PHP_EOL;
                     }
