@@ -177,7 +177,7 @@ trait EntityIdTrait
      */
     public function __toString(): ?int
     {
-        return $this->getId();
+        return '' + $this->getId();
     }
 
 
