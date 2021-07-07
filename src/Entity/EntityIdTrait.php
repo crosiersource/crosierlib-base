@@ -172,4 +172,13 @@ trait EntityIdTrait
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
+    public function __toString(): ?int
+    {
+        return $this->getId();
+    }
+
+
 }
