@@ -173,9 +173,9 @@ trait EntityIdTrait
     }
 
     /**
-     * @return int|null
+     * @return string
      */
-    public function __toString(): ?int
+    public function __toString(): string
     {
         return '' . (string)($this->getId() ?? '');
     }
