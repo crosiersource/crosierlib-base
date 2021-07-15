@@ -269,7 +269,7 @@ abstract class FormListController extends BaseController
      * @return Response
      * @throws ViewException
      */
-    public function doDatatablesJsList(Request $request, $defaultFilters = null, ?array $dadosProntos = null, ?int $countByFilter = null): Response
+    public function doDatatablesJsList(Request $request, $defaultFilters = null, ?array $dadosProntos = null, ?int $countByFilter = null, ?array $configs = null): Response
     {
         /** @var FilterRepository $repo */
         $repo = $this->getRepository();
@@ -327,7 +327,7 @@ abstract class FormListController extends BaseController
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $serializer = new Serializer([new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory)]);
             $groupDaClasse = lcfirst(ClassUtils::getClassNameWithoutNamespace($this->entityHandler->getEntityClass()));
-            $context['groups'] = ['entityId', 'entity', $groupDaClasse];
+            $context['groups'] = array_merge(['entityId', 'entity', $groupDaClasse], $configs['outrosGruposSerializ'] ?? []);
             $recordsTotal = $repo->count(array());
             $results = array(
                 'draw' => $draw,
