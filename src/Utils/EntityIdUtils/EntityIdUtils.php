@@ -80,8 +80,9 @@ class EntityIdUtils
         try {
             if (!$groups) {
                 $groupDaClasse = lcfirst(ClassUtils::getClassNameWithoutNamespace(get_class($entityId)));
-                $groups = ['entityId', 'entity', $groupDaClasse];
+                $groups = [$groupDaClasse];
             }
+            $groups = array_merge(['entityId', 'entity'], $groups ?? []);
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
@@ -99,13 +100,18 @@ class EntityIdUtils
     /**
      * Deserializa um array de uma entidade para o tipo $type.
      *
-     * @param array $entityArray
+     * @param ?array $entityArray
      * @param string $type
      * @return object
      */
-    public function unserialize(array $entityArray, string $type, int $circularReferenceLimit = 3, array $groups = ['entity', 'entityId'])
+    public function unserialize(array $entityArray, string $type, int $circularReferenceLimit = 3, ?array $groups = null)
     {
         try {
+            if (!$groups) {
+                $groupDaClasse = lcfirst(ClassUtils::getClassNameWithoutNamespace($type));
+                $groups = [$groupDaClasse];
+            }
+            $groups = array_merge(['entityId', 'entity'], $groups ?? []);
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
             $entityNormalizer = new EntityNormalizer($this->em);
