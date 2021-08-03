@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Normalizer\EntityNormalizer;
+use CrosierSource\CrosierLibBaseBundle\Utils\ClassUtils\ClassUtils;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
@@ -71,12 +72,16 @@ class EntityIdUtils
      *
      * @param EntityId $entityId
      * @param int $circularReferenceLimit
-     * @param array $groups
+     * @param ?array $groups
      * @return array
      */
-    public static function serialize(EntityId $entityId, int $circularReferenceLimit = 3, array $groups = ['entity', 'entityId']): array
+    public static function serialize(EntityId $entityId, int $circularReferenceLimit = 3, ?array $groups = null): array
     {
         try {
+            if (!$groups) {
+                $groupDaClasse = lcfirst(ClassUtils::getClassNameWithoutNamespace(get_class($entityId)));
+                $groups = ['entityId', 'entity', $groupDaClasse];
+            }
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
