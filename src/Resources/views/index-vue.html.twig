@@ -1,7 +1,6 @@
 {% extends '@CrosierLibBase/base-vue.html.twig' %}
 
 {% block body %}
-
     {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
     <div class="c-wrapper c-fixed-components">
@@ -11,23 +10,20 @@
         <div class="c-body">
             <main class="c-main">
                 <div class="container-fluid">
-                    <div class="fade-in">
-                        <main class="main">
-                            <div id="crosierCoreUrl" data-value="{{ getEnv('CROSIERCORE_URL') }}"></div>
 
-                            {% block page_content %}
+                    {% block page_content %}
 
-                            {% endblock %}
+                    {% endblock %}
 
-                            <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
+                    <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
 
-                        </main>
-                    </div>
                 </div>
             </main>
             {{ include('@CrosierLibBase/footer.html.twig') }}
         </div>
-    </div>
 
+
+
+    </div>
 
 {% endblock %}
