@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
@@ -38,9 +39,9 @@ abstract class EntityHandler implements EntityHandlerInterface
      * @param SyslogBusiness $syslog
      */
     public function __construct(EntityManagerInterface $doctrine,
-                                Security $security,
-                                ParameterBagInterface $parameterBag,
-                                SyslogBusiness $syslog)
+                                Security               $security,
+                                ParameterBagInterface  $parameterBag,
+                                SyslogBusiness         $syslog)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
@@ -162,8 +163,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     public function afterClone($newEntityId, $oldEntityId)
     {
     }
-    
-    
+
 
     /**
      * Executa o persist/update e o flush.
@@ -201,7 +201,8 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $this->doctrine->rollback();
             }
             $msg = ExceptionUtils::treatException($e);
-            throw new ViewException('Erro ao salvar (' . $msg . ')', 0, $e);
+            $msg = $msg ? 'Erro ao salvar (' . $msg . ')' : 'Erro ao salvar';
+            throw new ViewException($msg, 0, $e);
         }
         return $entityId;
     }
@@ -260,7 +261,7 @@ abstract class EntityHandler implements EntityHandlerInterface
             $jsonMetadata = json_decode($cfgAppConfig['valor'], true);
             $mudou = null;
             foreach ($jsonMetadata['campos'] as $campo => $metadata) {
-                if ( (($metadata['tipo'] ?? '') === 'tags') &&
+                if ((($metadata['tipo'] ?? '') === 'tags') &&
                     (isset($metadata['sugestoes']) or (strpos(($metadata['class'] ?? ''), 's2allownew') !== FALSE))) {
                     $valoresNaBase = $conn->fetchAllAssociative('SELECT distinct(json_data->>"$.' . $campo . '") as val FROM ' . $tableName . ' WHERE json_data->>"$.' . $campo . '" NOT IN (\'\',\'null\') ORDER BY json_data->>"$.' . $campo . '"');
                     foreach ($valoresNaBase as $v) {
@@ -335,6 +336,27 @@ abstract class EntityHandler implements EntityHandlerInterface
      */
     public function posAfterSave($entityId)
     {
+    }
+
+
+    public function updateUpdated(string $tableName, int $id)
+    {
+        if (!$id) {
+            throw new ViewException('Impossível realizar updated sem id da entidade');
+        }
+        $userId = null;
+        if ($this->security->getUser()) {
+            /** @var User $user */
+            $user = $this->security->getUser();
+            $userId = $user->getId();
+        }
+        $params = [
+            'updated' => DateTimeUtils::getSQLFormatted(),
+        ];
+        if ($userId) {
+            $params['user_updated_id'] = $userId;
+        }
+        $this->getDoctrine()->getConnection()->update($tableName, $params, ['id' => $id]);
     }
 
 

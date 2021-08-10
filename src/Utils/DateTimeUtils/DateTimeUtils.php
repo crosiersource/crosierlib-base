@@ -607,5 +607,10 @@ class DateTimeUtils
         $novaDt->setDate($novaDt->format('Y'), $novaDt->format('m'), (int)$novaDt->format('d') + $days);
         return $novaDt;
     }
+    
+    public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true) {
+        $dt = $dt ?? new \DateTime();
+        return $dt->format('Y-m-d' . ($datetime ? ' H:i:s' : ''));
+    }
 
 }
