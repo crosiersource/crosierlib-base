@@ -1,13 +1,76 @@
 <header class="c-header c-header-light c-header-fixed c-header-with-subheader">
+    <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar" data-class="c-sidebar-show" title="Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    <a class="c-header-brand d-lg-none" href="{{ getEnv('CROSIERCORE_URL') }}">
+        <img src="{{ getEnv('CROSIER_LOGO') }}" height="36">
+    </a>
+    <button class="c-header-toggler c-class-toggler mfs-3 d-md-down-none" type="button" data-target="#sidebar" data-class="c-sidebar-lg-show" responsive="true">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <ul class="c-header-nav ml-auto mr-4">
-        <li class="c-header-nav-item d-md-down-none mx-2">
-            <i class="fas fa-user"></i> {{ app.user.username }}
+
+        <li class="c-header-nav-item dropdown">
+            <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user mr-1"></i> {{ app.user.username }}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right pt-0">
+                <div class="dropdown-header bg-light py-2"><strong>Account</strong></div>
+                <a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
+                    </svg>
+                    Updates<span class="badge badge-info ml-auto">42</span></a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-envelope-open"></use>
+                    </svg>
+                    Messages<span class="badge badge-success ml-auto">42</span></a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-task"></use>
+                    </svg>
+                    Tasks<span class="badge badge-danger ml-auto">42</span></a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-comment-square"></use>
+                    </svg>
+                    Comments<span class="badge badge-warning ml-auto">42</span></a>
+                <div class="dropdown-header bg-light py-2"><strong>Settings</strong></div>
+                <a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
+                    </svg>
+                    Profile</a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-settings"></use>
+                    </svg>
+                    Settings</a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-credit-card"></use>
+                    </svg>
+                    Payments<span class="badge badge-secondary ml-auto">42</span></a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-file"></use>
+                    </svg>
+                    Projects<span class="badge badge-primary ml-auto">42</span></a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
+                    </svg>
+                    Lock Account</a><a class="dropdown-item" href="#">
+                    <svg class="c-icon mr-2">
+                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                    </svg>
+                    Logout</a>
+            </div>
         </li>
         <li class="c-header-nav-item d-md-down-none mx-2">
             <button type="button" class="btn btn-success mr-2 ml-2"
                     onclick="window.location.href = '{{ getEnv('CROSIERCORE_URL') }}/logout'"><i
-                        class="fas fa-sign-out-alt"></i> Sair
+                    class="fas fa-sign-out-alt"></i> Sair
             </button>
         </li>
     </ul>
+
+
 </header>
