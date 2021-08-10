@@ -116,6 +116,7 @@ class WhereBuilder
                     $ini = DateTimeUtils::parseDateStr($filter->val['i']);
                     $filter->val['i'] = $ini;
                 }
+                $filter->val['i'] = (clone $filter->val['i']);
                 $filter->val['i']->setTime(0, 0);
             }
 
@@ -124,13 +125,13 @@ class WhereBuilder
                     $fim = DateTimeUtils::parseDateStr($filter->val['f']);
                     $filter->val['f'] = $fim;
                 }
+                $filter->val['f'] = (clone $filter->val['f']);
                 $filter->val['f']->setTime(23, 59, 59, 999999);
             }
 
             return;
         }
         if ($filter->filterType === 'BETWEEN_IDADE') {
-
             $f = $filter->val['f'] ?? null; // auxiliar, pois poderá ser alterado
             if ($filter->val['i'] ?? null) {
                 $max = new \DateTime('now');
