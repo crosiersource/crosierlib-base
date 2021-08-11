@@ -128,7 +128,7 @@ class DecimalUtils
         $diff = bcsub($total, $totDiv, 2);
         $parcelas = [];
         for ($i=0 ; $i<$qtdeParcelas ; $i++) {
-            $parcelas[$i] = $totDiv;
+            $parcelas[$i] = $div;
         }
         if ($primeiraMaior) {
             $parcelas[0] = bcadd($div, $diff, 2);
