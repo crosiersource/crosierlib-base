@@ -22,7 +22,7 @@ class SyslogBusiness
 
     private LoggerInterface $logger;
 
-    private string $app;
+    private ?string $app = null;
 
     private string $component;
 
