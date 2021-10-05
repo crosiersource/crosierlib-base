@@ -91,6 +91,10 @@ class DateTimeUtils
         if (strlen($dateStr) === 26) { // dd/mm/YYYY 12:34
             return \DateTime::createFromFormat('Y-m-d H:i:s.u', $dateStr);
         }
+        if (strlen($dateStr) > 33) {
+            // Sun Aug 01 2021 00:00:00 GMT-0300 (Horário Padrão de Brasília)
+            return \DateTime::createFromFormat('D M d Y H:i:s \G\M\TO', substr($dateStr, 0, 33));
+        }
 
         throw new \RuntimeException('Impossível parse na data (' . $dateStr . ')');
     }
