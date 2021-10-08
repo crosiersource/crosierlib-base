@@ -107,11 +107,19 @@ class DateTimeUtils
      */
     public static function parseConcatDates(string $concatDates): array
     {
-        $ini = substr($concatDates, 0, 10);
-        $val['i'] = DateTimeUtils::parseDateStr($ini);
-        $fim = substr($concatDates, 13, 10);
-        $val['f'] = DateTimeUtils::parseDateStr($fim);
-        return $val;
+        if (strlen($concatDates) === 23) {
+            $ini = substr($concatDates, 0, 10);
+            $val['i'] = DateTimeUtils::parseDateStr($ini);
+            $fim = substr($concatDates, 13, 10);
+            $val['f'] = DateTimeUtils::parseDateStr($fim);
+            return $val;
+        }
+        if (strlen($concatDates) > 23 && strpos($concatDates, ',') !== FALSE) {
+            $split = explode(',', $concatDates);
+            $val['i'] = DateTimeUtils::parseDateStr($split[0]);
+            $val['f'] = DateTimeUtils::parseDateStr($split[1]);
+            return $val;
+        }
     }
 
     /**
