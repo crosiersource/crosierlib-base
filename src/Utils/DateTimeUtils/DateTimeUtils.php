@@ -103,9 +103,9 @@ class DateTimeUtils
     /**
      * Faz o parse em uma string no formato "01/01/2001 - 02/02/2002", retornando um array.
      * @param string $concatDates
-     * @return array
+     * @return null|array
      */
-    public static function parseConcatDates(string $concatDates): array
+    public static function parseConcatDates(string $concatDates): ?array
     {
         if (strlen($concatDates) === 23) {
             $ini = substr($concatDates, 0, 10);
@@ -120,6 +120,7 @@ class DateTimeUtils
             $val['f'] = DateTimeUtils::parseDateStr($split[1]);
             return $val;
         }
+        return null;
     }
 
     /**
