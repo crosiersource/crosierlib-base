@@ -13,13 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
-use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 /**
  * Trait APIAuthenticatorTrait.
@@ -32,17 +28,24 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 trait APIAuthenticatorTrait
 {
 
+
     private UserRepository $userRepository;
 
     private LoggerInterface $logger;
 
-    private Security $security;
 
-    public function __construct(UserRepository $userRepository, LoggerInterface $logger, Security $security)
+    public function __construct(UserRepository $userRepository, LoggerInterface $logger)
     {
         $this->userRepository = $userRepository;
         $this->logger = $logger;
-        $this->security = $security;
+    }
+
+    public function supports(Request $request): ?bool
+    {
+        if (strpos($request->getPathInfo(), '/api') === 0 && $this->getXAuthorization($request->headers)) {
+            return true;
+        } // else
+        return false;
     }
 
     private function getXAuthorization(HeaderBag $headers): ?string
@@ -55,21 +58,25 @@ trait APIAuthenticatorTrait
         return null;
     }
 
-    public function supports(Request $request): ?bool
-    {
-        if (strpos($request->getPathInfo(), '/api') === 0 && $this->getXAuthorization($request->headers)) {
-            return true;
-        } // else
-        return false;
-    }
-
     public function getCredentials(Request $request)
     {
         $authorizationHeader = $this->getXAuthorization($request->headers);
         return $authorizationHeader ? substr($authorizationHeader, 7) : '';
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function authenticate(Request $request): PassportInterface
+    {
+        $apiToken = $this->getXAuthorization($request->headers);
+        if (null === $apiToken) {
+            // The token header was empty, authentication fails with HTTP Status
+            // Code 401 "Unauthorized"
+            throw new CustomUserMessageAuthenticationException('No API token provided');
+        }
+
+        return new SelfValidatingPassport(new UserBadge($apiToken));
+    }
+
+    public function getUser($credentials): User
     {
         /** @var User $user */
         $user = $this->userRepository->findOneBy(['apiToken' => $credentials]);
@@ -85,13 +92,7 @@ trait APIAuthenticatorTrait
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        $this->logger->info('APIAuthenticator checkCredentials()');
-        return true;
-    }
-
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?\Symfony\Component\HttpFoundation\Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
@@ -100,7 +101,7 @@ trait APIAuthenticatorTrait
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?\Symfony\Component\HttpFoundation\Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $firewallName): ?Response
     {
         $this->logger->info('APIAuthenticator onAuthenticationSuccess()');
         return new JsonResponse(['OK']);
@@ -109,7 +110,7 @@ trait APIAuthenticatorTrait
     /**
      * Called when authentication is needed, but it's not sent
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
         $data = [
             // you might translate this message
@@ -119,14 +120,4 @@ trait APIAuthenticatorTrait
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    public function supportsRememberMe()
-    {
-        $this->logger->info('APIAuthenticator supportsRememberMe()');
-        return false;
-    }
-
-    public function authenticate(Request $request): PassportInterface
-    {
-        $this->logger->info('authenticate');        
-    }
 }
