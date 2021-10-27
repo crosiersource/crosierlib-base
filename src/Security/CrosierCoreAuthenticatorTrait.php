@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,8 +27,6 @@ trait CrosierCoreAuthenticatorTrait
 {
 
     use TargetPathTrait;
-
-    private RouterInterface $router;
 
     private LoggerInterface $logger;
 
@@ -89,15 +86,6 @@ trait CrosierCoreAuthenticatorTrait
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
-    }
-
-    /**
-     * @required
-     * @param RouterInterface $router
-     */
-    public function setRouter(RouterInterface $router): void
-    {
-        $this->router = $router;
     }
 
     /**
