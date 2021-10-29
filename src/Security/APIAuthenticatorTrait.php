@@ -107,11 +107,12 @@ trait APIAuthenticatorTrait
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $this->logger->info('APIAuthenticator onAuthenticationSuccess()');
-        return new JsonResponse(['OK']);
+        // on success, let the request continue
+        return null;
     }
+
 
     /**
      * Called when authentication is needed, but it's not sent
