@@ -73,7 +73,13 @@ trait APIAuthenticatorTrait
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
-        return new SelfValidatingPassport(new UserBadge($apiToken));
+        return new SelfValidatingPassport(
+            new UserBadge($apiToken,
+                function ($userIdentifier) {
+                    return $this->userRepository->findOneBy(['apiToken' => substr($userIdentifier, 7)]);
+                }
+            )
+        );
     }
 
     public function getUser($credentials): User
