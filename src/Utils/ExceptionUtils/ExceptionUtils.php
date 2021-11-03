@@ -54,7 +54,7 @@ class ExceptionUtils
     public static function treatDriverException(\Doctrine\DBAL\Exception\DriverException $e)
     {
         $message = $e->getMessage();
-        $code = $e->getErrorCode();
+        $code = $e->getCode() ?? null;
 
         $regex = '/(?:.*)(?:SQLSTATE)(?:.*)(?:' . $code . ')(?<msg>.*)/';
         preg_match($regex, $message, $matches);
