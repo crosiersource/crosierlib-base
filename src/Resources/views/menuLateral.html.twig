@@ -1,4 +1,4 @@
-<div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+<div class="sidebar sidebar-dark sidebar-fixed menuLateral" id="sidebar">
 
     <div class="sidebar-brand d-none d-md-flex">
         <a class="sidebar-brand-full" href="{{ getEnv('CROSIERCORE_URL') }}">
@@ -52,7 +52,7 @@
 
                                         {% if ent.filhos is defined %}
                                             
-                                            <ul class="nav-group-items" style="height: auto; background-color: black">
+                                            <ul class="nav-group-items" style="height: auto">
 
                                                 {% for filho in ent.filhos %}
 
@@ -78,7 +78,7 @@
                                                                 {{ filho.label }}
                                                             </a>
                                                             {% if filho.filhos is defined %}
-                                                                <ul class="nav-group-items" style="background-color: black">
+                                                                <ul class="nav-group-items">
                                                                     {% for neto in filho.filhos %}
                                                                         {% if neto.tipo == 'ENT' %}
                                                                             <li class="nav-item menuLateral-ent-neto"
