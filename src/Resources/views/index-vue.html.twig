@@ -3,26 +3,23 @@
 {% block body %}
     {{ include('@CrosierLibBase/menuLateral.html.twig') }}
 
-    <div class="c-wrapper c-fixed-components">
+    <div class="wrapper d-flex flex-column min-vh-100 bg-light">
 
         {{ include('@CrosierLibBase/header.html.twig') }}
 
-        <div class="c-body">
-            <main class="c-main">
-                <div class="container-fluid">
+        <div class="body flex-grow-1 px-1">
+            <div class="container-fluid-lg">
 
-                    {% block page_content %}
+                {% block page_content %}
 
-                    {% endblock %}
+                {% endblock %}
 
-                    <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
+                <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
 
-                </div>
-            </main>
-            {{ include('@CrosierLibBase/footer.html.twig') }}
+            </div>
+            
         </div>
-
-
+        {{ include('@CrosierLibBase/footer.html.twig') }}
 
     </div>
 

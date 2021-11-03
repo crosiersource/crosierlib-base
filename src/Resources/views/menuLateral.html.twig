@@ -1,95 +1,147 @@
-<div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
-    <div class="c-sidebar-brand d-lg-down-none">
-        <a class="c-sidebar-brand-full" href="{{ getEnv('CROSIERCORE_URL') }}">
+<div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+
+    <div class="sidebar-brand d-none d-md-flex">
+        <a class="sidebar-brand-full" href="{{ getEnv('CROSIERCORE_URL') }}">
             <img src="{{ getEnv('CROSIER_LOGO') }}" height="36">
         </a>
-        <a class="c-sidebar-brand-minimized" href="{{ getEnv('CROSIERCORE_URL') }}">
+        <a class="sidebar-brand-narrow" href="{{ getEnv('CROSIERCORE_URL') }}">
             <img src="{{ getEnv('CROSIER_LOGO') }}" width="36">
         </a>
     </div>
-    <ul class="c-sidebar-nav">
 
 
-        {% for ent in menu %}
+    <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="init">
+        <div class="simplebar-wrapper" style="margin: 0px;">
+            <div class="simplebar-height-auto-observer-wrapper">
+                <div class="simplebar-height-auto-observer"></div>
+            </div>
+            <div class="simplebar-mask">
+                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                    <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
+                        <div class="simplebar-content" style="padding: 0px;">
 
-            {% if ent.tipo == 'ENT' %}
-                <li class="c-sidebar-nav-item menuLateral-ent-pai" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
-                    <a class="c-sidebar-nav-link" href="{{ ent.url is defined ? ent.url : '' }}" style="white-space: normal">
-                        <i class="c-sidebar-nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
+                            {% for ent in menu %}
 
-            {% elseif ent.tipo == 'hr' %}
-                <li class="c-sidebar-nav-item" style="height: 10px; background-color: white">
-                    <hr/>
-                </li>
+                                {% if ent.tipo == 'ENT' %}
 
-            {% elseif ent.tipo == 'TITLE' %}
-                <li class="c-sidebar-nav-title" style="margin-top: 0; padding: 0.3rem 0.3rem 0.3rem 1rem; {{ ent.cssStyle != null ? ent.cssStyle : '' }}">{{ ent.label }}</li>
+                                    <li class="nav-item menuLateral-ent-pai" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
+                                        <a class="nav-link" href="{{ ent.url is defined ? ent.url : '' }}" style="white-space: normal">
+                                            <i class="nav-icon {{ ent.icon }}"></i>{{ ent.label }}</a></li>
+                                    
+                                {% elseif ent.tipo == 'hr' %}
 
-            {% elseif ent.tipo == 'DROPDOWN' %}
-                <li class="c-sidebar-nav-item c-sidebar-nav-dropdown menuLateral-dropdown-pai" style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};">
-                    <a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" style="white-space: normal" href="#">
-                        <i class="c-sidebar-nav-icon {{ ent.icon }}"></i>
-                        {{ ent.label }}
-                    </a>
-
-
-                    {% if ent.filhos is defined %}
-                        <ul class="c-sidebar-nav-dropdown-items" style="background-color: black">
-                            {% for filho in ent.filhos %}
-                                {% if filho.tipo == 'ENT' %}
-                                    <li class="c-sidebar-nav-item menuLateral-ent-filho"
-                                        style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
-                                        <a class="c-sidebar-nav-link" style="font-size: small; white-space: normal"
-                                           href="{{ filho.url is defined ? filho.url : '' }}">
-                                            <i class="c-sidebar-nav-icon {{ filho.icon }}"></i>{{ filho.label }}</a></li>
-                                {% elseif filho.tipo == 'hr' %}
-                                    <li class="c-sidebar-nav-item" style="height: 10px; background-color: white">
+                                    <li class="nav-item" style="height: 10px; background-color: white">
                                         <hr/>
                                     </li>
-                                {% elseif filho.tipo == 'LABEL' %}
-                                    <li class="c-sidebar-nav-title">{{ filho.label }}</li>
-                                {% elseif filho.tipo == 'DROPDOWN' %}
-                                    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown menuLateral-dropdown-filho"
-                                        style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
-                                        <a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" style="white-space: normal; font-size: small" href="#">
-                                            <i class="c-sidebar-nav-icon {{ filho.icon }}"></i>
-                                            {{ filho.label }}
+                                    
+                                {% elseif ent.tipo == 'TITLE' %}
+
+                                    <li class="nav-title"
+                                        style="margin-top: 0; padding: 0.3rem 0.3rem 0.3rem 1rem; {{ ent.cssStyle != null ? ent.cssStyle : '' }}">{{ ent.label }}</li>
+    
+                                {% elseif ent.tipo == 'DROPDOWN' %}
+
+
+                                    <li class="nav-group menuLateral-dropdown-pai"
+                                        style="{{ ent.cssStyle != null ? ent.cssStyle : '' }};" aria-expanded="true">
+                                        
+                                        <a class="nav-link nav-group-toggle" style="white-space: normal" href="#">
+                                            <i class="nav-icon {{ ent.icon }}"></i>
+                                            {{ ent.label }}
                                         </a>
-                                        {% if filho.filhos is defined %}
-                                            <ul class="c-sidebar-nav-dropdown-items" style="background-color: black">
-                                                {% for neto in filho.filhos %}
-                                                    {% if neto.tipo == 'ENT' %}
-                                                        <li class="c-sidebar-nav-item menuLateral-ent-neto"
-                                                            style="{{ neto.cssStyle != null ? neto.cssStyle : '' }};">
-                                                            <a class="c-sidebar-nav-link" style="font-size: smaller; white-space: normal"
-                                                               href="{{ neto.url is defined ? neto.url : '' }}">
-                                                                <i class="c-sidebar-nav-icon {{ neto.icon }}"></i>{{ neto.label }}
-                                                            </a></li>
-                                                    {% elseif neto.tipo == 'hr' %}
-                                                        <li class="c-sidebar-nav-item"
-                                                            style="height: 10px; background-color: white">
+
+                                        {% if ent.filhos is defined %}
+                                            
+                                            <ul class="nav-group-items" style="height: auto; background-color: black">
+
+                                                {% for filho in ent.filhos %}
+
+                                                    {% if filho.tipo == 'ENT' %}
+                                                        <li class="nav-item menuLateral-ent-filho"
+                                                            style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
+                                                            <a class="nav-link" style="font-size: small; white-space: normal"
+                                                               href="{{ filho.url is defined ? filho.url : '' }}">
+                                                                <i class="nav-icon {{ filho.icon }}"></i>{{ filho.label }}</a></li>
+                                                        
+                                                    {% elseif filho.tipo == 'hr' %}
+                                                        <li class="nav-item" style="height: 10px; background-color: white">
                                                             <hr/>
                                                         </li>
-                                                    {% elseif neto.tipo == 'LABEL' %}
-                                                        <li class="c-sidebar-nav-title">{{ neto.label }}</li>
+                                                    {% elseif filho.tipo == 'LABEL' %}
+                                                        <li class="nav-title">{{ filho.label }}</li>
+                                                    {% elseif filho.tipo == 'DROPDOWN' %}
+                                                        <li class="nav-item nav-group menuLateral-dropdown-filho"
+                                                            style="{{ filho.cssStyle != null ? filho.cssStyle : '' }};">
+                                                            <a class="nav-link nav-group-toggle"
+                                                               style="white-space: normal; font-size: small" href="#">
+                                                                <i class="nav-icon {{ filho.icon }}"></i>
+                                                                {{ filho.label }}
+                                                            </a>
+                                                            {% if filho.filhos is defined %}
+                                                                <ul class="nav-group-items" style="background-color: black">
+                                                                    {% for neto in filho.filhos %}
+                                                                        {% if neto.tipo == 'ENT' %}
+                                                                            <li class="nav-item menuLateral-ent-neto"
+                                                                                style="{{ neto.cssStyle != null ? neto.cssStyle : '' }};">
+                                                                                <a class="nav-link"
+                                                                                   style="font-size: smaller; white-space: normal"
+                                                                                   href="{{ neto.url is defined ? neto.url : '' }}">
+                                                                                    <i class="nav-icon {{ neto.icon }}"></i>{{ neto.label }}
+                                                                                </a></li>
+                                                                        {% elseif neto.tipo == 'hr' %}
+                                                                            <li class="nav-item"
+                                                                                style="height: 10px; background-color: white">
+                                                                                <hr/>
+                                                                            </li>
+                                                                        {% elseif neto.tipo == 'LABEL' %}
+                                                                            <li class="nav-title">{{ neto.label }}</li>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                    <li class="nav-item"
+                                                                        style="background-color: white; height: 1px"></li>
+
+                                                                </ul>
+                                                            {% endif %}
+                                                        </li>
                                                     {% endif %}
+
                                                 {% endfor %}
-                                                <li class="c-sidebar-nav-item"
-                                                    style="background-color: white; height: 1px"></li>
-
+                                                
                                             </ul>
+    
                                         {% endif %}
+                                        
                                     </li>
+                                    
+    
                                 {% endif %}
+                                
                             {% endfor %}
-                            <li class="c-sidebar-nav-item" style="background-color: white; height: 1px"></li>
-                        </ul>
-                    {% endif %}
-                </li>
-            {% endif %}
-        {% endfor %}
-
+                            
+                            
+                            
+                            
+                            
+                            <li class="nav-divider"></li>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simplebar-placeholder" style="width: 256px; height: 1605px;"></div>
+        </div>
+        <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+            <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+        </div>
+        <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+            <div class="simplebar-scrollbar"
+                 style="height: 104px; transform: translate3d(0px, 13px, 0px); display: block;"></div>
+        </div>
     </ul>
 
-    <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
+
+
+    <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
 </div>
+
+
