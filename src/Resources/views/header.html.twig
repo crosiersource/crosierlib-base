@@ -2,25 +2,12 @@
     <div class="container-fluid">
         <button class="header-toggler px-md-0 me-md-3" type="button" onclick="Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
             <i class="fas fa-bars"></i>
-        </button><a class="header-brand d-md-none" href="#">
-            <svg width="118" height="46" alt="CoreUI Logo">
-                <use xlink:href="assets/brand/coreui.svg#full"></use>
-            </svg></a>
+        </button>
+        <a class="header-brand d-md-none" href="#">
+            <img src="{{ getEnv('CROSIER_LOGO') }}" height="36">
+        </a>
         
-        <ul class="header-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="#">
-                    <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-bell"></use>
-                    </svg></a></li>
-            <li class="nav-item"><a class="nav-link" href="#">
-                    <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-list-rich"></use>
-                    </svg></a></li>
-            <li class="nav-item"><a class="nav-link" href="#">
-                    <svg class="icon icon-lg">
-                        <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
-                    </svg></a></li>
-        </ul>
+        
         <ul class="header-nav ms-3">
             <li class="nav-item mt-2">{{ app.user.username }}</li>
             <li class="nav-item">
