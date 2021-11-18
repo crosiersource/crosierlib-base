@@ -44,7 +44,15 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * )
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "app": "exact", "tipo": "exact", "component": "partial", "act": "partial", "username": "exact", "obs": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "id": "exact", 
+ *     "app": "exact", 
+ *     "tipo": "exact", 
+ *     "component": "partial", 
+ *     "act": "partial", 
+ *     "username": "exact", 
+ *     "obs": "partial"
+ * })
  * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\SyslogHandler")
