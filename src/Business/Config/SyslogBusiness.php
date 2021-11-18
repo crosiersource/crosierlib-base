@@ -25,6 +25,8 @@ class SyslogBusiness
     private ?string $app = null;
 
     private string $component;
+    
+    private ?bool $echo = false;
 
     /**
      * SyslogBusiness constructor.
@@ -74,6 +76,18 @@ class SyslogBusiness
         $this->component = $component;
         return $this;
     }
+
+    /**
+     * @param bool|null $echo
+     * @return SyslogBusiness
+     */
+    public function setEcho(?bool $echo): SyslogBusiness
+    {
+        $this->echo = $echo;
+        return $this;
+    }
+    
+    
 
 
     /**
@@ -139,13 +153,19 @@ class SyslogBusiness
                 'tipo' => $tipo,
                 'app' => $app,
                 'component' => $component,
-                'act' => utf8_encode($action),
-                'obs' => utf8_encode($obs),
+                'act' => utf8_decode($action),
+                'obs' => utf8_decode($obs),
                 'username' => $username,
                 'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
                 'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
                 'json_data' => $jsonData ? json_encode($jsonData) : null
             ]);
+            if ($this->echo) {
+                echo $tipo . ": " . $action . PHP_EOL;
+                if ($obs) {
+                    echo $obs . PHP_EOL . PHP_EOL;
+                }
+            }
         } catch (\Throwable $e) {
             $this->logger->error('erro ao gravar em cfg_syslog');
             $this->logger->error($e->getMessage());

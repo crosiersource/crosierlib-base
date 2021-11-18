@@ -5,13 +5,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class PreUpdateListener
@@ -24,10 +20,13 @@ class PreUpdateListener
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
+        /** @var EntityId $entity */
+        $entity = $args->getObject();
+
         try {
             $entityManager = $args->getEntityManager();
             $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-            $classes = $cache->get('trackedEntities', function (ItemInterface $item) use ($entityManager) {
+            $classes = $cache->get('trackedEntities', function () use ($entityManager) {
                 $all = $entityManager->getMetadataFactory()->getAllMetadata();
                 $annotationReader = new AnnotationReader();
 
@@ -40,8 +39,7 @@ class PreUpdateListener
                 }
                 return $classes;
             });
-            /** @var EntityId $entity */
-            $entity = $args->getObject();
+
             if (in_array(get_class($entity), $classes, true)) {
                 $strChanges = '';
                 /** @var array $entityChangeSet */
@@ -49,16 +47,15 @@ class PreUpdateListener
                 foreach ($entityChangeSet as $field => $changes) {
                     if ($field === 'updated') continue;
                     foreach ($changes as $k => $v) {
-                        if ($changes[$k] instanceof \DateTime) {
-                            $changes[$k] = $changes[$k]->format('d/m/Y H:i:s T');
-                        } elseif ($changes[$k] instanceof EntityId) {
-                            $changes[$k] = $changes[$k]->__toString();
-                            
-                        } elseif (is_numeric($changes[$k])) {
-                            $changes[$k] = (float)$changes[$k];
-                        } elseif (!is_array($changes[$k])) {
-                            $changes[$k] = (string)$changes[$k];
-                        } elseif (is_array($changes[$k]) && $field === 'jsonData') {
+                        if ($v instanceof \DateTime) {
+                            $changes[$k] = $v->format('d/m/Y H:i:s T');
+                        } elseif ($v instanceof EntityId) {
+                            $changes[$k] = $v->__toString();
+                        } elseif (is_numeric($v)) {
+                            $changes[$k] = (float)$v;
+                        } elseif (!is_array($v)) {
+                            $changes[$k] = (string)$v;
+                        } elseif ($field === 'jsonData') { //  && is_array($v)) {
                             continue; // será tratado ali abaixo
                         } else {
                             throw new \InvalidArgumentException('tipo de campo não tratável no PreUpdateListener');
@@ -87,7 +84,7 @@ class PreUpdateListener
                     try {
                         $conn = $entityManager->getConnection();
                         $conn->insert('cfg_entity_change', $entityChange);
-                    } catch (DBALException $e) {
+                    } catch (\Exception $e) {
                         throw new \RuntimeException('Erro ao salvar na cfg_entity_change para ' . get_class($entity));
                     }
                 }
