@@ -62,10 +62,14 @@ class PreUpdateListener
                         }
                     }
                     if ($field === 'jsonData') {
-                        $arrDiff = array_diff_assoc($changes[0], $changes[1]);
+                        $arrDiff0_1 = self::array_diff_assoc_recursive($changes[0], $changes[1]);
+                        $arrDiff1_0 = self::array_diff_assoc_recursive($changes[1], $changes[0]);
+                        $arrDiff = array_merge_recursive($arrDiff0_1, $arrDiff1_0);
                         ksort($arrDiff);
                         foreach ($arrDiff as $k => $diff) {
-                            $strChanges .= 'jsonData.' . $k . ': de "' . ($changes[0][$k] ?? '[null]') . '" para "' . ($changes[1][$k] ?? '[null]') . '"' . PHP_EOL;
+                            $from = is_array($diff) ? json_encode($changes[0][$k] ?? []) : ($changes[0][$k] ?? '_NULL_');
+                            $to = is_array($diff) ? json_encode($changes[1][$k] ?? []) : ($changes[1][$k] ?? '_NULL_');
+                            $strChanges .= 'jsonData.' . $k . ': de "' . $from . '" para "' . $to . '"' . PHP_EOL;
                         }
                     } else if ((string)$changes[0] !== (string)$changes[1]) {
                         $strChanges .= $field . ': de "' . $changes[0] . '" para "' . $changes[1] . '"' . PHP_EOL;
@@ -93,6 +97,27 @@ class PreUpdateListener
             throw new \RuntimeException('Erro no PreUpdateListener para ' . get_class($entity), 0, $e);
         }
 
+    }
+
+    private static function array_diff_assoc_recursive($array1, $array2)
+    {
+        foreach ($array1 as $key => $value) {
+            if (is_array($value)) {
+                if (!isset($array2[$key])) {
+                    $difference[$key] = $value;
+                } elseif (!is_array($array2[$key])) {
+                    $difference[$key] = $value;
+                } else {
+                    $new_diff = self::array_diff_assoc_recursive($value, $array2[$key]);
+                    if ($new_diff != FALSE) {
+                        $difference[$key] = $new_diff;
+                    }
+                }
+            } elseif (!array_key_exists($key, $array2) || $array2[$key] != $value) {
+                $difference[$key] = $value;
+            }
+        }
+        return !isset($difference) ? [] : $difference;
     }
 
 }
