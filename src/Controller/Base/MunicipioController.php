@@ -18,17 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 class MunicipioController extends AbstractController
 {
 
-    private EntityIdUtils $entityIdUtils;
-
-    /**
-     * MunicipioController constructor.
-     * @param ContainerInterface $container
-     * @param EntityIdUtils $entityIdUtils
-     */
-    public function __construct(ContainerInterface $container, EntityIdUtils $entityIdUtils)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->entityIdUtils = $entityIdUtils;
     }
 
     /**

@@ -30,7 +30,7 @@ abstract class BaseAPIEntityIdController extends AbstractController
 
     protected LoggerInterface $logger;
 
-    protected PushMessageEntityHandler $entityHandler;
+    protected $entityHandler;
 
     protected EntityIdUtils $entityIdUtils;
 

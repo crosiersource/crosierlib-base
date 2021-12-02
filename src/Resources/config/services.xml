@@ -439,7 +439,6 @@
     <service id="crosier_source.crosier_lib_base_bundle.controller.base.municipio_controller"
              class="CrosierSource\CrosierLibBaseBundle\Controller\Base\MunicipioController" public="true">
       <argument type="service" id="service_container"/>
-      <argument type="service" id="crosier_source.crosier_lib_base_bundle.utils.entity_id_utils.entity_id_utils"/>
     </service>
 
 
@@ -476,10 +475,11 @@
     </service>
 
 
-    <!-- SecurityController -->
-    <service id="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_api_controller"
+    <!-- PushMessageController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller"
              class="CrosierSource\CrosierLibBaseBundle\Controller\Config\API\PushMessageController" public="true">
       <argument type="service" id="service_container"/>
+      <argument type="service" id="monolog.logger"/>
     </service>
     
   </services>
