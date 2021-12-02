@@ -29,8 +29,9 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    private $mensagem;
+    public ?string $mensagem;
 
+    
     /**
      *
      * @ORM\Column(name="url", type="string", nullable=true, length=2000)
@@ -39,7 +40,7 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    private $url;
+    public ?string $url;
 
 
     /**
@@ -48,34 +49,51 @@ class PushMessage implements EntityId
      *
      * @var null|integer
      */
-    private $userDestinatarioId;
+    public ?int $userDestinatarioId;
 
+    
     /**
-     *
+     * Data em que a mensagem foi enviada.
+     * 
      * @ORM\Column(name="dt_envio", type="datetime", nullable=false)
      * @Groups("entity")
      *
      * @var null|\DateTime
      */
-    private $dtEnvio;
+    public ?\DateTime $dtEnvio;
 
+    
     /**
-     *
+     * Data em que a mensagem foi exibida na notificação.
+     * 
      * @ORM\Column(name="dt_notif", type="datetime", nullable=true)
      * @Groups("entity")
      *
      * @var null|\DateTime
      */
-    private $dtNotif;
+    public ?\DateTime $dtNotif;
+
+    
+    /**
+     * Data em que a mensagem foi aberta na tela de mensagens.
+     * 
+     * @ORM\Column(name="dt_abert", type="datetime", nullable=true)
+     * @Groups("entity")
+     *
+     * @var null|\DateTime
+     */
+    public ?\DateTime $dtAbert;
+
 
     /**
+     * Data de validade da mensagem (após essa data, ela não é mais notificada).
      *
      * @ORM\Column(name="dt_abert", type="datetime", nullable=true)
      * @Groups("entity")
      *
      * @var null|\DateTime
      */
-    private $dtAbert;
+    public ?\DateTime $dtValidade;
 
     /**
      *
@@ -84,133 +102,9 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    private $params;
+    public ?string $params;
 
-    /**
-     * @return string|null
-     */
-    public function getMensagem(): ?string
-    {
-        return $this->mensagem;
-    }
-
-    /**
-     * @param string|null $mensagem
-     * @return PushMessage
-     */
-    public function setMensagem(?string $mensagem): PushMessage
-    {
-        $this->mensagem = $mensagem;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string|null $url
-     * @return PushMessage
-     */
-    public function setUrl(?string $url): PushMessage
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getUserDestinatarioId(): ?int
-    {
-        return $this->userDestinatarioId;
-    }
-
-    /**
-     * @param int|null $userDestinatarioId
-     * @return PushMessage
-     */
-    public function setUserDestinatarioId(?int $userDestinatarioId): PushMessage
-    {
-        $this->userDestinatarioId = $userDestinatarioId;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtEnvio(): ?\DateTime
-    {
-        return $this->dtEnvio;
-    }
-
-    /**
-     * @param \DateTime|null $dtEnvio
-     * @return PushMessage
-     */
-    public function setDtEnvio(?\DateTime $dtEnvio): PushMessage
-    {
-        $this->dtEnvio = $dtEnvio;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtNotif(): ?\DateTime
-    {
-        return $this->dtNotif;
-    }
-
-    /**
-     * @param \DateTime|null $dtNotif
-     * @return PushMessage
-     */
-    public function setDtNotif(?\DateTime $dtNotif): PushMessage
-    {
-        $this->dtNotif = $dtNotif;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtAbert(): ?\DateTime
-    {
-        return $this->dtAbert;
-    }
-
-    /**
-     * @param \DateTime|null $dtAbert
-     * @return PushMessage
-     */
-    public function setDtAbert(?\DateTime $dtAbert): PushMessage
-    {
-        $this->dtAbert = $dtAbert;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getParams(): ?string
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param string|null $params
-     * @return PushMessage
-     */
-    public function setParams(?string $params): PushMessage
-    {
-        $this->params = $params;
-        return $this;
-    }
+    
 
 
 }
