@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller\Config\API;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\PushMessage;
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use Psr\Container\ContainerInterface;
@@ -19,11 +20,17 @@ class PushMessageController extends AbstractController
 {
     
     private LoggerInterface $logger;
+    
+    private PushMessageEntityHandler $entityHandler;
 
-    public function __construct(ContainerInterface $container, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container, 
+                                LoggerInterface $logger,
+                                PushMessageEntityHandler $entityHandler
+    )
     {
         $this->container = $container;
         $this->logger = $logger;
+        $this->entityHandler = $entityHandler;
     }
 
 

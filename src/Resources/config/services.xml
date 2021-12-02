@@ -480,6 +480,7 @@
              class="CrosierSource\CrosierLibBaseBundle\Controller\Config\API\PushMessageController" public="true">
       <argument type="service" id="service_container"/>
       <argument type="service" id="monolog.logger"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
     </service>
     
   </services>
