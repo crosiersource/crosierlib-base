@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHan
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PushMessageController extends AbstractController
 {
-
+    
+    private LoggerInterface $logger;
+    
     private PushMessageEntityHandler $entityHandler;
 
-    public function __construct(ContainerInterface       $container,
-                                PushMessageEntityHandler $entityHandler)
+    public function __construct(ContainerInterface $container, 
+                                LoggerInterface $logger,
+                                PushMessageEntityHandler $entityHandler
+    )
     {
         $this->container = $container;
+        $this->logger = $logger;
         $this->entityHandler = $entityHandler;
     }
 
@@ -38,15 +44,15 @@ class PushMessageController extends AbstractController
                         user_destinatario_id = :userId AND 
                         (dt_validade IS NULL OR dt_validade <= :agora) AND 
                         dt_notif IS NULL ORDER BY dt_envio';
-
+            
             $rsMsgs = $this->getDoctrine()->getConnection()->fetchAllAssociative($sql, [
                 'userId' => $this->getUser()->getId(),
                 'agora' => (new \DateTime())->format('Y-m-d H:i:s'),
             ]);
-
+            
             /** @var PushMessageRepository $pushMessageRepo */
             $pushMessageRepo = $this->getDoctrine()->getRepository(PushMessage::class);
-
+            
             $r = [];
             /** @var PushMessage $pushMessage */
             foreach ($rsMsgs as $rMsg) {
