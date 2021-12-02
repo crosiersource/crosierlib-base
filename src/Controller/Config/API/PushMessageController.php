@@ -42,7 +42,7 @@ class PushMessageController extends AbstractController
         try {
             $sql = 'SELECT id FROM cfg_pushmessage WHERE 
                         user_destinatario_id = :userId AND 
-                        (dt_validade IS NULL OR dt_validade <= :agora) AND 
+                        (dt_validade IS NULL OR dt_validade >= :agora) AND 
                         dt_notif IS NULL ORDER BY dt_envio';
             
             $rsMsgs = $this->getDoctrine()->getConnection()->fetchAllAssociative($sql, [
@@ -63,7 +63,7 @@ class PushMessageController extends AbstractController
             }
             return new JsonResponse($r);
         } catch (\Exception $e) {
-            return new JsonResponse('');
+            return new JsonResponse('ERRO - getNewMessages');
         }
     }
 

@@ -29,7 +29,7 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    public ?string $mensagem;
+    public ?string $mensagem = null;
 
     
     /**
@@ -40,7 +40,7 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    public ?string $url;
+    public ?string $url = null;
 
 
     /**
@@ -49,7 +49,7 @@ class PushMessage implements EntityId
      *
      * @var null|integer
      */
-    public ?int $userDestinatarioId;
+    public ?int $userDestinatarioId = null;
 
     
     /**
@@ -60,7 +60,7 @@ class PushMessage implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtEnvio;
+    public ?\DateTime $dtEnvio = null;
 
     
     /**
@@ -71,7 +71,7 @@ class PushMessage implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtNotif;
+    public ?\DateTime $dtNotif = null;
 
     
     /**
@@ -82,18 +82,18 @@ class PushMessage implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtAbert;
+    public ?\DateTime $dtAbert = null;
 
 
     /**
      * Data de validade da mensagem (após essa data, ela não é mais notificada).
      *
-     * @ORM\Column(name="dt_abert", type="datetime", nullable=true)
+     * @ORM\Column(name="dt_validade", type="datetime", nullable=true)
      * @Groups("entity")
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtValidade;
+    public ?\DateTime $dtValidade = null;
 
     /**
      *
@@ -102,7 +102,7 @@ class PushMessage implements EntityId
      *
      * @var null|string
      */
-    public ?string $params;
+    public ?string $params = null;
 
     
 

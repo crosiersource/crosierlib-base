@@ -42,7 +42,8 @@ class PushMessageEntityHandler extends EntityHandler
             $pushMessage->dtEnvio = new \DateTime();
             $pushMessage->mensagem = $mensagem;
             if ($minutosValidade) {
-                $pushMessage->dtValidade = $pushMessage->dtEnvio->add(new \DateInterval('PT' . $minutosValidade . 'M'));
+                $dtValidade = (clone $pushMessage->dtEnvio)->add(new \DateInterval('PT' . $minutosValidade . 'M'));
+                $pushMessage->dtValidade = $dtValidade;
             }
             $pushMessage->userDestinatarioId = $user->getId();
             $this->save($pushMessage);
