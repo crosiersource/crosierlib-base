@@ -2,15 +2,14 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\APIProblem;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
@@ -18,6 +17,7 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Class APIBaseController.
@@ -28,14 +28,11 @@ use Symfony\Component\Serializer\Serializer;
 abstract class BaseAPIEntityIdController extends AbstractController
 {
 
-    /** @var LoggerInterface */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /** @var EntityHandler */
-    protected $entityHandler;
+    protected PushMessageEntityHandler $entityHandler;
 
-    /** @var EntityIdUtils */
-    protected $entityIdUtils;
+    protected EntityIdUtils $entityIdUtils;
 
     /**
      * @required

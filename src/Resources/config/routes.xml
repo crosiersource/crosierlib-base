@@ -51,5 +51,12 @@
          path="/api/whoami">
   </route>
 
+  
+  <!-- PushMessageController -->
+  <route id="api_cfg_pushMessage_getNewMessages"
+         controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_api_controller"
+         path="/api/cfg/pushMessage/getNewMessages">
+  </route>
+
 
 </routes>

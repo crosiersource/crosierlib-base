@@ -13,8 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class MunicipioController
- * @package CrosierSource\CrosierLibBaseBundle\Controller\Base
+ * @author Carlos Eduardo Pauluk
  */
 class MunicipioController extends AbstractController
 {

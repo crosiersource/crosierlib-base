@@ -474,6 +474,13 @@
              class="CrosierSource\CrosierLibBaseBundle\Normalizer\DateTimeNormalizer">
       <tag name="serializer.normalizer"/>
     </service>
+
+
+    <!-- SecurityController -->
+    <service id="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_api_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\Config\API\PushMessageController" public="true">
+      <argument type="service" id="service_container"/>
+    </service>
     
   </services>
 </container>
