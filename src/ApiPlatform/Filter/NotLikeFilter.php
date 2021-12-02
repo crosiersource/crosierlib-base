@@ -46,7 +46,7 @@ final class NotLikeFilter extends AbstractContextAwareFilter
 
         $description = [];
         foreach ($this->properties as $property => $strategy) {
-            $description["regexp_$property"] = [
+            $description["not_like_$property"] = [
                 'property' => $property,
                 'type' => Type::BUILTIN_TYPE_STRING,
                 'required' => false,
