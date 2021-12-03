@@ -101,6 +101,8 @@ class PreUpdateListener
 
     private static function array_diff_assoc_recursive($array1, $array2)
     {
+        $array1 = is_array($array1) ? $array1 : [$array1];
+        $array2 = is_array($array2) ? $array2 : [$array2];
         foreach ($array1 as $key => $value) {
             if (is_array($value)) {
                 if (!isset($array2[$key])) {
