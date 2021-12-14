@@ -54,7 +54,10 @@ class MunicipioController extends AbstractController
                     ]
                 ]
             );
-            return new JsonResponse($response->getBody()->getContents());
+            
+            $json = json_decode($response->getBody()->getContents(), true);
+            
+            return new JsonResponse($json);
         } catch (GuzzleException $e) {
             return new JsonResponse('GuzzleException', 500);
         } catch (\Throwable $e) {
