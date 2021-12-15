@@ -36,7 +36,7 @@ class PushMessageEntityHandler extends EntityHandler
         }
     }
 
-    public function enviarMensagem(string $mensagem, array $users, ?string $url = null, ?int $minutosValidade = 10080): void
+    public function enviarMensagem(string $mensagem, ?array $users = [], ?string $url = null, ?int $minutosValidade = 10080): void
     {
         /** @var User $user */
         foreach ($users as $user) {
@@ -61,7 +61,7 @@ class PushMessageEntityHandler extends EntityHandler
             'SELECT valor FROM cfg_app_config WHERE chave = :chave AND app_uuid = :appUUID',
             ['chave' => 'listas_push.json', 'appUUID' => $_SERVER['CROSIERAPP_UUID']]);
 
-        $rsListas = json_decode($rs['valor'], true);
+        $rsListas = json_decode($rs['valor'] ?? '[]', true);
 
         /** @var UserRepository $repoUser */
         $repoUser = $this->getDoctrine()->getRepository(User::class);
