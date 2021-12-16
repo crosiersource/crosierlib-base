@@ -58,7 +58,7 @@
          path="/api/cfg/pushMessage/getNewMessages">
   </route>
 
-  <route id="api_cfg_pushMessage_getNewMessages"
+  <route id="api_cfg_pushMessage_enviarMensagemParaLista"
          controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller::enviarMensagemParaLista"
          path="/api/cfg/pushMessage/enviarMensagemParaLista">
   </route>
