@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\PushMessage;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -52,26 +51,43 @@ class PushMessageEntityHandler extends EntityHandler
             $this->save($pushMessage);
         }
     }
-    
+
+
+    public function enviarMensagemUsersIds(string $mensagem, ?array $usersIds = [], ?string $url = null, ?int $minutosValidade = 10080): void
+    {
+        /** @var UserRepository $repoUser */
+        $repoUser = $this->getDoctrine()->getRepository(User::class);
+
+        $users = [];
+        /** @var User $user */
+        foreach ($usersIds as $userId) {
+            $users[] = $repoUser->find($userId);
+        }
+
+        $this->enviarMensagem($mensagem, $users, $url, $minutosValidade);
+    }
+
+
     public function enviarMensagemParaLista(string $mensagem, string $chaveLista, ?string $url = null, ?int $minutosValidade = 10080): void
     {
         /** @var Connection $conn */
         $conn = $this->getDoctrine()->getConnection();
         $rs = $conn->fetchAssociative(
             'SELECT valor FROM cfg_app_config WHERE chave = :chave AND app_uuid = :appUUID',
-            ['chave' => 'listas_push.json', 'appUUID' => $_SERVER['CROSIERAPP_UUID']]);
+            ['chave' => 'listas_push.json', 'appUUID' => ($_SERVER['CROSIERCORE_UUID'] ?? '')]);
 
         $rsListas = json_decode($rs['valor'] ?? '[]', true);
 
         /** @var UserRepository $repoUser */
         $repoUser = $this->getDoctrine()->getRepository(User::class);
-        
+
+        $users = [];
         foreach ($rsListas as $rLista) {
             if ($rLista['chave'] === $chaveLista) {
-                $users = [];
-                foreach ($rLista['usuariosAssinantes'] as $usuarioAssinante) {
-                    $users[] = $repoUser->findOneByUsername($usuarioAssinante);
+                foreach ($rLista['usuariosAssinantes'] as $username) {
+                    $users[] = $repoUser->findOneByUsername($username);
                 }
+                break;
             }
         }
         $this->enviarMensagem($mensagem, $users, $url, $minutosValidade);

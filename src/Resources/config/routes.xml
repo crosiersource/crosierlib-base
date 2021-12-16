@@ -54,8 +54,13 @@
   
   <!-- PushMessageController -->
   <route id="api_cfg_pushMessage_getNewMessages"
-         controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller::getNewMessages"
-         path="/api/cfg/pushMessage/getNewMessages">
+         controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller::enviarMensagemParaLista"
+         path="/api/cfg/pushMessage/enviarMensagemParaLista">
+  </route>
+
+  <route id="api_cfg_pushMessage_enviarMensagemParaUsers"
+         controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller::enviarMensagemParaUsers"
+         path="/api/cfg/pushMessage/enviarMensagemParaUsers">
   </route>
 
 

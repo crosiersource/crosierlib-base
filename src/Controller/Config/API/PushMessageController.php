@@ -5,9 +5,11 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller\Config\API;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\PushMessage;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\APIUtils\CrosierApiResponse;
 use CrosierSource\CrosierLibBaseBundle\Utils\EntityIdUtils\EntityIdUtils;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,6 +66,42 @@ class PushMessageController extends AbstractController
             return new JsonResponse($r);
         } catch (\Exception $e) {
             return new JsonResponse('ERRO - getNewMessages');
+        }
+    }
+
+    /**
+     * @Route("/api/cfg/pushMessage/enviarMensagemParaLista", name="api_cfg_pushMessage_enviarMensagemParaLista")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function enviarMensagemParaLista(Request $request): ?JsonResponse
+    {
+        try {
+            $mensagem = $request->get("mensagem");
+            $lista = $request->get("lista");
+            $url = $request->get("url");
+            $minutosValidade = $request->get("minutosValidade");
+            $this->entityHandler->enviarMensagemParaLista($mensagem, $lista, $url, $minutosValidade);
+            return CrosierApiResponse::success();
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error($e);
+        }
+    }
+
+    /**
+     * @Route("/api/cfg/pushMessage/enviarMensagemParaUsers", name="api_cfg_pushMessage_enviarMensagemParaUsers")
+     * @IsGranted("ROLE_ADMIN", statusCode=403)
+     */
+    public function enviarMensagemParaUsers(Request $request): ?JsonResponse
+    {
+        try {
+            $mensagem = $request->get("mensagem");
+            $users = explode(',', $request->get("users"));
+            $url = $request->get("url");
+            $minutosValidade = $request->get("minutosValidade");
+            $this->entityHandler->enviarMensagemUsersIds($mensagem, $users, $url, $minutosValidade);
+            return CrosierApiResponse::success();
+        } catch (\Exception $e) {
+            return CrosierApiResponse::error($e);
         }
     }
 
