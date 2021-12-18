@@ -9,7 +9,7 @@
     <title>{{ page_title is defined and page_title != '' ? page_title ~ ' - Crosier' : 'Crosier' }} </title>
 
     {% block stylesheets %}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+        <link rel="stylesheet" href="{{ getEnv('CROSIERCORE_URL') }}/build/static/fontawesome/css/all.min.css">
 
         {{ renderCrosierWebpackLinkTags('crosier/layout-vue') }}
     {% endblock %}
