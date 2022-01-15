@@ -34,7 +34,7 @@ class CrosierApiResponse
             'EXCEPTION_MSG' => $sendExceptionMessage ? ExceptionUtils::treatException($t) : null,
             'DATA' => $data,
         ];
-        return new JsonResponse($r);
+        return new JsonResponse($r, 418);
 
     }
 }
