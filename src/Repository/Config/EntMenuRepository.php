@@ -50,15 +50,15 @@ class EntMenuRepository extends FilterRepository
      */
     public function buildMenuByEntMenuPai(EntMenu $entMenuPai, User $user): array
     {
-        $entsMenu = $this->findBy(['paiUUID' => $entMenuPai->getUUID()], ['ordem' => 'ASC']);
+        $entsMenu = $this->findBy(['paiUUID' => $entMenuPai->UUID], ['ordem' => 'ASC']);
 
         $rs = [];
 
         /** @var EntMenu $entMenu */
         foreach ($entsMenu as $entMenu) {
             $temPermissao = true;
-            if ($entMenu->getRoles()) {
-                $roles = explode(',', $entMenu->getRoles());
+            if ($entMenu->roles) {
+                $roles = explode(',', $entMenu->roles);
                 if (!array_intersect($user->getRoles(), $roles)) {
                     $temPermissao = false;
                 }
@@ -83,29 +83,29 @@ class EntMenuRepository extends FilterRepository
         /** @var AppRepository $repoApp */
         $repoApp = $this->getEntityManager()->getRepository(App::class);
         /** @var App $app */
-        $app = $repoApp->findOneBy(['UUID' => $entMenu->getAppUUID()]);
+        $app = $repoApp->findOneBy(['UUID' => $entMenu->appUUID]);
 
         if (!$app) {
-            throw new \RuntimeException('Nenhum app encontrado com UUID ' . $entMenu->getAppUUID());
+            throw new \RuntimeException('Nenhum app encontrado com UUID ' . $entMenu->appUUID);
         }
 
         $urlBase = $this->getEntityManager()->getRepository(AppConfig::class)->findConfigByCrosierEnv($app, 'URL');
 
         return [
             'id' => $entMenu->getId(),
-            'label' => $entMenu->getLabel(),
-            'icon' => $entMenu->getIcon(),
-            'tipo' => $entMenu->getTipo(),
-            'ordem' => $entMenu->getOrdem(),
-            'cssStyle' => $entMenu->getCssStyle(),
-            'url' => $urlBase . $entMenu->getUrl(),
-            'roles' => $entMenu->getRoles(),
-            'nivel' => $entMenu->getNivel(),
+            'label' => $entMenu->label,
+            'icon' => $entMenu->icon,
+            'tipo' => $entMenu->tipo,
+            'ordem' => $entMenu->ordem,
+            'cssStyle' => $entMenu->cssStyle,
+            'url' => $urlBase . $entMenu->url,
+            'roles' => $entMenu->roles,
+            'nivel' => $entMenu->nivel,
             'pai' => [
-                'id' => $entMenu->getPai() ? $entMenu->getPai()->getId() : null,
-                'tipo' => $entMenu->getPai() ? $entMenu->getPai()->getTipo() : null,
-                'icon' => $entMenu->getPai() ? $entMenu->getPai()->getIcon() : null,
-                'label' => $entMenu->getPai() ? $entMenu->getPai()->getLabel() : null
+                'id' => $entMenu->pai ? $entMenu->pai->getId() : null,
+                'tipo' => $entMenu->pai ? $entMenu->pai->tipo : null,
+                'icon' => $entMenu->pai ? $entMenu->pai->icon : null,
+                'label' => $entMenu->pai ? $entMenu->pai->label : null
             ]
         ];
     }
@@ -118,25 +118,25 @@ class EntMenuRepository extends FilterRepository
     public function fillTransients(EntMenu $entMenu): void
     {
         $nivel = 0;
-        if ($entMenu->getPaiUUID()) {
-            if (!$entMenu->getPai()) {
-                $pai = $this->findOneBy(['UUID' => $entMenu->getPaiUUID()]);
-                $entMenu->setPai($pai);
+        if ($entMenu->paiUUID) {
+            if (!$entMenu->pai) {
+                $pai = $this->findOneBy(['UUID' => $entMenu->paiUUID]);
+                $entMenu->pai = $pai;
             }
 
-            if (!$entMenu->getFilhos()) {
-                $filhos = $this->findBy(['paiUUID' => $entMenu->getUUID()], ['ordem' => 'ASC']);
-                $entMenu->setFilhos($filhos);
+            if (!$entMenu->filhos) {
+                $filhos = $this->findBy(['paiUUID' => $entMenu->UUID], ['ordem' => 'ASC']);
+                $entMenu->filhos = $filhos;
             }
-            $superPai = $entMenu->getPai();
+            $superPai = $entMenu->pai;
 
-            while ($superPai->getPaiUUID()) {
+            while ($superPai->paiUUID) {
                 $nivel++;
-                $superPai = $this->findOneBy(['UUID' => $superPai->getPaiUUID()]);
+                $superPai = $this->findOneBy(['UUID' => $superPai->paiUUID]);
             }
-            $entMenu->setSuperPai($superPai);
+            $entMenu->superPai = $superPai;
         }
-        $entMenu->setNivel($nivel);
+        $entMenu->nivel = $nivel;
     }
 
 
@@ -144,10 +144,10 @@ class EntMenuRepository extends FilterRepository
     {
         $ql = "SELECT e FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e WHERE e.paiUUID = :entMenuPaiUUID ORDER BY e.ordem";
         $qry = $this->getEntityManager()->createQuery($ql);
-        $qry->setParameter('entMenuPaiUUID', $entMenu->getUUID());
+        $qry->setParameter('entMenuPaiUUID', $entMenu->UUID);
         $filhos = $qry->getResult();
         if ($filhos) {
-            $entMenu->setFilhos($filhos);
+            $entMenu->filhos = $filhos;
             foreach ($filhos as $filho) {
                 $this->fillFilhos($filho);
             }
@@ -162,11 +162,11 @@ class EntMenuRepository extends FilterRepository
      */
     private function addFilhosInJson(EntMenu $entMenu, array &$json, User $user): array
     {
-        if ($entMenu->getFilhos() && count($entMenu->getFilhos()) > 0) {
-            foreach ($entMenu->getFilhos() as $filho) {
+        if ($entMenu->filhos && count($entMenu->filhos) > 0) {
+            foreach ($entMenu->filhos as $filho) {
                 $temPermissao = true;
-                if ($filho->getRoles()) {
-                    $roles = explode(',', $filho->getRoles());
+                if ($filho->roles) {
+                    $roles = explode(',', $filho->roles);
                     if (!array_intersect($user->getRoles(), $roles)) {
                         $temPermissao = false;
                     }
@@ -205,7 +205,7 @@ class EntMenuRepository extends FilterRepository
     {
         $ql = "SELECT e FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\EntMenu e WHERE e.paiUUID = :entMenuPaiUUID ORDER BY e.ordem";
         $qry = $this->getEntityManager()->createQuery($ql);
-        $qry->setParameter('entMenuPaiUUID', $entMenuPai->getUUID());
+        $qry->setParameter('entMenuPaiUUID', $entMenuPai->UUID);
 
         $pais = $qry->getResult();
 
@@ -225,8 +225,8 @@ class EntMenuRepository extends FilterRepository
      */
     private function getFilhos(EntMenu $pai, &$tree): void
     {
-        if ($pai->getFilhos()) {
-            $filhos = $pai->getFilhos();
+        if ($pai->filhos) {
+            $filhos = $pai->filhos;
             foreach ($filhos as $filho) {
                 $tree[] = $this->entMenuInJson($filho);
                 $this->getFilhos($filho, $tree);
@@ -250,18 +250,18 @@ class EntMenuRepository extends FilterRepository
     private function exportYamlEntriesFilhos(EntMenu $entMenu, array &$arr)
     {
         $a = [
-            'label' => $entMenu->getLabel(),
-            'UUID' => $entMenu->getUUID(),
-            'icon' => $entMenu->getIcon(),
-            'tipo' => $entMenu->getTipo(),
-            'appUUID' => $entMenu->getAppUUID(),
-            'cssStyle' => $entMenu->getCssStyle(),
-            'url' => $entMenu->getUrl(),
+            'label' => $entMenu->label,
+            'UUID' => $entMenu->UUID,
+            'icon' => $entMenu->icon,
+            'tipo' => $entMenu->tipo,
+            'appUUID' => $entMenu->appUUID,
+            'cssStyle' => $entMenu->cssStyle,
+            'url' => $entMenu->url,
         ];
         
-        if ($entMenu->getFilhos()) {
+        if ($entMenu->filhos) {
             $a['filhos'] = [];
-            foreach ($entMenu->getFilhos() as $entMenu) {
+            foreach ($entMenu->filhos as $entMenu) {
                 $this->exportYamlEntriesFilhos($entMenu, $a['filhos']);
             }
         }
@@ -272,15 +272,15 @@ class EntMenuRepository extends FilterRepository
     {
         $sep = '\t';
         $campos = [];
-        $campos[] = $entMenu->getLabel();
-        $campos[] = $entMenu->getUUID();
-        $campos[] = $entMenu->getIcon();
-        $campos[] = $entMenu->getTipo();
-        $campos[] = $entMenu->getAppUUID();
-        $campos[] = $entMenu->getPaiUUID();
-        $campos[] = $entMenu->getOrdem();
-        $campos[] = $entMenu->getCssStyle();
-        $campos[] = $entMenu->getUrl();
+        $campos[] = $entMenu->label;
+        $campos[] = $entMenu->UUID;
+        $campos[] = $entMenu->icon;
+        $campos[] = $entMenu->tipo;
+        $campos[] = $entMenu->appUUID;
+        $campos[] = $entMenu->paiUUID;
+        $campos[] = $entMenu->ordem;
+        $campos[] = $entMenu->cssStyle;
+        $campos[] = $entMenu->url;
         $str = implode($sep, $campos);
         return str_pad('', $nivel * 4, ' ', STR_PAD_LEFT) . $str . PHP_EOL;
     }
@@ -289,9 +289,9 @@ class EntMenuRepository extends FilterRepository
     private function exportEntriesFilhos(EntMenu $entMenu, string &$str, int $nivel)
     {
         $str .= $this->exportEntry($entMenu, $nivel);
-        if ($entMenu->getFilhos()) {
+        if ($entMenu->filhos) {
             $nivel++;
-            foreach ($entMenu->getFilhos() as $entMenu) {
+            foreach ($entMenu->filhos as $entMenu) {
                 $this->exportEntriesFilhos($entMenu, $str, $nivel);
             }
         }
@@ -302,15 +302,15 @@ class EntMenuRepository extends FilterRepository
     {
         $sep = '\t';
         $campos = [];
-        $campos[] = $entMenu->getLabel();
-        $campos[] = $entMenu->getUUID();
-        $campos[] = $entMenu->getIcon();
-        $campos[] = $entMenu->getTipo();
-        $campos[] = $entMenu->getAppUUID();
-        $campos[] = $entMenu->getPaiUUID();
-        $campos[] = $entMenu->getOrdem();
-        $campos[] = $entMenu->getCssStyle();
-        $campos[] = $entMenu->getUrl();
+        $campos[] = $entMenu->label;
+        $campos[] = $entMenu->UUID;
+        $campos[] = $entMenu->icon;
+        $campos[] = $entMenu->tipo;
+        $campos[] = $entMenu->appUUID;
+        $campos[] = $entMenu->paiUUID;
+        $campos[] = $entMenu->ordem;
+        $campos[] = $entMenu->cssStyle;
+        $campos[] = $entMenu->url;
         $str = implode($sep, $campos);
         return str_pad('', $nivel * 4, ' ', STR_PAD_LEFT) . $str . PHP_EOL;
     }

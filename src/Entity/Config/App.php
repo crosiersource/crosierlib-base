@@ -15,17 +15,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"entity","entityId"},"enable_max_depth"=true},
- *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"app","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"app"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/config/app/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/core/config/app/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "delete"={"path"="/core/config/app/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/cfg/app/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "put"={"path"="/cfg/app/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/cfg/app/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/config/app", "security"="is_granted('ROLE_ADMIN')"},
- *          "post"={"path"="/core/config/app", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/cfg/app", "security"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"path"="/cfg/app", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
  *     attributes={
@@ -51,7 +51,7 @@ class App implements EntityId
     /**
      * @ORM\Column(name="uuid", type="string", nullable=false, length=36)
      * @NotUppercase()
-     * @Groups("entity")
+     * @Groups("app")
      *
      * @var string
      */
@@ -61,7 +61,7 @@ class App implements EntityId
      *
      * @ORM\Column(name="nome", type="string", nullable=true, length=300)
      * @NotUppercase()
-     * @Groups("entity")
+     * @Groups("app")
      *
      * @var string|null
      */
@@ -70,7 +70,7 @@ class App implements EntityId
     /**
      *
      * @ORM\Column(name="obs", type="string", nullable=true, length=5000)
-     * @Groups("entity")
+     * @Groups("app")
      *
      * @var string|null
      */

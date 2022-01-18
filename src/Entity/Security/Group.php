@@ -57,7 +57,7 @@ class Group implements EntityId
      * @var null|string
      * @Groups("entity")
      */
-    private $groupname;
+    public ?string $groupname = null;
 
     /**
      *
@@ -68,7 +68,7 @@ class Group implements EntityId
      *      )
      * @var Collection
      */
-    private $roles;
+    public $roles;
 
     public function __construct()
     {

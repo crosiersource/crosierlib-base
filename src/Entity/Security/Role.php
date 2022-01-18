@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Entidade 'Role'.
- * 
+ *
  * @ApiResource(
  *     normalizationContext={"groups"={"entity","entityId"},"enable_max_depth"=true},
  *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
@@ -54,15 +54,18 @@ class Role implements EntityId
      *
      * @ORM\Column(name="role", type="string", length=90, unique=true)
      * @Groups("entity")
+     * @var null|string
      */
-    private $role;
+    public ?string $role = null;
 
     /**
      *
      * @ORM\Column(name="descricao", type="string", length=90)
      * @Groups("entity")
+     * @var null|string
      */
-    private $descricao;
+    public ?string $descricao = null;
+    
 
     public function getRole()
     {

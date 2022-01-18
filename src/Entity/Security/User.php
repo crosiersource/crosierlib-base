@@ -58,45 +58,50 @@ class User implements EntityId, UserInterface, \Serializable
      * @NotUppercase()
      * @ORM\Column(name="username", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $username;
+    public $username;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="password", type="string", length=90)
+     * @var null|string
      */
-    private $password;
+    public $password;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="email", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $email;
+    public $email;
 
     /**
      *
      * @ORM\Column(name="nome", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $nome;
+    public $nome;
 
     /**
      *
      * @ORM\Column(name="ativo", type="boolean")
      * @Groups("user")
+     * @var null|bool
      */
-    private $isActive = true;
+    public $isActive = true;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Security\Group")
      * @ORM\JoinColumn(name="group_id", nullable=true)
-     *
-     * @var null|$group Group
      * @Groups("user")
+     * 
+     * @var null|Group
      */
-    private $group;
+    public $group;
 
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
@@ -104,21 +109,23 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\ManyToMany(targetEntity="Role",cascade={"persist"})
      * @ORM\JoinTable(name="sec_user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     *      )
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")})
+     * 
+     * @var null|Role
      */
-    private $userRoles;
+    public $userRoles;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="api_token", type="string", length=255, unique=true)
+     * @var null|string
      */
-    private $apiToken;
+    public $apiToken;
 
     /**
      * @ORM\Column(name="api_token_expires_at", type="datetime", length=255)
      */
-    private $apiTokenExpiresAt;
+    public $apiTokenExpiresAt;
 
 
     public function __construct()

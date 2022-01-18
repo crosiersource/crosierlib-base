@@ -19,13 +19,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/config/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/core/config/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "delete"={"path"="/core/config/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/cfg/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "put"={"path"="/cfg/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/cfg/appConfig/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/config/appConfig", "security"="is_granted('ROLE_ADMIN')"},
- *          "post"={"path"="/core/config/appConfig", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/cfg/appConfig", "security"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"path"="/cfg/appConfig", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
  *     attributes={
