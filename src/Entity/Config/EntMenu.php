@@ -2,6 +2,12 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Config;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
@@ -10,6 +16,31 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"entMenu","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"entMenu"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/cfg/entMenu/{id}"},
+ *          "put"={"path"="/cfg/entMenu/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/cfg/entMenu/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/cfg/entMenu"},
+ *          "post"={"path"="/cfg/entMenu", "security"="is_granted('ROLE_ADMIN')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ * @ApiFilter(PropertyFilter::class)
+ *
+ * @ApiFilter(SearchFilter::class, properties={"UUID": "exact", "label": "partial", "id": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"id", "label", "updated", "ordem"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibRadxBundle\EntityHandler\Config\EntMenuEntityHandler")
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuRepository")
  * @ORM\Table(name="cfg_entmenu")
@@ -27,7 +58,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $UUID;
+    public ?string $UUID = null;
 
     /**
      * Necessário para poder montar a URL corretamente (pois o domínio do App pode variar por ambiente).
@@ -38,7 +69,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $appUUID;
+    public ?string $appUUID = null;
 
     /**
      *
@@ -48,7 +79,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $label;
+    public ?string $label = null;
 
     /**
      *
@@ -58,7 +89,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $icon;
+    public ?string $icon = null;
 
     /**
      *
@@ -67,7 +98,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $tipo;
+    public ?string $tipo = null;
 
     /**
      *
@@ -76,7 +107,7 @@ class EntMenu implements EntityId
      *
      * @var int|null
      */
-    private $ordem;
+    public ?int $ordem = null;
 
     /**
      *
@@ -86,7 +117,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $cssStyle;
+    public ?string $cssStyle = null;
 
     /**
      *
@@ -95,7 +126,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $roles;
+    public ?string $roles = null;
 
     /**
      *
@@ -105,7 +136,7 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $url;
+    public ?string $url = null;
 
     /**
      * @var string
@@ -115,37 +146,37 @@ class EntMenu implements EntityId
      *
      * @var string|null
      */
-    private $paiUUID;
+    public ?string $paiUUID = null;
 
     /**
      * TRANSIENT
      * @var EntMenu|null
      */
-    private $pai;
+    public ?EntMenu $pai = null;
 
     /**
      * TRANSIENT
      * @var EntMenu|null
      */
-    private $superPai;
+    public ?EntMenu $superPai = null;
 
     /**
      * TRANSIENT
      * @var null|EntMenu[]|ArrayCollection
      */
-    private $filhos;
+    public $filhos;
 
     /**
      * TRANSIENT.
      * @var int
      */
-    private $nivel;
+    public $nivel;
 
     /**
      * TRANSIENT.
      * @var string
      */
-    private string $yaml;
+    public string $yaml;
 
 
     public function __construct()
@@ -153,276 +184,6 @@ class EntMenu implements EntityId
         $this->filhos = new ArrayCollection();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getUUID(): ?string
-    {
-        return $this->UUID;
-    }
-
-    /**
-     * @param string|null $UUID
-     * @return EntMenu
-     */
-    public function setUUID(?string $UUID): EntMenu
-    {
-        $this->UUID = $UUID;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAppUUID(): ?string
-    {
-        return $this->appUUID;
-    }
-
-    /**
-     * @param string|null $appUUID
-     * @return EntMenu
-     */
-    public function setAppUUID(?string $appUUID): EntMenu
-    {
-        $this->appUUID = $appUUID;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLabel(): ?string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string|null $label
-     * @return EntMenu
-     */
-    public function setLabel(?string $label): EntMenu
-    {
-        $this->label = $label;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIcon(): ?string
-    {
-        return $this->icon;
-    }
-
-    /**
-     * @param string|null $icon
-     * @return EntMenu
-     */
-    public function setIcon(?string $icon): EntMenu
-    {
-        $this->icon = $icon;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTipo(): ?string
-    {
-        return $this->tipo;
-    }
-
-    /**
-     * @param string|null $tipo
-     * @return EntMenu
-     */
-    public function setTipo(?string $tipo): EntMenu
-    {
-        $this->tipo = $tipo;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getOrdem(): ?int
-    {
-        return $this->ordem;
-    }
-
-    /**
-     * @param int|null $ordem
-     * @return EntMenu
-     */
-    public function setOrdem(?int $ordem): EntMenu
-    {
-        $this->ordem = $ordem;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCssStyle(): ?string
-    {
-        return $this->cssStyle;
-    }
-
-    /**
-     * @param string|null $cssStyle
-     * @return EntMenu
-     */
-    public function setCssStyle(?string $cssStyle): EntMenu
-    {
-        $this->cssStyle = $cssStyle;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRoles(): ?string
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param string|null $roles
-     * @return EntMenu
-     */
-    public function setRoles(?string $roles): EntMenu
-    {
-        $this->roles = $roles;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string|null $url
-     * @return EntMenu
-     */
-    public function setUrl(?string $url): EntMenu
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaiUUID()
-    {
-        return $this->paiUUID;
-    }
-
-    /**
-     * @param mixed $paiUUID
-     * @return EntMenu
-     */
-    public function setPaiUUID($paiUUID)
-    {
-        $this->paiUUID = $paiUUID;
-        return $this;
-    }
-
-    /**
-     * @return EntMenu|null
-     */
-    public function getPai(): ?EntMenu
-    {
-        return $this->pai;
-    }
-
-    /**
-     * @param EntMenu|null $pai
-     * @return EntMenu
-     */
-    public function setPai(?EntMenu $pai): EntMenu
-    {
-        $this->pai = $pai;
-        return $this;
-    }
-
-    /**
-     * @return EntMenu|null
-     */
-    public function getSuperPai(): ?EntMenu
-    {
-        return $this->superPai;
-    }
-
-    /**
-     * @param EntMenu|null $superPai
-     * @return EntMenu
-     */
-    public function setSuperPai(?EntMenu $superPai): EntMenu
-    {
-        $this->superPai = $superPai;
-        return $this;
-    }
-
-    /**
-     * @return EntMenu[]|ArrayCollection|null
-     */
-    public function getFilhos()
-    {
-        return $this->filhos;
-    }
-
-    /**
-     * @param EntMenu[]|ArrayCollection|null $filhos
-     * @return EntMenu
-     */
-    public function setFilhos($filhos)
-    {
-        $this->filhos = $filhos;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNivel(): int
-    {
-        return $this->nivel;
-    }
-
-    /**
-     * @param int $nivel
-     * @return EntMenu
-     */
-    public function setNivel(int $nivel): EntMenu
-    {
-        $this->nivel = $nivel;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getYaml(): string
-    {
-        return $this->yaml;
-    }
-
-    /**
-     * @param string $yaml
-     * @return EntMenu
-     */
-    public function setYaml(string $yaml): EntMenu
-    {
-        $this->yaml = $yaml;
-        return $this;
-    }
-    
 
 }
 

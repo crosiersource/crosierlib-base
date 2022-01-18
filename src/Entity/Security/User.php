@@ -24,13 +24,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"user"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/security/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/core/security/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "delete"={"path"="/core/security/user/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "put"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/security/user", "security"="is_granted('ROLE_ADMIN')"},
- *          "post"={"path"="/core/security/user", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/sec/user", "security"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"path"="/sec/user", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
  *     attributes={
@@ -58,67 +58,74 @@ class User implements EntityId, UserInterface, \Serializable
      * @NotUppercase()
      * @ORM\Column(name="username", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $username;
+    public $username;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="password", type="string", length=90)
+     * @var null|string
      */
-    private $password;
+    public $password;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="email", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $email;
+    public $email;
 
     /**
      *
      * @ORM\Column(name="nome", type="string", length=90, unique=true)
      * @Groups("user")
+     * @var null|string
      */
-    private $nome;
+    public $nome;
 
     /**
      *
      * @ORM\Column(name="ativo", type="boolean")
      * @Groups("user")
+     * @var null|bool
      */
-    private $isActive = true;
+    public $isActive = true;
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Security\Group")
      * @ORM\JoinColumn(name="group_id", nullable=true)
-     *
-     * @var null|$group Group
      * @Groups("user")
+     * 
+     * @var null|Group
      */
-    private $group;
+    public $group;
 
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
      *
-     * @ORM\ManyToMany(targetEntity="Role",cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Role",cascade={"all"})
      * @ORM\JoinTable(name="sec_user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     *      )
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")})
+     * 
+     * @Groups("user")
      */
-    private $userRoles;
+    public $userRoles;
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="api_token", type="string", length=255, unique=true)
+     * @var null|string
      */
-    private $apiToken;
+    public $apiToken;
 
     /**
      * @ORM\Column(name="api_token_expires_at", type="datetime", length=255)
      */
-    private $apiTokenExpiresAt;
+    public $apiTokenExpiresAt;
 
 
     public function __construct()
@@ -127,81 +134,7 @@ class User implements EntityId, UserInterface, \Serializable
         $this->userRoles = new ArrayCollection();
     }
 
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    public function setNome($nome)
-    {
-        $this->nome = $nome;
-    }
-
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    public function getGroup(): ?Group
-    {
-        return $this->group;
-    }
-
-    public function setGroup(?Group $group)
-    {
-        $this->group = $group;
-    }
-
-    /**
-     *
-     * @return null|Collection|Role[]
-     *
-     */
-    public function getUserRoles(): ?Collection
-    {
-        return $this->userRoles;
-    }
-
-    public function setUserRoles($userRoles)
-    {
-        $this->roles = $userRoles;
-    }
-
+    
     public function getRoles()
     {
         $roles = array();
@@ -245,36 +178,22 @@ class User implements EntityId, UserInterface, \Serializable
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getApiToken()
+    public function getUsername(): ?string
     {
-        return $this->apiToken;
+        return $this->username;
     }
 
     /**
-     * @param mixed $apiToken
+     * @return string|null
      */
-    public function setApiToken($apiToken): void
+    public function getPassword(): ?string
     {
-        $this->apiToken = $apiToken;
+        return $this->password;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getApiTokenExpiresAt()
-    {
-        return $this->apiTokenExpiresAt;
-    }
-
-    /**
-     * @param mixed $apiTokenExpiresAt
-     */
-    public function setApiTokenExpiresAt($apiTokenExpiresAt): void
-    {
-        $this->apiTokenExpiresAt = $apiTokenExpiresAt;
-    }
+    
 
 
 }
