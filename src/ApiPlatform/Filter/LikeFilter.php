@@ -23,6 +23,7 @@ class LikeFilter extends AbstractContextAwareFilter
             return;
         }
 
+        $value = str_replace('*', '%', $value);
         $parameterName = $queryNameGenerator->generateParameterName($property); // Generate a unique parameter name to avoid collisions with other filters
         $queryBuilder
             ->andWhere(sprintf('o.%s LIKE :%s', $property, $parameterName))
@@ -38,7 +39,7 @@ class LikeFilter extends AbstractContextAwareFilter
 
         $description = [];
         foreach ($this->properties as $property => $strategy) {
-            $description["like_$property"] = [
+            $description["$property"] = [
                 'property' => $property,
                 'type' => Type::BUILTIN_TYPE_STRING,
                 'required' => false,
