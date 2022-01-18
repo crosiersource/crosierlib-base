@@ -417,7 +417,7 @@
       <argument type="service" id="parameter_bag"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\GroupEntityHandler"
-             alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler"/>
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.group_entity_handler" public="true"/>
 
     <!-- GroupRepository -->
     <service id="crosier_source.crosier_lib_base_bundle.repository.security.group_repository"

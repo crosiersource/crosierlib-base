@@ -6,6 +6,7 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -37,15 +38,26 @@ class UserEntityHandler extends EntityHandler
         $this->passwordEncoder = $passwordEncoder;
     }
 
+    /**
+     * @param User $user
+     * @return mixed|void
+     */
     public function beforeSave($user)
     {
+        if (is_array($user->userRoles)) {
+            $roles = $user->userRoles;
+            $user->userRoles = new ArrayCollection();
+            foreach ($roles as $role) {
+                $user->userRoles->add($role);
+            }
+        }
         /** @var User $user */
-        if ($user->getPassword() && strlen($user->getPassword()) < 53) {
-            $encoded = $this->passwordEncoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($encoded);
-        } elseif ($user->getId() && !$user->getPassword()) {
+        if ($user->password && strlen($user->password) < 53) {
+            $encoded = $this->passwordEncoder->encodePassword($user, $user->password);
+            $user->password = $encoded;
+        } elseif ($user->getId() && !$user->password) {
             $savedPassword = $this->doctrine->getRepository(User::class)->getPassword($user);
-            $user->setPassword($savedPassword);
+            $user->password = $savedPassword;
         }
     }
 
@@ -56,12 +68,12 @@ class UserEntityHandler extends EntityHandler
      */
     public function renewTokenApi(User $user)
     {
-        if (!$user->getApiToken()) {
-            $user->setApiToken(bin2hex(random_bytes(60)));
+        if (!$user->apiToken) {
+            $user->apiToken = bin2hex(random_bytes(60));
         }
-        $user->setApiTokenExpiresAt(new \DateTime('+1680 hour'));
+        $user->apiTokenExpiresAt = new \DateTime('+1680 hour');
         $this->save($user);
-        return $user->getApiToken();
+        return $user->apiToken;
     }
 
     /**
@@ -70,7 +82,7 @@ class UserEntityHandler extends EntityHandler
      */
     public function revogarApiToken(User $user): void
     {
-        $user->setApiToken(null);
+        $user->apiToken = null;
         $this->save($user);
     }
 
@@ -85,8 +97,8 @@ class UserEntityHandler extends EntityHandler
             $todas = $this->getDoctrine()->getRepository(Role::class)->findAll();
             /** @var Role $role */
             foreach ($todas as $role) {
-                if (!in_array($role->getRole(), $user->getRoles())) {
-                    $user->getUserRoles()->add($role);
+                if (!in_array($role->role, $user->getRoles())) {
+                    $user->userRoles->add($role);
                 }
             }
             $this->save($user);

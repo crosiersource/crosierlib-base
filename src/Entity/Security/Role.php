@@ -16,17 +16,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Entidade 'Role'.
  *
  * @ApiResource(
- *     normalizationContext={"groups"={"entity","entityId"},"enable_max_depth"=true},
- *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"role","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"role"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/security/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/core/security/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "delete"={"path"="/core/security/role/{id}", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "put"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "delete"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/security/role", "security"="is_granted('ROLE_ADMIN')"},
- *          "post"={"path"="/core/security/role", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/sec/role", "security"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"path"="/sec/role", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
  *     attributes={
@@ -53,7 +53,7 @@ class Role implements EntityId
     /**
      *
      * @ORM\Column(name="role", type="string", length=90, unique=true)
-     * @Groups("entity")
+     * @Groups("role")
      * @var null|string
      */
     public ?string $role = null;
@@ -61,7 +61,7 @@ class Role implements EntityId
     /**
      *
      * @ORM\Column(name="descricao", type="string", length=90)
-     * @Groups("entity")
+     * @Groups("role")
      * @var null|string
      */
     public ?string $descricao = null;
