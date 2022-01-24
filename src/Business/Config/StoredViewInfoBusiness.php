@@ -57,8 +57,8 @@ class StoredViewInfoBusiness
         $storedViewInfo = $this->doctrine->getRepository(StoredViewInfo::class)->findOneBy($params);
         if (!$storedViewInfo) {
             $storedViewInfo = new StoredViewInfo();
-            $storedViewInfo->setViewName($viewName);
-            $storedViewInfo->setUser($params['user']);
+            $storedViewInfo->viewName = $viewName;
+            $storedViewInfo->user = $params['user'];
 
         }
         $storedViewInfo->setViewInfo($serialized);
@@ -103,7 +103,7 @@ class StoredViewInfoBusiness
         $params['viewName'] = $viewName;
         $params['user'] = $this->security->getUser();
         if ($r = $this->doctrine->getRepository(StoredViewInfo::class)->findOneBy($params)) {
-            $viewInfo = json_decode($r->getViewInfo(), true);
+            $viewInfo = json_decode($r->viewInfo, true);
             return $viewInfo;
         }
         return null;
