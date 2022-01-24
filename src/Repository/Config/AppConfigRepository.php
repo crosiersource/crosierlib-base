@@ -38,14 +38,15 @@ class AppConfigRepository extends FilterRepository
         try {
             $dql = "SELECT c FROM CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig c WHERE c.appUUID = :appUUID AND c.chave = :chave";
             $qry = $this->getEntityManager()->createQuery($dql);
-            $qry->setParameter('appUUID', $app->getUUID());
+            $qry->setParameter('appUUID', $app->UUID);
             $crosierEnv = $_SERVER['CROSIER_ENV'];
             $qry->setParameter('chave', $chave . '_' . $crosierEnv);
+            /** @var AppConfig $appConfig */
             $appConfig = $qry->getOneOrNullResult();
             if (!$appConfig) {
                 return 'NULL_CONFIG';
             }
-            return $appConfig->getValor();
+            return $appConfig->valor;
         } catch (NonUniqueResultException $e) {
             return null;
         }
@@ -103,7 +104,7 @@ class AppConfigRepository extends FilterRepository
             $qry = $this->getEntityManager()->createQuery($dql);
             $qry->setParameter('chave', $chave);
             $qry->setParameter('appUUID', $_SERVER['CROSIERAPP_UUID']);
-            return $qry->getSingleResult()->getValor();
+            return $qry->getSingleResult()->valor;
         } catch (\Exception $e) {
             return null;
         }

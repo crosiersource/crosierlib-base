@@ -53,9 +53,9 @@ class App implements EntityId
      * @NotUppercase()
      * @Groups("app")
      *
-     * @var string
+     * @var null|string
      */
-    private $UUID;
+    public ?string $UUID = null;
 
     /**
      *
@@ -65,7 +65,7 @@ class App implements EntityId
      *
      * @var string|null
      */
-    private $nome;
+    public ?string $nome = null;
 
     /**
      *
@@ -74,85 +74,19 @@ class App implements EntityId
      *
      * @var string|null
      */
-    private $obs;
+    public ?string $obs = null;
 
     /**
      * Transient.
      *
      * @var array|null
      */
-    private $configs;
+    public $configs;
 
 
     public function __construct()
     {
         $this->configs = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getUUID(): ?string
-    {
-        return $this->UUID;
-    }
-
-    /**
-     * @param string $UUID
-     */
-    public function setUUID(?string $UUID): void
-    {
-        $this->UUID = $UUID;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param mixed $nome
-     */
-    public function setNome($nome): void
-    {
-        $this->nome = $nome;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getObs()
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param mixed $obs
-     */
-    public function setObs($obs): void
-    {
-        $this->obs = $obs;
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getConfigs(): ?array
-    {
-        return $this->configs;
-    }
-
-    /**
-     * @param array|null $configs
-     * @return App
-     */
-    public function setConfigs(?array $configs): App
-    {
-        $this->configs = $configs;
-        return $this;
     }
 
 

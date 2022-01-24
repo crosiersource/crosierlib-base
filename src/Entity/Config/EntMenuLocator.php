@@ -57,7 +57,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    public $menuUUID;
+    public ?string $menuUUID = null;
 
     /**
      *
@@ -67,7 +67,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    public $urlRegexp;
+    public ?string $urlRegexp = null;
 
     /**
      *
@@ -77,7 +77,7 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    public $naoContendo;
+    public ?string $naoContendo = null;
 
     /**
      *
@@ -87,78 +87,8 @@ class EntMenuLocator implements EntityId
      *
      * @var null|string
      */
-    public $quem;
+    public ?string $quem = null;
 
-    /**
-     * @return string|null
-     */
-    public function getMenuUUID(): ?string
-    {
-        return $this->menuUUID;
-    }
-
-    /**
-     * @param string|null $menuUUID
-     * @return EntMenuLocator
-     */
-    public function setMenuUUID(?string $menuUUID): EntMenuLocator
-    {
-        $this->menuUUID = $menuUUID;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUrlRegexp(): ?string
-    {
-        return $this->urlRegexp;
-    }
-
-    /**
-     * @param string|null $urlRegexp
-     * @return EntMenuLocator
-     */
-    public function setUrlRegexp(?string $urlRegexp): EntMenuLocator
-    {
-        $this->urlRegexp = $urlRegexp;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNaoContendo(): ?string
-    {
-        return $this->naoContendo;
-    }
-
-    /**
-     * @param string|null $naoContendo
-     */
-    public function setNaoContendo(?string $naoContendo): void
-    {
-        $this->naoContendo = $naoContendo;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getQuem(): ?string
-    {
-        return $this->quem;
-    }
-
-    /**
-     * @param string|null $quem
-     * @return EntMenuLocator
-     */
-    public function setQuem(?string $quem): EntMenuLocator
-    {
-        $this->quem = $quem;
-        return $this;
-    }
-
-
+    
 }
 

@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Base\EstadoRepository")
  * @ORM\Table(name="bse_uf")
  * @author Carlos Eduardo Pauluk
@@ -19,54 +18,25 @@ class Estado implements EntityId
     use EntityIdTrait;
 
     /**
-     *
      * @ORM\Column(name="nome", type="string", nullable=false, length=50)
      * @Assert\NotBlank(message="O campo 'nome' deve ser informado")
+     * @var null|string
      */
-    private $nome;
+    public ?string $nome = null;
 
     /**
-     *
      * @ORM\Column(name="sigla", type="string", nullable=false, length=2)
      * @Assert\NotBlank(message="O campo 'sigla' deve ser informado")
      */
-    private $sigla;
+    public ?string $sigla = null;
 
     /**
-     *
      * @ORM\Column(name="codigoIBGE", type="integer", nullable=false)
      * @Assert\NotBlank(message="O campo 'codigoIBGE' deve ser informado")
      * @Assert\Range(min = 0)
+     * @var null|int
      */
-    private $codigoIBGE;
+    public ?int $codigoIBGE = null;
 
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    public function setNome($nome)
-    {
-        $this->nome = $nome;
-    }
-
-    public function getSigla()
-    {
-        return $this->sigla;
-    }
-
-    public function setSigla($sigla)
-    {
-        $this->sigla = $sigla;
-    }
-
-    public function getCodigoIBGE()
-    {
-        return $this->codigoIBGE;
-    }
-
-    public function setCodigoIBGE($codigoIBGE)
-    {
-        $this->codigoIBGE = $codigoIBGE;
-    }
+    
 }

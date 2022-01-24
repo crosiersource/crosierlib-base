@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *
  *     itemOperations={
  *          "get"={
- *              "path"="/core/config/syslog/{id}", 
+ *              "path"="/core/config/syslog/{id}",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "normalization_context"={"groups"={"entity","entityId", "obs"}},
  *             },
@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *     },
  *     collectionOperations={
  *          "get"={
- *              "path"="/core/config/syslog", 
+ *              "path"="/core/config/syslog",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "normalization_context"={"groups"={"entity","entityId", "obsp"}},
  *              },
@@ -45,12 +45,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
  * @ApiFilter(SearchFilter::class, properties={
- *     "id": "exact", 
- *     "app": "exact", 
- *     "tipo": "exact", 
- *     "component": "partial", 
- *     "act": "partial", 
- *     "username": "exact", 
+ *     "id": "exact",
+ *     "app": "exact",
+ *     "tipo": "exact",
+ *     "component": "partial",
+ *     "act": "partial",
+ *     "username": "exact",
  *     "obs": "partial"
  * })
  * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
@@ -65,16 +65,15 @@ class Syslog
 {
 
     /**
-     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="bigint")
      * @Groups("entityId")
+     * @var null|int
      */
-    public int $id;
+    public ?int $id = null;
 
     /**
-     *
      * @ORM\Column(name="tipo", type="string")
      * @Groups("entity")
      * @var string|null
@@ -82,7 +81,6 @@ class Syslog
     public ?string $tipo = null;
 
     /**
-     *
      * @ORM\Column(name="app", type="string")
      * @Groups("entity")
      * @var string|null
@@ -90,7 +88,6 @@ class Syslog
     public ?string $app = null;
 
     /**
-     *
      * @ORM\Column(name="component", type="string")
      * @Groups("entity")
      * @var string|null
@@ -98,7 +95,6 @@ class Syslog
     public ?string $component = null;
 
     /**
-     *
      * @ORM\Column(name="act", type="string")
      * @Groups("entity")
      * @var string|null
@@ -106,7 +102,6 @@ class Syslog
     public ?string $act = null;
 
     /**
-     *
      * @ORM\Column(name="username", type="string")
      * @Groups("entity")
      * @NotUppercase()
@@ -115,7 +110,6 @@ class Syslog
     public ?string $username = null;
 
     /**
-     *
      * @ORM\Column(name="moment", type="datetime")
      * @Groups("entity")
      * @var null|\DateTime
@@ -123,7 +117,6 @@ class Syslog
     public ?\DateTime $moment = null;
 
     /**
-     *
      * @ORM\Column(name="obs", type="string")
      * @Groups("obs")
      * @var string|null
@@ -131,7 +124,6 @@ class Syslog
     public ?string $obs = null;
 
     /**
-     *
      * @ORM\Column(name="delete_after", type="datetime")
      * @Groups("entityId")
      * @var null|\DateTime
@@ -139,7 +131,6 @@ class Syslog
     public ?\DateTime $deleteAfter = null;
 
     /**
-     *
      * @ORM\Column(name="json_data", type="json")
      * @var null|array
      * @NotUppercase()
@@ -149,7 +140,6 @@ class Syslog
 
 
     /**
-     * 
      * @Groups("obsp")
      * @SerializedName("obs")
      * @var null|string

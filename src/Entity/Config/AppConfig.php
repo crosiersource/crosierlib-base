@@ -57,7 +57,7 @@ class AppConfig implements EntityId
      *
      * @var string|null
      */
-    private ?string $chave;
+    public ?string $chave = null;
 
     /**
      *
@@ -67,7 +67,7 @@ class AppConfig implements EntityId
      *
      * @var string|null
      */
-    private ?string $valor;
+    public ?string $valor = null;
 
     /**
      * @ORM\Column(name="is_json", type="boolean", nullable=false)
@@ -83,7 +83,7 @@ class AppConfig implements EntityId
      * @NotUppercase()
      * @Groups("entity")
      */
-    private ?string $appUUID;
+    public ?string $appUUID = null;
 
     public function __construct(?string $chave = null, ?string $appUUID = null)
     {
@@ -91,55 +91,7 @@ class AppConfig implements EntityId
         $this->appUUID = $appUUID;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getChave(): ?string
-    {
-        return $this->chave;
-    }
-
-    /**
-     * @param mixed $chave
-     */
-    public function setChave(string $chave): void
-    {
-        $this->chave = $chave;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValor(): ?string
-    {
-        return $this->valor;
-    }
-
-    /**
-     * @param mixed $valor
-     */
-    public function setValor(string $valor): void
-    {
-        $this->valor = $valor;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAppUUID(): string
-    {
-        return $this->appUUID;
-    }
-
-    /**
-     * @param string $appUUID
-     * @return AppConfig
-     */
-    public function setAppUUID(string $appUUID): AppConfig
-    {
-        $this->appUUID = $appUUID;
-        return $this;
-    }
+    
 
     public function getValorJsonDecoded(): ?array
     {

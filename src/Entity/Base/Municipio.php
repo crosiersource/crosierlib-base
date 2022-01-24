@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Base\MunicipioRepository")
  * @ORM\Table(name="bse_municipio")
  * @author Carlos Eduardo Pauluk
@@ -19,70 +18,35 @@ class Municipio implements EntityId
     use EntityIdTrait;
 
     /**
-     *
      * @ORM\Column(name="municipio_codigo", type="integer", nullable=false)
      * @Groups("entity")
+     * @var null|int
      */
-    private $municipioCodigo;
+    public ?int $municipioCodigo = null;
+
 
     /**
-     *
      * @ORM\Column(name="municipio_nome", type="string", nullable=true, length=200)
      * @Groups("entity")
+     * @var null|string
      */
-    private $municipioNome;
+    public ?string $municipioNome = null;
+
 
     /**
-     *
      * @ORM\Column(name="uf_nome", type="string", nullable=true, length=200)
      * @Groups("entity")
+     * @var null|string
      */
-    private $ufNome;
+    public ?string $ufNome = null;
+
 
     /**
-     *
      * @ORM\Column(name="uf_sigla", type="string", nullable=true, length=2)
      * @Groups("entity")
+     * @var null|string
      */
-    private $ufSigla;
+    public ?string $ufSigla = null;
 
-    public function getMunicipioCodigo()
-    {
-        return $this->municipioCodigo;
-    }
-
-    public function setMunicipioCodigo($municipioCodigo)
-    {
-        $this->municipioCodigo = $municipioCodigo;
-    }
-
-    public function getMunicipioNome()
-    {
-        return $this->municipioNome;
-    }
-
-    public function setMunicipioNome($municipioNome)
-    {
-        $this->municipioNome = $municipioNome;
-    }
-
-    public function getUfNome()
-    {
-        return $this->ufNome;
-    }
-
-    public function setUfNome($ufNome)
-    {
-        $this->ufNome = $ufNome;
-    }
-
-    public function getUfSigla()
-    {
-        return $this->ufSigla;
-    }
-
-    public function setUfSigla($ufSigla)
-    {
-        $this->ufSigla = $ufSigla;
-    }
+    
 }

@@ -16,33 +16,33 @@ class EntMenuEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var EntMenu $entMenu */ $entMenu)
     {
-        if (!$entMenu->getOrdem()) {
-            if ($entMenu->getPai()) {
-                if ($entMenu->getPai()->getFilhos() and $entMenu->getPai()->getFilhos()->count() > 0) {
-                    $ordem = $entMenu->getPai()->getFilhos()->get($entMenu->getPai()->getFilhos()->count() - 1)->getOrdem();
-                    $entMenu->setOrdem($ordem);
+        if (!$entMenu->ordem) {
+            if ($entMenu->pai) {
+                if ($entMenu->pai->filhos and $entMenu->pai->filhos->count() > 0) {
+                    $ordem = $entMenu->pai->filhos->get($entMenu->pai->filhos->count() - 1)->ordem;
+                    $entMenu->ordem = $ordem;
                 } else {
-                    $entMenu->setOrdem($entMenu->getPai()->getOrdem());
+                    $entMenu->ordem = $entMenu->pai->ordem;
                 }
             } else {
-                $entMenu->setOrdem(9999999);
+                $entMenu->ordem = 9999999;
             }
         }
-        
-//        if ($entMenu->getPai()) {
-//            $entMenu->setPaiUUID($entMenu->getPai()->getUUID());
+
+//        if ($entMenu->pai) {
+//            $entMenu->setPaiUUID($entMenu->pai->getUUID());
 //        }
-        
-        if (!$entMenu->getPaiUUID()) {
-            $entMenu->setTipo('PAI');
+
+        if (!$entMenu->paiUUID) {
+            $entMenu->tipo = 'PAI';
         }
-        if ($entMenu->getTipo() === 'PAI') {
-            $entMenu->setPaiUUID(null);
+        if ($entMenu->tipo === 'PAI') {
+            $entMenu->paiUUID = null;
         }
-        if (!$entMenu->getUUID()) {
-            $entMenu->setUUID(StringUtils::guidv4());
+        if (!$entMenu->UUID) {
+            $entMenu->UUID = StringUtils::guidv4();
         }
-        
+
     }
 
     public function getEntityClass()

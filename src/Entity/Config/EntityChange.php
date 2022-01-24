@@ -1,15 +1,16 @@
 <?php
 
 namespace CrosierSource\CrosierLibBaseBundle\Entity\Config;
+
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 
 
 /**
@@ -47,13 +48,14 @@ class EntityChange
 {
 
     /**
-     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="bigint")
      * @Groups("entityId")
+     *
+     * @var null|int
      */
-    private $id;
+    public ?int $id = null;
 
 
     /**
@@ -61,9 +63,9 @@ class EntityChange
      * @NotUppercase()
      * @Groups("entity")
      *
-     * @var string
+     * @var null|string
      */
-    private $entityClass;
+    public ?string $entityClass = null;
 
     /**
      *
@@ -72,7 +74,7 @@ class EntityChange
      *
      * @var int|null
      */
-    private $entityId;
+    public ?int $entityId = null;
 
     /**
      *
@@ -81,7 +83,7 @@ class EntityChange
      *
      * @var int|null
      */
-    private $changingUserId;
+    public ?int $changingUserId = null;
 
     /**
      *
@@ -90,7 +92,7 @@ class EntityChange
      *
      * @var null|\DateTime
      */
-    private $changedAt;
+    public ?\DateTime $changedAt = null;
 
     /**
      *
@@ -99,115 +101,7 @@ class EntityChange
      *
      * @var string|null
      */
-    private $obs;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     * @return EntityChange
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEntityClass(): string
-    {
-        return $this->entityClass;
-    }
-
-    /**
-     * @param string $entityClass
-     * @return EntityChange
-     */
-    public function setEntityClass(string $entityClass): EntityChange
-    {
-        $this->entityClass = $entityClass;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getEntityId(): ?int
-    {
-        return $this->entityId;
-    }
-
-    /**
-     * @param int|null $entityId
-     * @return EntityChange
-     */
-    public function setEntityId(?int $entityId): EntityChange
-    {
-        $this->entityId = $entityId;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getChangingUserId(): ?int
-    {
-        return $this->changingUserId;
-    }
-
-    /**
-     * @param int|null $changingUserId
-     * @return EntityChange
-     */
-    public function setChangingUserId(?int $changingUserId): EntityChange
-    {
-        $this->changingUserId = $changingUserId;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getChangedAt(): ?\DateTime
-    {
-        return $this->changedAt;
-    }
-
-    /**
-     * @param \DateTime|null $changedAt
-     * @return EntityChange
-     */
-    public function setChangedAt(?\DateTime $changedAt): EntityChange
-    {
-        $this->changedAt = $changedAt;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return EntityChange
-     */
-    public function setObs(?string $obs): EntityChange
-    {
-        $this->obs = $obs;
-        return $this;
-    }
+    public ?string $obs = null;
 
 
 }

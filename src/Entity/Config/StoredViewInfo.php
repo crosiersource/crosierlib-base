@@ -23,78 +23,23 @@ class StoredViewInfo implements EntityId
     use EntityIdTrait;
 
     /**
-     *
      * @ORM\Column(name="view_name", type="string", length=200, nullable=true)
      * @NotUppercase()
+     * @var null|string
      */
-    private $viewName;
+    public ?string $viewName = null;
 
     /**
-     *
      * @ORM\Column(name="view_info", type="string", length=15000, nullable=true)
      * @NotUppercase()
+     * @var null|string
      */
-    private $viewInfo;
+    public ?string $viewInfo = null;
 
     /**
-     *
      * @ORM\Column(name="user_id", type="integer", nullable=false)
-     *
+     * @var null|int
      */
-    public $user;
-
-    /**
-     * @return mixed
-     */
-    public function getViewName()
-    {
-        return $this->viewName;
-    }
-
-    /**
-     * @param mixed $viewName
-     * @return StoredViewInfo
-     */
-    public function setViewName($viewName): StoredViewInfo
-    {
-        $this->viewName = $viewName;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getViewInfo()
-    {
-        return $this->viewInfo;
-    }
-
-    /**
-     * @param mixed $viewInfo
-     * @return StoredViewInfo
-     */
-    public function setViewInfo($viewInfo): StoredViewInfo
-    {
-        $this->viewInfo = $viewInfo;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param mixed $user
-     * @return StoredViewInfo
-     */
-    public function setUser($user): StoredViewInfo
-    {
-        $this->user = $user;
-        return $this;
-    }
+    public ?int $user = null;
 
 }
