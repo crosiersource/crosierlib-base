@@ -68,13 +68,13 @@ class DiaUtilRepository extends FilterRepository
                 if (isset($lista[0])) {
                     /** @var DiaUtil $proxDia */
                     $proxDia = $lista[0];
-                    return $proxDia->getDia();
+                    return $proxDia->dia;
                 }
             } else {
                 if (isset($lista[count($lista) - 1])) {
                     /** @var DiaUtil $diaAnt */
                     $diaAnt = $lista[count($lista) - 1];
-                    return $diaAnt->getDia();
+                    return $diaAnt->dia;
                 }
             }
             return null;
@@ -161,11 +161,11 @@ class DiaUtilRepository extends FilterRepository
             if ($ordinal >= 0) {
                 $dtFim = (clone $dtIni)->add(new \DateInterval('P' . ($ordinal * 3) . 'D'));
                 $diasUteis = $this->findDiasUteisBy($dtIni, $dtFim, $comercial, $financeiro);
-                return $diasUteis[$ordinal - 1]->getDia() ?? null;
+                return $diasUteis[$ordinal - 1]->dia ?? null;
             } else {
                 $dtFim = (clone $dtIni)->sub(new \DateInterval('P' . ((abs($ordinal) * 3) . 'D')));
                 $diasUteis = $this->findDiasUteisBy($dtFim, $dtIni, $comercial, $financeiro);
-                return $diasUteis[count($diasUteis) - abs($ordinal)]->getDia() ?? null;
+                return $diasUteis[count($diasUteis) - abs($ordinal)]->dia ?? null;
             }
         } catch (\Throwable $e) {
             throw new \RuntimeException($e->getMessage(), 0, $e);
