@@ -96,7 +96,7 @@ class AppConfig implements EntityId
     public function getValorJsonDecoded(): ?array
     {
         if ($this->isJson || strpos($this->chave, '.json') !== FALSE) {
-            return json_decode($this->getValor(), true);
+            return json_decode($this->valor, true);
         } else {
             return null;
         }
