@@ -61,7 +61,7 @@ class StoredViewInfoBusiness
             $storedViewInfo->user = $params['user'];
 
         }
-        $storedViewInfo->setViewInfo($serialized);
+        $storedViewInfo->viewInfo = $serialized;
 
         $this->entityHandler->save($storedViewInfo);
     }
