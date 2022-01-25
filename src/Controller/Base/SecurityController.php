@@ -5,6 +5,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller\Base;
 
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Psr\Container\ContainerInterface;
@@ -25,12 +26,14 @@ class SecurityController extends AbstractController
 
     public function whoami(): JsonResponse
     {
+        /** @var User $user */
+        $user = $this->getUser();
         return new JsonResponse(
             [
-                'id' => $this->getUser()->getId(), 
-                'username' => $this->getUser()->getUsername(),
-                'nome' => $this->getUser()->getNome(),
-                'roles' => $this->getUser()->getRoles()
+                'id' => $user->getId(), 
+                'username' => $user->username,
+                'nome' => $user->nome,
+                'roles' => $user->getRoles()
             ]
         );
     }
