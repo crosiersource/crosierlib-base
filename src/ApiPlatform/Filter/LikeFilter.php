@@ -9,6 +9,7 @@ use Symfony\Component\PropertyInfo\Type;
 
 /**
  * Filtro que permite fazer o LIKE com ou sem '%'.
+ * @author Carlos Eduardo Pauluk
  */
 class LikeFilter extends AbstractContextAwareFilter
 {

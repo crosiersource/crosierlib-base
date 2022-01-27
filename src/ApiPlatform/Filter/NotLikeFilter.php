@@ -9,9 +9,11 @@ use Symfony\Component\PropertyInfo\Type;
 
 /**
  * Implementação de filtro "NOT LIKE".
+ * @author Carlos Eduardo Pauluk
  */
 final class NotLikeFilter extends AbstractContextAwareFilter
 {
+    
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
         if ($property === 'notLike') {
