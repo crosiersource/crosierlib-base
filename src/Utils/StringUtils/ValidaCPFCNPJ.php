@@ -65,10 +65,10 @@ class ValidaCPFCNPJ
         for ($p = 9; $p < 11; $p++) {
 
             for ($digito = 0, $c = 0; $c < $p; $c++) {
-                $digito += $cpf{$c} * (($p + 1) - $c);
+                $digito += $cpf[$c] * (($p + 1) - $c);
             }
             $digito = (((10 * $digito) % 11) % 10);
-            if ((int)$cpf{$c} !== $digito) {
+            if ((int)$cpf[$c] !== $digito) {
                 return false;
             }
         }
@@ -123,9 +123,9 @@ class ValidaCPFCNPJ
         for ($i = 0; $i < 13; $i++) {
             $j = $j === 1 ? 9 : $j;
             $k = $k === 1 ? 9 : $k;
-            $soma2 += ($cnpj{$i} * $k);
+            $soma2 += ($cnpj[$i] * $k);
             if ($i < 12) {
-                $soma1 += ($cnpj{$i} * $j);
+                $soma1 += ($cnpj[$i] * $j);
             }
             $k--;
             $j--;
@@ -134,7 +134,7 @@ class ValidaCPFCNPJ
         $digito1 = $soma1 % 11 < 2 ? 0 : 11 - $soma1 % 11;
         $digito2 = $soma2 % 11 < 2 ? 0 : 11 - $soma2 % 11;
 
-        return (((int)$cnpj{12} === (int)$digito1) and ((int)$cnpj{13} === (int)$digito2));
+        return (((int)$cnpj[12] === (int)$digito1) and ((int)$cnpj[13] === (int)$digito2));
     }
 
     /**
