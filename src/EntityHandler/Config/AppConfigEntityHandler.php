@@ -21,7 +21,7 @@ class AppConfigEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var AppConfig $appConfig */ $appConfig)
     {
-        if (strpos($appConfig->getChave(), 'json') !== FALSE) {
+        if (strpos($appConfig->chave, 'json') !== FALSE) {
             $appConfig->isJson = true;
         }
     }
