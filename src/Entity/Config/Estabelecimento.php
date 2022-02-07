@@ -21,12 +21,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"estabelecimento"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/cfg/estabelecimento/{id}"},
+ *          "get"={"path"="/cfg/estabelecimento/{id}", "security"="is_granted('IS_AUTHENTICATED_REMEMBERED')"},
  *          "put"={"path"="/cfg/estabelecimento/{id}", "security"="is_granted('ROLE_ADMIN')"},
  *          "delete"={"path"="/cfg/estabelecimento/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/cfg/estabelecimento"},
+ *          "get"={"path"="/cfg/estabelecimento", "security"="is_granted('IS_AUTHENTICATED_REMEMBERED')"},
  *          "post"={"path"="/cfg/estabelecimento", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
@@ -40,7 +40,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiFilter(SearchFilter::class, properties={"codigo": "exact", "descricao": "partial", "id": "exact"})
  * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "updated"}, arguments={"orderParameterName"="order"})
  *
- * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibRadxBundle\EntityHandler\Config\EstabelecimentoEntityHandler")
+ * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EstabelecimentoEntityHandler")
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Config\EstabelecimentoRepository")
  * @ORM\Table(name="cfg_estabelecimento")

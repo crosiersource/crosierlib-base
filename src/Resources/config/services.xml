@@ -164,6 +164,17 @@
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler" public="true"
              alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"/>
+    
+    <!-- EstabelecimentoEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.estabelecimento_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EstabelecimentoEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EstabelecimentoEntityHandler" public="true"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.estabelecimento_entity_handler"/>
 
     <!-- AppRepository -->
     <service id="crosier_source.crosier_lib_base_bundle.repository.config.app_repository"
