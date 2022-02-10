@@ -610,6 +610,15 @@ class DateTimeUtils
     }
 
     /**
+     * @param \DateTime $esta
+     * @param \DateTime $aquela
+     * @return bool
+     */
+    public static function dataMaiorQue(\DateTime $esta, \DateTime $aquela): bool {
+        return ($esta->diff($aquela)->invert === 1);
+    }
+
+    /**
      * Adiciona $days em $dt.
      * @param \DateTime $dt
      * @param int $days
