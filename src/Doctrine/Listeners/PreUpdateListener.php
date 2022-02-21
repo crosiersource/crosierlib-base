@@ -80,8 +80,8 @@ class PreUpdateListener
                     $entityChange = [
                         'entity_class' => get_class($entity),
                         'entity_id' => $entity->getId(),
-                        'changing_user_id' => $entity->getUserInsertedId(),
-                        'changed_at' => $entity->getUpdated()->format('Y-m-d'),
+                        'changing_user_id' => $entity->getUserUpdatedId(),
+                        'changed_at' => $entity->getUpdated()->format('Y-m-d H:i:s'),
                         'changes' => $strChanges,
                     ];
 
