@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -27,6 +28,9 @@ class SyslogBusiness
     private string $component;
     
     private ?bool $echo = false;
+    
+    // para marcar todas as chamadas dentro de uma mesma "sessão"
+    public ?string $uuidSess = null;
 
     /**
      * SyslogBusiness constructor.
@@ -39,6 +43,7 @@ class SyslogBusiness
         $this->doctrine = $doctrine;
         $this->security = $security;
         $this->logger = $logger;
+        $this->uuidSess = StringUtils::guidv4();
     }
 
     /**
@@ -150,6 +155,7 @@ class SyslogBusiness
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
             $this->doctrine->getConnection()->insert('cfg_syslog', [
+                'uuid_sess' => $this->uuidSess,
                 'tipo' => $tipo,
                 'app' => $app,
                 'component' => $component,
