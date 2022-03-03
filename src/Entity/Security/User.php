@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ApiResource(
  *     normalizationContext={"groups"={"user","entityId"},"enable_max_depth"=true},
- *     denormalizationContext={"groups"={"user"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"user","userPassword"},"enable_max_depth"=true},
  *
  *     itemOperations={
  *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
@@ -65,6 +65,7 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      * @NotUppercase()
      * @ORM\Column(name="password", type="string", length=90)
+     * @Groups("userPassword")
      * @var null|string
      */
     public $password;
