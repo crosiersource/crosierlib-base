@@ -107,7 +107,7 @@ class User implements EntityId, UserInterface, \Serializable
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
      *
-     * @ORM\ManyToMany(targetEntity="Role",cascade={"all"})
+     * @ORM\ManyToMany(targetEntity="Role")
      * @ORM\JoinTable(name="sec_user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")})
