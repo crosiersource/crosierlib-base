@@ -5,7 +5,11 @@ namespace CrosierSource\CrosierLibBaseBundle\ApiPlatform\Filter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyInfo\Type;
+use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 
 /**
  * Filtro que permite fazer o LIKE com ou sem '%'.
@@ -13,21 +17,57 @@ use Symfony\Component\PropertyInfo\Type;
  */
 class LikeFilter extends AbstractContextAwareFilter
 {
-    
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+
+    private ?string $parameterName = null;
+
+    public function __construct(
+        ManagerRegistry        $managerRegistry,
+        ?RequestStack          $requestStack = null,
+        LoggerInterface        $logger = null,
+        array                  $properties = null,
+        NameConverterInterface $nameConverter = null,
+        ?string                $parameterName = null)
     {
+        parent::__construct($managerRegistry, $requestStack, $logger, $properties, $nameConverter);
+        $this->parameterName = $parameterName;
+    }
+
+
+    public function getParameterName(): ?string
+    {
+        return $this->parameterName;
+    }
+
+    public function setParameterName(?string $parameterName): void
+    {
+        $this->parameterName = $parameterName;
+    }
+
+
+    protected function filterProperty(
+        string                      $property,
+                                    $value,
+        QueryBuilder                $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string                      $resourceClass,
+        string                      $operationName = null)
+    {
+        if ($property !== 'like') {
+            return;
+        }
+        $campo = key($value);
         // otherwise filter is applied to order and page as well
         if (
-            !$this->isPropertyEnabled($property, $resourceClass) ||
-            !$this->isPropertyMapped($property, $resourceClass)
+            !$this->isPropertyEnabled($campo, $resourceClass) ||
+            !$this->isPropertyMapped($campo, $resourceClass)
         ) {
             return;
         }
 
-        $value = str_replace('*', '%', $value);
+        $value = str_replace('*', '%', $value[$campo]);
         $parameterName = $queryNameGenerator->generateParameterName($property); // Generate a unique parameter name to avoid collisions with other filters
         $queryBuilder
-            ->andWhere(sprintf('o.%s LIKE :%s', $property, $parameterName))
+            ->andWhere(sprintf('o.%s LIKE :%s', $campo, $parameterName))
             ->setParameter($parameterName, $value);
     }
 
