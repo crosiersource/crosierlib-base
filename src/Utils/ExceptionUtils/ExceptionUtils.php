@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use Doctrine\ORM\Exception\EntityManagerClosed;
 use GuzzleHttp\Exception\ClientException;
 
 /**
@@ -33,17 +34,25 @@ class ExceptionUtils
             $msgT = $e->getPrevious()->getMessage();
         } elseif ($e->getPrevious() instanceof ClientException) {
             $msgT = $e->getPrevious()->getMessage();
+        } elseif ($e instanceof EntityManagerClosed) {
+            $msgT = 'The EntityManager is closed.';
         } elseif ($e instanceof \ReflectionException) {
             $msgT = $e->getMessage();
         } else {
             $msgT = '';
         }
+
+        if ($e->getPrevious() instanceof EntityManagerClosed) {
+            $msgT .= ' [The EntityManager is closed.]';
+        }
+        
         if ($preMsg) {
             $msg = $preMsg;
             $msg .= $msgT ? (' (' . $msgT . ')') : '';
         } else {
             $msg = $msgT;
         }
+        
         return $msg;
     }
 
