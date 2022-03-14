@@ -59,6 +59,8 @@ class UserEntityHandler extends EntityHandler
             $savedPassword = $this->doctrine->getRepository(User::class)->getPassword($user);
             $user->password = $savedPassword;
         }
+        $user->email = mb_strtolower($user->email);
+        $user->username = mb_strtolower($user->username);
     }
 
     /**
