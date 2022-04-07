@@ -25,7 +25,7 @@ class SyslogBusiness
 
     private ?string $app = null;
 
-    private string $component;
+    private ?string $component = null;
     
     private ?bool $echo = false;
     
@@ -51,7 +51,7 @@ class SyslogBusiness
      */
     public function getApp(): string
     {
-        return $this->app;
+        return $this->app ?? 'n/d';
     }
 
     /**
@@ -69,7 +69,7 @@ class SyslogBusiness
      */
     public function getComponent(): string
     {
-        return $this->component;
+        return $this->component ?? 'n/d';
     }
 
     /**
@@ -148,7 +148,7 @@ class SyslogBusiness
      * @param \DateTime|null $deleteAfter
      * @param array|null $jsonData
      */
-    private function save(string $tipo, string $action, ?string $obs, ?string $app, ?string $component, ?string $username, ?\DateTime $deleteAfter, ?array $jsonData): void
+    private function save(string $tipo, string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null): void
     {
         try {
             $app = $app ?? $this->getApp();

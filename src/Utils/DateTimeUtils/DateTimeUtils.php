@@ -614,7 +614,8 @@ class DateTimeUtils
      * @param \DateTime $aquela
      * @return bool
      */
-    public static function dataMaiorQue(\DateTime $esta, \DateTime $aquela): bool {
+    public static function dataMaiorQue(\DateTime $esta, \DateTime $aquela): bool
+    {
         return ($esta->diff($aquela)->invert === 1);
     }
 
@@ -624,15 +625,19 @@ class DateTimeUtils
      * @param int $days
      * @return \DateTime
      */
-    public static function addDays(\DateTime $dt, int $days): \DateTime {
+    public static function addDays(\DateTime $dt, int $days): \DateTime
+    {
         $novaDt = clone $dt;
         $novaDt->setDate($novaDt->format('Y'), $novaDt->format('m'), (int)$novaDt->format('d') + $days);
         return $novaDt;
     }
-    
-    public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true) {
+
+    public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true)
+    {
         $dt = $dt ?? new \DateTime();
         return $dt->format('Y-m-d' . ($datetime ? ' H:i:s' : ''));
     }
+
+
 
 }

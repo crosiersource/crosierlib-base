@@ -27,7 +27,6 @@ class CrosierApiResponse
 
     public static function error(?\Throwable $t = null, ?bool $sendExceptionMessage = true, ?string $msg = "Ocorreu um erro", $data = null): JsonResponse
     {
-
         $r = [
             'RESULT' => 'ERRO',
             'MSG' => $msg,

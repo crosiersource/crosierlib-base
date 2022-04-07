@@ -32,6 +32,12 @@ class ExceptionUtils
             $msgT = $e->getMessage();
         } elseif ($e->getPrevious() instanceof ViewException) {
             $msgT = $e->getPrevious()->getMessage();
+        } elseif ($e instanceof ClientException) {
+            try {
+                $msgT = $e->getResponse()->getBody()->getContents();
+            } catch (\Exception $e) {
+                $msgT = $e->getPrevious()->getMessage();
+            }
         } elseif ($e->getPrevious() instanceof ClientException) {
             $msgT = $e->getPrevious()->getMessage();
         } elseif ($e instanceof EntityManagerClosed) {

@@ -186,6 +186,26 @@ class StringUtils
     }
     
     
+    public static function obfuscateEmail(string $email): string {
+        try {
+            $user = substr($email, 0, strpos($email, '@'));
+            $ini = $email[0] . str_repeat('*', strlen($user) - 2) . $user[strlen($user) - 1];
+            $domain = substr($email, strpos($email, '@') + 1);
+            $domainOnly = substr($domain, 0, strrpos($domain, '.'));
+            $d = $domainOnly[0] . str_repeat('*', strlen($domainOnly) - 2) . $domainOnly[strlen($domainOnly) - 1];
+            $last = substr($email, strrpos($email, '.'));
+            $obsf = $ini . '@' . $d . $last;
+        } catch (\Exception $e) {
+            $obsf = $email;
+        }
+        return $obsf;
+    }
+    
+    
+    public static function removeNonAlfanumerics(string $str): string {
+        return preg_replace( '/[\W]/', '', $str);
+    }
+    
 
 
 }
