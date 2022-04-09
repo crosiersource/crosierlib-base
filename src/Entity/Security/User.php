@@ -11,7 +11,6 @@ use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,8 +23,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"user","userPassword"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.owner == user"},
+ *          "put"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.owner == user"},
  *          "delete"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
@@ -56,53 +55,67 @@ class User implements EntityId, UserInterface, \Serializable
 
     /**
      * @NotUppercase()
-     * @ORM\Column(name="username", type="string", length=90, unique=true)
+     * @ORM\Column(name="username", type="string", length=90, nullable=false)
      * @Groups("user")
      * @var null|string
      */
-    public $username;
+    public ?string $username = null;
+
 
     /**
      * @NotUppercase()
-     * @ORM\Column(name="password", type="string", length=90)
+     * @ORM\Column(name="password", type="string", length=90, nullable=false)
      * @Groups("userPassword")
      * @var null|string
      */
-    public $password;
+    public ?string $password = null;
+
 
     /**
      * @NotUppercase()
-     * @ORM\Column(name="email", type="string", length=90, unique=true)
+     * @ORM\Column(name="email", type="string", length=90, nullable=false)
      * @Groups("user")
      * @var null|string
      */
-    public $email;
+    public ?string $email = null;
+
 
     /**
-     *
-     * @ORM\Column(name="nome", type="string", length=90, unique=true)
+     * @ORM\Column(name="fone", type="string", length=90)
      * @Groups("user")
      * @var null|string
      */
-    public $nome;
+    public ?string $fone = null;
+
 
     /**
      *
-     * @ORM\Column(name="ativo", type="boolean")
+     * @ORM\Column(name="nome", type="string", length=90, nullable=false)
+     * @Groups("user")
+     * @var null|string
+     */
+    public ?string $nome = null;
+
+
+    /**
+     *
+     * @ORM\Column(name="ativo", type="boolean", nullable=false)
      * @Groups("user")
      * @var null|bool
      */
-    public $isActive = true;
+    public bool $isActive = true;
+
 
     /**
      *
      * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Security\Group")
      * @ORM\JoinColumn(name="group_id", nullable=true)
      * @Groups("user")
-     * 
+     *
      * @var null|Group
      */
-    public $group;
+    public ?Group $group = null;
+
 
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
@@ -111,22 +124,38 @@ class User implements EntityId, UserInterface, \Serializable
      * @ORM\JoinTable(name="sec_user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")})
-     * 
+     *
      * @Groups("user")
      */
-    public $userRoles;
+    public $userRoles = null;
+
 
     /**
      * @NotUppercase()
-     * @ORM\Column(name="api_token", type="string", length=255, unique=true)
+     * @ORM\Column(name="api_token", type="string", length=255, nullable=false)
      * @var null|string
      */
-    public $apiToken;
+    public ?string $apiToken = null;
+
 
     /**
-     * @ORM\Column(name="api_token_expires_at", type="datetime", length=255)
+     * @ORM\Column(name="api_token_expires_at", type="datetime", nullable=false)
      */
-    public $apiTokenExpiresAt;
+    public ?\DateTime $apiTokenExpiresAt = null;
+
+
+    /**
+     * @NotUppercase()
+     * @ORM\Column(name="token_recupsenha", type="string", length=36, nullable=true)
+     * @var null|string
+     */
+    public ?string $tokenRecupSenha = null;
+
+
+    /**
+     * @ORM\Column(name="dt_valid_token_recupsenha", type="datetime", nullable=false)
+     */
+    public ?\DateTime $dtValidadeTokenRecupSenha = null;
 
 
     public function __construct()
@@ -135,7 +164,7 @@ class User implements EntityId, UserInterface, \Serializable
         $this->userRoles = new ArrayCollection();
     }
 
-    
+
     public function getRoles()
     {
         $roles = array();
@@ -193,8 +222,6 @@ class User implements EntityId, UserInterface, \Serializable
     {
         return $this->password;
     }
-
-    
 
 
 }

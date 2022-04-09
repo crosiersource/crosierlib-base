@@ -634,8 +634,15 @@ class DateTimeUtils
 
     public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true)
     {
-        $dt = $dt ?? new \DateTime();
+        $dt = $dt ? clone $dt : new \DateTime();
         return $dt->format('Y-m-d' . ($datetime ? ' H:i:s' : ''));
+    }
+
+
+    public static function addMinutes(?\DateTime $dt = null, int $minutes)
+    {
+        $dt = $dt ? clone $dt : new \DateTime();
+        return $dt->add(new \DateInterval('PT' . $minutes . 'M'));
     }
 
 
