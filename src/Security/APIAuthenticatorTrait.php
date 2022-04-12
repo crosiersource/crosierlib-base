@@ -42,7 +42,8 @@ trait APIAuthenticatorTrait
 
     public function supports(Request $request): ?bool
     {
-        if (strpos($request->getPathInfo(), '/api') === 0 && $this->getXAuthorization($request->headers)) {
+        if (strpos($request->getPathInfo(), '/api') === 0 &&
+            ($_SERVER['CROSIER_ENV'] === 'devlocal' || $this->getXAuthorization($request->headers))) {
             return true;
         } // else
         return false;
@@ -68,8 +69,16 @@ trait APIAuthenticatorTrait
     {
         $apiToken = $this->getXAuthorization($request->headers);
         if (null === $apiToken) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
+            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
+                return new SelfValidatingPassport(
+                    new UserBadge('admin',
+                        function ($userIdentifier) {
+                            return $this->userRepository->findOneByUsername('admin');
+                        }
+                    )
+                );
+            }
+            // else...
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
