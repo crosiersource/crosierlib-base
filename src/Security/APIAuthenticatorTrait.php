@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -33,17 +34,22 @@ trait APIAuthenticatorTrait
 
     private LoggerInterface $logger;
 
+    private Security $security;
 
-    public function __construct(UserRepository $userRepository, LoggerInterface $logger)
+
+    public function __construct(UserRepository $userRepository, LoggerInterface $logger, Security $security)
     {
         $this->userRepository = $userRepository;
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     public function supports(Request $request): ?bool
     {
         if (strpos($request->getPathInfo(), '/api') === 0 &&
-            ($_SERVER['CROSIER_ENV'] === 'devlocal' || $this->getXAuthorization($request->headers))) {
+            ($this->getXAuthorization($request->headers))
+            // ($_SERVER['CROSIER_ENV'] === 'devlocal' && $this->security->getUser()))
+        ) {
             return true;
         } // else
         return false;
@@ -69,15 +75,15 @@ trait APIAuthenticatorTrait
     {
         $apiToken = $this->getXAuthorization($request->headers);
         if (null === $apiToken) {
-            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
-                return new SelfValidatingPassport(
-                    new UserBadge('admin',
-                        function ($userIdentifier) {
-                            return $this->userRepository->findOneByUsername('admin');
-                        }
-                    )
-                );
-            }
+//            if ($_SERVER['CROSIER_ENV'] === 'devlocal') {
+//                return new SelfValidatingPassport(
+//                    new UserBadge($this->security->getUser()->username,
+//                        function ($userIdentifier) {
+//                            return $this->userRepository->findOneByUsername($this->security->getUser()->username);
+//                        }
+//                    )
+//                );
+//            }
             // else...
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
