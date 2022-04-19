@@ -90,14 +90,22 @@ class DiaUtilController extends AbstractController
             $comercial = $request->get('comercial') ? filter_var($request->get('comercial'), FILTER_VALIDATE_BOOLEAN) : null;
             $financeiro = $request->get('financeiro') ? filter_var($request->get('financeiro'), FILTER_VALIDATE_BOOLEAN) : null;
             if ($ini === $fim) {
-                /** @var DiaUtilRepository $repo */
-                $repo = $this->getDoctrine()->getRepository(DiaUtil::class);
-                /** @var \DateTime $diaUtil */
-                $diaUtil = $repo->findEnesimoDiaUtil($dtIni, $futuro ? 2 : -2, $financeiro, $comercial);
-                $periodo = [
-                    'dtIni' => $diaUtil->format('Y-m-d'),
-                    'dtFim' => $diaUtil->format('Y-m-d'),
-                ];
+                if (!$comercial && !$financeiro) {
+                    $amanha = DateTimeUtils::addDays($dtIni, 1);
+                    $periodo = [
+                        'dtIni' => $amanha->format('Y-m-d'),
+                        'dtFim' => $amanha->format('Y-m-d'),
+                    ];
+                } else {
+                    /** @var DiaUtilRepository $repo */
+                    $repo = $this->getDoctrine()->getRepository(DiaUtil::class);
+                    /** @var \DateTime $diaUtil */
+                    $diaUtil = $repo->findEnesimoDiaUtil($dtIni, $futuro ? 2 : -2, $financeiro, $comercial);
+                    $periodo = [
+                        'dtIni' => $diaUtil->format('Y-m-d'),
+                        'dtFim' => $diaUtil->format('Y-m-d'),
+                    ];
+                }
             } else {
                 $periodo = DateTimeUtils::iteratePeriodoRelatorial($dtIni, $dtFim, $futuro);
             }
