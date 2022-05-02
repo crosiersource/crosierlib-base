@@ -59,9 +59,21 @@ class EntMenuRepository extends FilterRepository
             $temPermissao = true;
             if ($entMenu->roles) {
                 $roles = explode(',', $entMenu->roles);
-                if (!array_intersect($user->getRoles(), $roles)) {
-                    $temPermissao = false;
+
+                foreach ($roles as $role) {
+                    if ($role[0] === '!') {
+                        if (in_array(substr($role, 1), $user->getRoles(), true)) {
+                            $temPermissao = false;
+                            break;
+                        }
+                    } else {
+                        if (!in_array($role, $user->getRoles(), true)) {
+                            $temPermissao = false;
+                            break;
+                        }
+                    }
                 }
+
             }
             if ($temPermissao) {
                 $entMenuInJson = $this->entMenuInJson($entMenu);
@@ -258,7 +270,7 @@ class EntMenuRepository extends FilterRepository
             'cssStyle' => $entMenu->cssStyle,
             'url' => $entMenu->url,
         ];
-        
+
         if ($entMenu->filhos) {
             $a['filhos'] = [];
             foreach ($entMenu->filhos as $entMenu) {
