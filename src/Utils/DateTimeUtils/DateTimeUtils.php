@@ -373,6 +373,7 @@ class DateTimeUtils
         $dt = $dt ?: new \DateTime();
         $primeiroDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . '01');
         $primeiroDiaMes->setTime(0, 0);
+        $primeiroDiaMes->setTimezone(new \DateTimeZone("America/Fortaleza"));
         return $primeiroDiaMes;
     }
 
@@ -387,6 +388,7 @@ class DateTimeUtils
         $dt = $dt ?: new \DateTime();
         $ultimoDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . $dt->format('t'));
         $ultimoDiaMes->setTime(0, 0);
+        $ultimoDiaMes->setTimezone(new \DateTimeZone("America/Fortaleza"));
         return $ultimoDiaMes;
     }
 
@@ -643,6 +645,14 @@ class DateTimeUtils
     {
         $dt = $dt ? clone $dt : new \DateTime();
         return $dt->add(new \DateInterval('PT' . $minutes . 'M'));
+    }
+
+
+    public static function ehMesmoDia(?\DateTime $dt1, ?\DateTime $dt2)
+    {
+        $dtUm = (clone $dt1);
+        $dtUm->setTimezone($dt2->getTimezone());
+        return ($dtUm->format('dmY') === $dt2->format('dmY'));
     }
 
 
