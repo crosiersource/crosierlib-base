@@ -83,7 +83,7 @@ class EntMenuLocatorRepository extends FilterRepository
                         foreach ($roles as $role) {
                             if (in_array($role, $user->getRoles(), true)) {
                                 $entMenuUUID = $r['menu_uuid'];
-                                break;
+                                break 2;
                             }
                         }
                     }
