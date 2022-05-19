@@ -1,15 +1,19 @@
 <header class="header header-sticky mb-1" style="z-index: 990">
     <div class="container-fluid">
-        <button class="header-toggler px-md-0 me-md-3" type="button" onclick="Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+        <button class="header-toggler px-md-0 me-md-3" type="button"
+                onclick="Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
             <i class="fas fa-bars"></i>
         </button>
         <a class="header-brand d-md-none" href="#">
             <img src="{{ getEnv('CROSIER_LOGO') }}" height="36">
         </a>
-        
-        
+
+
         <ul class="header-nav ms-3">
-            <li class="nav-item mt-2">{{ app.user.nome }}</li>
+            <li class="nav-item mt-2">
+                <div>{{ app.user.nome }}</div>
+                <small>{{ app.user.username }}</small>
+            </li>
             <li class="nav-item">
                 <button type="button" class="btn btn-success mr-2 ml-2"
                         onclick="window.location.href = '{{ getEnv('CROSIERCORE_URL') }}/logout'"><i
