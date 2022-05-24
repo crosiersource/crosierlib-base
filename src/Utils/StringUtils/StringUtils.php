@@ -184,9 +184,10 @@ class StringUtils
             vsprintf('(%d%d) %d%d%d%d-%d%d%d%d', $arrNumeros);
         return $numero;
     }
-    
-    
-    public static function obfuscateEmail(string $email): string {
+
+
+    public static function obfuscateEmail(string $email): string
+    {
         try {
             $user = substr($email, 0, strpos($email, '@'));
             $ini = $email[0] . str_repeat('*', strlen($user) - 2) . $user[strlen($user) - 1];
@@ -200,13 +201,58 @@ class StringUtils
         }
         return $obsf;
     }
-    
-    
-    public static function removeNonAlfanumerics(string $str): string {
-        return preg_replace( '/[\W]/', '', $str);
-    }
-    
 
+
+    public static function removeNonAlfanumerics(string $str): string
+    {
+        return preg_replace('/[\W]/', '', $str);
+    }
+
+
+    /**
+     * Descriptografa um valor vindo criptografado pelo crypto-js.
+     */
+    public static function cryptoJsDecrypt(string $passphrase, string $jsonString)
+    {
+        $jsondata = json_decode($jsonString, true);
+        $salt = hex2bin($jsondata["theS"]);
+        $ct = base64_decode($jsondata["theCt"]);
+        $iv = hex2bin($jsondata["theIv"]);
+        $concatedPassphrase = $passphrase . $salt;
+        $md5 = array();
+        $md5[0] = md5($concatedPassphrase, true);
+        $result = $md5[0];
+        for ($i = 1; $i < 3; $i++) {
+            $md5[$i] = md5($md5[$i - 1] . $concatedPassphrase, true);
+            $result .= $md5[$i];
+        }
+        $key = substr($result, 0, 32);
+        $data = openssl_decrypt($ct, 'aes-256-cbc', $key, true, $iv);
+        return json_decode($data, true);
+    }
+
+    /**
+     * Criptografa um valor para ser utilizado com crypto-js.
+     *
+     * @param mixed $passphrase
+     * @param mixed $value
+     * @return string
+     */
+    public static function cryptoJsEncrypt(string $passphrase, string $value): string
+    {
+        $salt = openssl_random_pseudo_bytes(8);
+        $salted = '';
+        $dx = '';
+        while (strlen($salted) < 48) {
+            $dx = md5($dx . $passphrase . $salt, true);
+            $salted .= $dx;
+        }
+        $key = substr($salted, 0, 32);
+        $iv = substr($salted, 32, 16);
+        $encrypted_data = openssl_encrypt(json_encode($value), 'aes-256-cbc', $key, true, $iv);
+        $data = array("theCt" => base64_encode($encrypted_data), "theIv" => bin2hex($iv), "theS" => bin2hex($salt));
+        return json_encode($data);
+    }
 
 }
 
