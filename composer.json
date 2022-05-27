@@ -54,8 +54,5 @@
             "allow-contrib": false,
             "require": "5.3.*"
         }
-    },
-    "require-dev": {
-        "symfony/phpunit-bridge": "^5.2"
     }
 }
