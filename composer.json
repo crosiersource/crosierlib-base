@@ -20,6 +20,7 @@
         "ext-simplexml": "*",
         "ext-yaml": "*",
         "ext-zip": "*",
+        "guzzlehttp/guzzle": "6.5.5",
         "php-http/guzzle6-adapter": "^2.0",
         "symfony/cache": "5.3.*",
         "symfony/console": "5.3.*",
