@@ -31,6 +31,8 @@ abstract class EntityHandler implements EntityHandlerInterface
     protected SyslogBusiness $syslog;
 
     protected bool $isTransacionalSave = false;
+    
+    protected bool $willFlush = true;
 
     /**
      * @param EntityManagerInterface $doctrine
@@ -180,6 +182,7 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $this->doctrine->beginTransaction();
             }
             $this->handleSavingEntityId($entityId);
+            $this->willFlush = $flush;
             $this->beforeSave($entityId);
             if ($entityId->getId()) {
                 $entityId = $this->doctrine->merge($entityId);

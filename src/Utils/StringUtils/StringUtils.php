@@ -134,14 +134,20 @@ class StringUtils
      * @param null|string $value
      * @return null|string
      */
-    public static function mascararCnpjCpf(?string $value = null): ?string
+    public static function mascararCnpjCpf(?string $value = null, bool $permitirLetrasEInterrogacao = false): ?string
     {
-        $cnpj_cpf = preg_replace("/\D/", '', $value);
+        if ($permitirLetrasEInterrogacao) {
+            $cnpj_cpf =
+                preg_replace( '/[^\w\?]/', '', $value);
+        } else {
+            $cnpj_cpf =
+                preg_replace("/\D/", '', $value);
+        }
 
         if (strlen($cnpj_cpf) === 11) {
-            return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $cnpj_cpf);
+            return preg_replace("/(.{3})(.{3})(.{3})(.{2})/", "\$1.\$2.\$3-\$4", $cnpj_cpf);
         } elseif (strlen($cnpj_cpf) === 14) {
-            return preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
+            return preg_replace("/(.{2})(.{3})(.{3})(.{4})(.{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
         }
         return $value;
     }

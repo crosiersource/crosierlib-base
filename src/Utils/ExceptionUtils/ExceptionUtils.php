@@ -75,7 +75,7 @@ class ExceptionUtils
         preg_match($regex, $message, $matches);
         if (isset($matches['msg'])) {
             if (strpos($matches['msg'], 'foreign key constraint fails') !== FALSE) {
-                $matches['msg'] = 'Registro referenciado por subregistros. Impossível deletar.';
+                $matches['msg'] = 'Registro referenciado por subregistros.';
             }
             return $matches['msg'];
         }
