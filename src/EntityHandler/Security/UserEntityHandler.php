@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Security;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
@@ -95,12 +96,25 @@ class UserEntityHandler extends EntityHandler
      */
     public function fixRoles(User $user): void
     {
+        $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+        $rolesNotForTheAdmin = [];
+        /** @var AppConfig $appConfig */
+        $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave','EQ','ROLES_NOT_FOR_THE_ADMIN']]);
+        if ($appConfig) {
+            $rolesNotForTheAdmin = explode(',', $appConfig->valor);
+        }
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             $todas = $this->getDoctrine()->getRepository(Role::class)->findAll();
             /** @var Role $role */
             foreach ($todas as $role) {
-                if (!in_array($role->role, $user->getRoles())) {
-                    $user->userRoles->add($role);
+                if (!in_array($role->role, $rolesNotForTheAdmin, true)) {
+                    if (!in_array($role->role, $user->getRoles())) {
+                        $user->userRoles->add($role);
+                    }
+                } else {
+                    if ($user->userRoles->contains($role)) {
+                        $user->userRoles->remove($user->userRoles->indexOf($role));
+                    }
                 }
             }
             $this->save($user);
