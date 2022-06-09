@@ -168,7 +168,7 @@ class DateTimeUtils
         // 01 - ultimoDia
         // 16 - ultimoDia
         // 16 - 15
-        return ($dtIniDia === $dtFimDia) or
+        return 
             ($dtIniDia === 1 && $dtFimDia === 15) or
             ($dtIniDia === 1 && $dtFimEhUltimoDiaDoMes) or
             ($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) or
@@ -266,10 +266,10 @@ class DateTimeUtils
         $dtIni->setTime(12, 0);
         $dtFim->setTime(12, 0);
 
-        if ((!($ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim))) && $strict) {
+        $ehPeriodoRelatorial = self::isPeriodoRelatorial($dtIni, $dtFim);
+        if (!$ehPeriodoRelatorial && $strict) {
             throw new \RuntimeException('O período informado não é relatorial.');
         }
-
 
         $difMeses = self::monthDiff($dtIni, $dtFim);
         $difDias = $dtFim->diff($dtIni)->days;
