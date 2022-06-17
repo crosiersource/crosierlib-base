@@ -168,7 +168,7 @@ class DateTimeUtils
         // 01 - ultimoDia
         // 16 - ultimoDia
         // 16 - 15
-        return 
+        return
             ($dtIniDia === 1 && $dtFimDia === 15) or
             ($dtIniDia === 1 && $dtFimEhUltimoDiaDoMes) or
             ($dtIniDia === 16 && $dtFimEhUltimoDiaDoMes) or
@@ -634,20 +634,35 @@ class DateTimeUtils
         return $novaDt;
     }
 
+
+    /**
+     * @param \DateTime|null $dt
+     * @param bool $datetime
+     * @return string
+     */
     public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true)
     {
         $dt = $dt ? clone $dt : new \DateTime();
         return $dt->format('Y-m-d' . ($datetime ? ' H:i:s' : ''));
     }
 
-
+    /**
+     * @param \DateTime|null $dt
+     * @param int $minutes
+     * @return \DateTime
+     * @throws \Exception
+     */
     public static function addMinutes(?\DateTime $dt = null, int $minutes)
     {
         $dt = $dt ? clone $dt : new \DateTime();
         return $dt->add(new \DateInterval('PT' . $minutes . 'M'));
     }
 
-
+    /**
+     * @param \DateTime|null $dt1
+     * @param \DateTime|null $dt2
+     * @return bool
+     */
     public static function ehMesmoDia(?\DateTime $dt1, ?\DateTime $dt2)
     {
         $dtUm = (clone $dt1);
@@ -655,6 +670,19 @@ class DateTimeUtils
         return ($dtUm->format('dmY') === $dt2->format('dmY'));
     }
 
+
+    /**
+     * Altera apenas o dia de uma data.
+     *
+     * @param \DateTime|null $dt
+     * @param int $dia
+     * @return \DateTime
+     */
+    public static function setDay(?\DateTime $dt, int $dia)
+    {
+        $dt = clone $dt;
+        return $dt->setDate($dt->format('Y'), $dt->format('m'), $dia);
+    }
 
 
 }

@@ -149,23 +149,6 @@ abstract class FilterRepository extends EntityRepository
         return $count[0][1];
     }
 
-    /**
-     * @param array $filtersSimpl
-     * @param null $orders
-     * @return mixed|null
-     * @throws ViewException
-     */
-    public function findOneByFiltersSimpl(array $filtersSimpl, $orders = null)
-    {
-        $r = $this->findByFiltersSimpl($filtersSimpl, $orders, 0, 2);
-        if ($r) {
-            if (count($r) > 1) {
-                throw new ViewException('Mais de um resultado encontrado.');
-            }
-            return $r[0];
-        }
-        return null;
-    }
 
     /**
      *
@@ -193,6 +176,38 @@ abstract class FilterRepository extends EntityRepository
         }
         return $this->findByFilters($filters, $orders, $start, $limit);
     }
+
+
+    /**
+     * @param array $filtersSimpl
+     * @param null $orders
+     * @return mixed|null
+     * @throws ViewException
+     */
+    public function findOneByFiltersSimpl(array $filtersSimpl, $orders = null)
+    {
+        $r = $this->findByFiltersSimpl($filtersSimpl, $orders, 0, 2);
+        if ($r) {
+            if (count($r) > 1) {
+                throw new ViewException('Mais de um resultado encontrado.');
+            }
+            return $r[0];
+        }
+        return null;
+    }
+
+
+    /**
+     * @param array $filtersSimpl
+     * @param null $orders
+     * @return mixed|null
+     * @throws ViewException
+     */
+    public function findAllByFiltersSimpl(array $filtersSimpl, $orders = null)
+    {
+        return $this->findByFiltersSimpl($filtersSimpl, $orders, 0, -1);
+    }
+    
 
     /**
      * @param string $field
