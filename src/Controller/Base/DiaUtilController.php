@@ -91,10 +91,10 @@ class DiaUtilController extends AbstractController
             $financeiro = $request->get('financeiro') ? filter_var($request->get('financeiro'), FILTER_VALIDATE_BOOLEAN) : null;
             if ($ini === $fim) {
                 if (!$comercial && !$financeiro) {
-                    $amanha = DateTimeUtils::addDays($dtIni, 1);
+                    $novaData = DateTimeUtils::addDays($dtIni, $futuro ? 1 : -1);
                     $periodo = [
-                        'dtIni' => $amanha->format('Y-m-d'),
-                        'dtFim' => $amanha->format('Y-m-d'),
+                        'dtIni' => $novaData->format('Y-m-d'),
+                        'dtFim' => $novaData->format('Y-m-d'),
                     ];
                 } else {
                     /** @var DiaUtilRepository $repo */
