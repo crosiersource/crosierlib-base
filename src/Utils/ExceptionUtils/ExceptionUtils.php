@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\Exception\EntityManagerClosed;
 use GuzzleHttp\Exception\ClientException;
 
@@ -24,7 +25,13 @@ class ExceptionUtils
      */
     public static function treatException(\Throwable $e, ?string $preMsg = null): string
     {
-        if ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
+        if ($e instanceof UniqueConstraintViolationException) {
+            $msg = $e->getMessage();
+            $pos = strpos($msg, '1062 Duplicate entry ') + 21;
+            $pos2 = strpos($msg, ' for key ');
+            $valorDuplicado = substr($msg, $pos, $pos2 - $pos);
+            $msgT = 'O valor ' . $valorDuplicado . ' já existe na base de dados';
+        } elseif ($e instanceof \Doctrine\DBAL\Exception\DriverException) {
             $msgT = self::treatDriverException($e);
         } elseif ($e->getPrevious() instanceof \Doctrine\DBAL\Exception\DriverException) {
             $msgT = self::treatDriverException($e->getPrevious());
@@ -51,14 +58,14 @@ class ExceptionUtils
         if ($e->getPrevious() instanceof EntityManagerClosed) {
             $msgT .= ' [The EntityManager is closed.]';
         }
-        
+
         if ($preMsg) {
             $msg = $preMsg;
             $msg .= $msgT ? (' (' . $msgT . ')') : '';
         } else {
             $msg = $msgT;
         }
-        
+
         return $msg;
     }
 
