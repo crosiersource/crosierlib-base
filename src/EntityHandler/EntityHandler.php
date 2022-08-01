@@ -31,7 +31,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     protected SyslogBusiness $syslog;
 
     protected bool $isTransacionalSave = false;
-    
+
     protected bool $willFlush = true;
 
     /**
@@ -227,7 +227,9 @@ abstract class EntityHandler implements EntityHandlerInterface
             if ($this->security->getUser()) {
                 /** @var User $user */
                 $user = $this->security->getUser();
-                $entityId->setEstabelecimentoId($user->getEstabelecimentoId());
+                if (!$entityId->getEstabelecimentoId()) {
+                    $entityId->setEstabelecimentoId($user->getEstabelecimentoId());
+                }
                 $entityId->setUserUpdatedId($user->getId());
                 if (!$entityId->getId()) {
                     $entityId->setUserInsertedId($user->getId());

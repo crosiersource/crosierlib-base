@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ApiResource(
  *     normalizationContext={"groups"={"user","entityId"},"enable_max_depth"=true},
- *     denormalizationContext={"groups"={"user","userPassword"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"user","userPassword","entityId"},"enable_max_depth"=true},
  *
  *     itemOperations={
  *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.owner == user"},
@@ -38,7 +38,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     }
  * )
  *
- * @ApiFilter(SearchFilter::class, properties={"username": "exact", "nome": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "username": "partial",
+ *     "nome": "partial"
+ * })
  * @ApiFilter(OrderFilter::class, properties={"id", "username", "nome", "updated"}, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler")
@@ -223,6 +226,4 @@ class User implements EntityId, UserInterface, \Serializable
         return $this->password;
     }
 
-
 }
-

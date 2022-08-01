@@ -38,37 +38,37 @@ interface EntityId
     public function setUpdated(\DateTime $updated): EntityId;
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getEstabelecimentoId(): ?int;
+    public function getEstabelecimentoId(): ?string;
 
     /**
-     * @param int|null $estabelecimentoId
+     * @param string|null $estabelecimentoId
      * @return EntityId
      */
-    public function setEstabelecimentoId(?int $estabelecimentoId): EntityId;
+    public function setEstabelecimentoId(?string $estabelecimentoId): EntityId;
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getUserInsertedId(): ?int;
+    public function getUserInsertedId(): ?string;
 
     /**
-     * @param $userInsertedId
+     * @param null|string $userInsertedId
      * @return EntityId
      */
-    public function setUserInsertedId(?int $userInsertedId): EntityId;
+    public function setUserInsertedId(?string $userInsertedId): EntityId;
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getUserUpdatedId(): ?int;
+    public function getUserUpdatedId(): ?string;
 
     /**
-     * @param int|null $userUpdatedId
+     * @param string|null $userUpdatedId
      * @return EntityId
      */
-    public function setUserUpdatedId(?int $userUpdatedId): EntityId;
+    public function setUserUpdatedId(?string $userUpdatedId): EntityId;
 
 
 }

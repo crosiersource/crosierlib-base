@@ -22,7 +22,7 @@ trait EntityIdTrait
      * @ORM\Column(type="bigint")
      * @Groups("entityId")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      *
@@ -32,36 +32,38 @@ trait EntityIdTrait
      *
      * @var null|\DateTime
      */
-    private $inserted;
+    private ?\DateTime $inserted = null;
 
     /**
      *
      * @ORM\Column(name="updated", type="datetime", nullable=false)
      * @Assert\Type("\DateTime")
      * @Groups("entityId")
-     * 
+     *
      * @var null|\DateTime
      */
-    private $updated;
+    private ?\DateTime $updated = null;
 
     /**
-     *
      * @ORM\Column(name="estabelecimento_id", type="bigint", nullable=false)
      * @Groups("entityId")
+     * @var null|string
      */
-    private $estabelecimentoId;
+    private ?string $estabelecimentoId = null;
 
     /**
      * @ORM\Column(name="user_inserted_id", type="bigint", nullable=false)
      * @Groups("entityId")
+     * @var null|string
      */
-    private $userInsertedId;
+    private ?string $userInsertedId = null;
 
     /**
      * @ORM\Column(name="user_updated_id", type="bigint", nullable=false)
      * @Groups("entityId")
+     * @var null|string
      */
-    private $userUpdatedId;
+    private ?string $userUpdatedId = null;
 
     /**
      * @return mixed
@@ -119,54 +121,54 @@ trait EntityIdTrait
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getEstabelecimentoId(): ?int
+    public function getEstabelecimentoId(): ?string
     {
         return $this->estabelecimentoId;
     }
 
     /**
-     * @param mixed $estabelecimentoId
+     * @param null|string $estabelecimentoId
      * @return EntityId
      */
-    public function setEstabelecimentoId(?int $estabelecimentoId): EntityId
+    public function setEstabelecimentoId(?string $estabelecimentoId): EntityId
     {
         $this->estabelecimentoId = $estabelecimentoId;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getUserInsertedId(): ?int
+    public function getUserInsertedId(): ?string
     {
-        return $this->userInsertedId;
+        return (string) $this->userInsertedId;
     }
 
     /**
-     * @param mixed $userInsertedId
+     * @param null|string
      * @return EntityId
      */
-    public function setUserInsertedId(?int $userInsertedId): EntityId
+    public function setUserInsertedId($userInsertedId): EntityId
     {
         $this->userInsertedId = $userInsertedId;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getUserUpdatedId(): ?int
+    public function getUserUpdatedId(): ?string
     {
         return $this->userUpdatedId;
     }
 
     /**
-     * @param mixed $userUpdatedId
+     * @param null|string $userUpdatedId
      * @return EntityId
      */
-    public function setUserUpdatedId(?int $userUpdatedId): EntityId
+    public function setUserUpdatedId(?string $userUpdatedId): EntityId
     {
         $this->userUpdatedId = $userUpdatedId;
         return $this;
