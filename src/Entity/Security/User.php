@@ -39,7 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  *
  * @ApiFilter(SearchFilter::class, properties={
- *     "username": "partial",
+ *     "username": "partial", 
  *     "nome": "partial"
  * })
  * @ApiFilter(OrderFilter::class, properties={"id", "username", "nome", "updated"}, arguments={"orderParameterName"="order"})
