@@ -4,14 +4,18 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\Estabelecimento;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class BaseController.
@@ -88,14 +92,25 @@ class BaseController extends AbstractController
     {
         try {
             $uri = $this->requestStack->getMasterRequest()->getUri();
+            /** @var User $user */
+            $user = $this->security->getUser();
             $this->entMenuLocatorRepository->security = $this->security;
             $menu = null;
             try {
-                $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri, $this->security->getUser());
+                $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri, $user);
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erro ao construir o menu');
             }
             $parameters = array_merge(['menu' => $menu], $parameters);
+
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+            $estabelecimento = $cache->get('estabelecimento_' . $user->getEstabelecimentoId(), function (ItemInterface $item) use ($user) {
+               $repoEstabelecimento = $this->getDoctrine()->getRepository(Estabelecimento::class);
+               $estabelecimento = $repoEstabelecimento->find($user->getEstabelecimentoId());
+               return $estabelecimento->descricao;
+            });
+            $parameters['estabelecimento'] = $estabelecimento;
+            
             return $this->render($view, $parameters, $response);
         } catch (\Exception $e) {
             $this->logger->error('doRender - error');
