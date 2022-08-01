@@ -122,6 +122,16 @@ class UserEntityHandler extends EntityHandler
     }
 
 
+    public function beforeDelete(/** @var User $usuario */ $user)
+    {
+        // Para poder deletar, preciso primeiro remover a possível auto-referência do usuário a ele mesmo
+        // para poder passar no FOREIGN KEY
+        if ((int)$user->getUserUpdatedId() === (int)$user->getId()) {
+            $user->setUserUpdatedId(1);
+            $this->save($user);
+        }
+    }
+
     public function getEntityClass()
     {
         return User::class;
