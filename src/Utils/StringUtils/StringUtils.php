@@ -138,7 +138,7 @@ class StringUtils
     {
         if ($permitirLetrasEInterrogacao) {
             $cnpj_cpf =
-                preg_replace( '/[^\w\?]/', '', $value);
+                preg_replace('/[^\w\?]/', '', $value);
         } else {
             $cnpj_cpf =
                 preg_replace("/\D/", '', $value);
@@ -258,6 +258,16 @@ class StringUtils
         $encrypted_data = openssl_encrypt(json_encode($value), 'aes-256-cbc', $key, true, $iv);
         $data = array("theCt" => base64_encode($encrypted_data), "theIv" => bin2hex($iv), "theS" => bin2hex($salt));
         return json_encode($data);
+    }
+
+
+    /**
+     * @param string|null $bool
+     * @return bool|null
+     */
+    public static function parseBoolStr(?string $bool): ?bool
+    {
+        return filter_var($bool, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
 }
