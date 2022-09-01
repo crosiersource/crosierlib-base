@@ -119,6 +119,13 @@ class StringUtils
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+
+    public static function shortRandom(): string
+    {
+        $data = openssl_random_pseudo_bytes(4);
+        return vsprintf('%s', bin2hex($data));
+    }
+
     /**
      * @param null|string $str
      * @return null|string

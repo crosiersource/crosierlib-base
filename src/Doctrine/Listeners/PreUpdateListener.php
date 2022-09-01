@@ -51,6 +51,8 @@ class PreUpdateListener
                             $changes[$k] = $v->format('d/m/Y H:i:s T');
                         } elseif ($v instanceof EntityId) {
                             $changes[$k] = $v->__toString();
+                        } elseif (is_bool($v)) {
+                            $changes[$k] = $v ? 'SIM' : 'NÃO';
                         } elseif (is_numeric($v)) {
                             $changes[$k] = (float)$v;
                         } elseif (!is_array($v)) {
