@@ -4,9 +4,9 @@
 namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackDateOnly;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -19,7 +19,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
  */
 class PreUpdateListener
 {
-    
+
 
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -44,13 +44,28 @@ class PreUpdateListener
                 foreach ($all as $classMeta) {
                     $reflectionClass = $classMeta->getReflectionClass();
                     if ($annotationReader->getClassAnnotation($reflectionClass, 'CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackedEntity')) {
-                        $classes[] = $classMeta->getName();
+                        $class = [];
+                        $class['name'] = $classMeta->getName();
+                        foreach ($classMeta->reflFields as $field => $reflField) {
+                            if ($annotationReader->getPropertyAnnotation($reflField, TrackDateOnly::class)) {
+                                $class['trackDateOnly'][] = $field;
+                            }
+                        }
+                        $classes[] = $class;
                     }
                 }
                 return $classes;
             });
 
-            if (in_array(get_class($entity), $classes, true)) {
+            $isTrackedClass = false;
+            foreach ($classes as $class) {
+                if ($class['name'] === get_class($entity)) {
+                    $isTrackedClass = true;
+                    break;
+                }
+            }
+            
+            if ($isTrackedClass) {
                 $strChanges = '';
                 /** @var array $entityChangeSet */
                 $entityChangeSet = $args->getEntityChangeSet();
@@ -58,7 +73,11 @@ class PreUpdateListener
                     if ($field === 'updated') continue;
                     foreach ($changes as $k => $v) {
                         if ($v instanceof \DateTime) {
-                            $changes[$k] = $v->format('d/m/Y H:i:s T');
+                            if (in_array($field, $class['trackDateOnly'] ?? [], true)) {
+                                $changes[$k] = $v->format('d/m/Y');
+                            } else {
+                                $changes[$k] = $v->format('d/m/Y H:i:s T');    
+                            }
                         } elseif ($v instanceof EntityId) {
                             $changes[$k] = $v->__toString();
                         } elseif (is_bool($v)) {
@@ -109,7 +128,6 @@ class PreUpdateListener
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro no PreUpdateListener para ' . get_class($entity), 0, $e);
         }
-
     }
 
     private static function array_diff_assoc_recursive($array1, $array2)
