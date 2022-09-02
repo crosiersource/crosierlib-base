@@ -6,7 +6,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
@@ -17,14 +19,22 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
  */
 class PreUpdateListener
 {
+    
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
+        if (!($_SERVER['DATABASE_LOGS_URL'] ?? false)) return;
         /** @var EntityId $entity */
         $entity = $args->getObject();
 
         try {
-            $entityManager = $args->getEntityManager();
+            $entityManager = $this->doctrine->getManager();
             $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
             $classes = $cache->get('trackedEntities', function () use ($entityManager) {
                 $all = $entityManager->getMetadataFactory()->getAllMetadata();
@@ -88,7 +98,8 @@ class PreUpdateListener
                     ];
 
                     try {
-                        $conn = $entityManager->getConnection();
+                        $entityManagerLogs = $this->doctrine->getManager('logs');
+                        $conn = $entityManagerLogs->getConnection();
                         $conn->insert('cfg_entity_change', $entityChange);
                     } catch (\Exception $e) {
                         throw new \RuntimeException('Erro ao salvar na cfg_entity_change para ' . get_class($entity));
