@@ -8,8 +8,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Class SyslogBusiness
- * @package CrosierSource\CrosierLibBaseBundle\Business\Config
  * @author Carlos Eduardo Pauluk
  */
 class SyslogBusiness
@@ -29,6 +27,8 @@ class SyslogBusiness
     
     private ?bool $echo = false;
     
+    private ?bool $logToo = false;
+    
     // para marcar todas as chamadas dentro de uma mesma "sessão"
     public ?string $uuidSess = null;
 
@@ -46,54 +46,40 @@ class SyslogBusiness
         $this->uuidSess = StringUtils::guidv4();
     }
 
-    /**
-     * @return string
-     */
     public function getApp(): string
     {
         return $this->app ?? 'n/d';
     }
 
-    /**
-     * @param string $app
-     * @return SyslogBusiness
-     */
     public function setApp(string $app): SyslogBusiness
     {
         $this->app = $app;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getComponent(): string
     {
         return $this->component ?? 'n/d';
     }
 
-    /**
-     * @param string $component
-     * @return SyslogBusiness
-     */
     public function setComponent(string $component): SyslogBusiness
     {
         $this->component = $component;
         return $this;
     }
 
-    /**
-     * @param bool|null $echo
-     * @return SyslogBusiness
-     */
     public function setEcho(?bool $echo): SyslogBusiness
     {
         $this->echo = $echo;
         return $this;
     }
-    
-    
 
+    public function setLogToo(?bool $logToo): SyslogBusiness
+    {
+        $this->logToo = $logToo;
+        return $this;
+    }
+    
 
     /**
      * @param string $app
@@ -151,6 +137,16 @@ class SyslogBusiness
     private function save(string $tipo, string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null): void
     {
         try {
+            if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
+                $msg = $this->uuidSess . ' - ' . $action;
+                $msg .= '[' . $component . '] ';
+                $msg .= '[username: ' . $username . '] ';
+                switch ($tipo) {
+                    case 'info': $this->logger->info($msg); break;
+                    case 'err': $this->logger->error($msg); break;
+                    case 'debug': $this->logger->debug($msg); break;
+                }
+            }
             $app = $app ?? $this->getApp();
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
