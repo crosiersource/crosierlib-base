@@ -249,7 +249,7 @@
     <!-- PreUpdateListener -->
     <service id="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"
              class="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener">
-      <argument type="service" id="monolog.logger"/>
+      <argument type="service" id="doctrine" />
       <tag name="doctrine.event_listener" event="preUpdate" priority="500"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener"
