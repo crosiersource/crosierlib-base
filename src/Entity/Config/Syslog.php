@@ -44,15 +44,18 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * )
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
+ * 
  * @ApiFilter(SearchFilter::class, properties={
  *     "id": "exact",
  *     "app": "exact",
+ *     "uuidSess": "exact",
  *     "tipo": "exact",
  *     "component": "partial",
  *     "act": "partial",
  *     "username": "exact",
  *     "obs": "partial"
  * })
+ * 
  * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\SyslogHandler")
@@ -73,6 +76,13 @@ class Syslog
      */
     public ?int $id = null;
 
+    /**
+     * @ORM\Column(name="uuid_sess", type="string")
+     * @Groups("entity")
+     * @var string|null
+     */
+    public ?string $uuidSess = null;
+    
     /**
      * @ORM\Column(name="tipo", type="string")
      * @Groups("entity")
