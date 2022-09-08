@@ -4,12 +4,15 @@
 namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackDateOnly;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class PreUpdateListener
@@ -20,10 +23,17 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 class PreUpdateListener
 {
 
+    private ManagerRegistry $doctrine;
 
-    public function __construct(ManagerRegistry $doctrine)
+    private SyslogBusiness $syslog;
+
+    private Security $security;
+
+    public function __construct(ManagerRegistry $doctrine, SyslogBusiness $syslog, Security $security)
     {
         $this->doctrine = $doctrine;
+        $this->syslog = $syslog->setApp('libbase')->setComponent(self::class);
+        $this->security = $security;
     }
 
 
@@ -64,7 +74,7 @@ class PreUpdateListener
                     break;
                 }
             }
-            
+
             if ($isTrackedClass) {
                 $strChanges = '';
                 /** @var array $entityChangeSet */
@@ -76,7 +86,7 @@ class PreUpdateListener
                             if (in_array($field, $class['trackDateOnly'] ?? [], true)) {
                                 $changes[$k] = $v->format('d/m/Y');
                             } else {
-                                $changes[$k] = $v->format('d/m/Y H:i:s T');    
+                                $changes[$k] = $v->format('d/m/Y H:i:s T');
                             }
                         } elseif ($v instanceof EntityId) {
                             $changes[$k] = $v->__toString();
@@ -108,10 +118,26 @@ class PreUpdateListener
 
                 }
                 if ($strChanges) {
+                    $changingUserId = $entity->getUserUpdatedId();
+
+                    /** @var User $user */
+                    if ($this->security->getUser()) {
+                        $user = $this->security->getUser();
+                    } else {
+                        $user = $cache->get('PreUpdateListener.getUser_' . $changingUserId, function () use ($changingUserId) {
+                            $repoUser = $this->doctrine->getRepository(User::class);
+                            return $repoUser->find($changingUserId);
+                        });
+                    }
+
+                    $class = str_replace("\\", ":", get_class($entity));
+                    
                     $entityChange = [
-                        'entity_class' => get_class($entity),
+                        'entity_class' => $class,
                         'entity_id' => $entity->getId(),
-                        'changing_user_id' => $entity->getUserUpdatedId(),
+                        'changing_user_id' => $changingUserId,
+                        'changing_user_username' => $user->username,
+                        'changing_user_nome' => $user->nome,
                         'changed_at' => $entity->getUpdated()->format('Y-m-d H:i:s'),
                         'changes' => $strChanges,
                     ];
@@ -120,6 +146,7 @@ class PreUpdateListener
                         $entityManagerLogs = $this->doctrine->getManager('logs');
                         $conn = $entityManagerLogs->getConnection();
                         $conn->insert('cfg_entity_change', $entityChange);
+                        $this->syslog->info('Alteração em ' . get_class($entity) . ' id: (' . $entity->getId() . ')');
                     } catch (\Exception $e) {
                         throw new \RuntimeException('Erro ao salvar na cfg_entity_change para ' . get_class($entity));
                     }
@@ -152,5 +179,5 @@ class PreUpdateListener
         }
         return !isset($difference) ? [] : $difference;
     }
-
+    
 }

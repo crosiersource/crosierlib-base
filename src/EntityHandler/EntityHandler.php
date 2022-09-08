@@ -58,13 +58,14 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
         return $this->doctrine;
     }
-
+    
     /**
      *
      * @return mixed
      */
     abstract public function getEntityClass();
 
+    
     /**
      * Executa o DELETE e o flush.
      *
@@ -89,10 +90,11 @@ abstract class EntityHandler implements EntityHandlerInterface
                 $this->doctrine->rollback();
             }
             $msg = ExceptionUtils::treatException($e);
-            throw new ViewException('Erro ao deletar' . ($msg ? ' (' . $msg . ')' : ''), 0, $e);
+            throw new ViewException('Erro ao deletar' . ($msg ? ' (' . $msg . ')' : ''), 0, $e, $this->syslog);
         }
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -102,6 +104,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -129,6 +132,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         return $newE;
     }
 
+    
     /**
      * Copia o objeto removendo informações específicas.
      *
@@ -146,6 +150,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         return $newE;
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -155,6 +160,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -185,8 +191,10 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->willFlush = $flush;
             $this->beforeSave($entityId);
             if ($entityId->getId()) {
+                $this->syslog->info('Alteração de ' . get_class($entityId) . ' (id: ' . $entityId->getId() . ')');
                 $entityId = $this->doctrine->merge($entityId);
             } else {
+                $this->syslog->info('Inserção de ' . get_class($entityId));
                 $this->doctrine->persist($entityId);
             }
 
@@ -205,11 +213,12 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
             $msg = ExceptionUtils::treatException($e);
             $msg = $msg ? 'Erro ao salvar (' . $msg . ')' : 'Erro ao salvar';
-            throw new ViewException($msg, 0, $e);
+            throw new ViewException($msg, 0, $e, $this->syslog);
         }
         return $entityId;
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -246,11 +255,13 @@ abstract class EntityHandler implements EntityHandlerInterface
                 }
             }
         } catch (\Exception $e) {
-            $msg = ExceptionUtils::treatException($e);
-            throw new \RuntimeException('Erro ao handleSavingEntityId (' . $msg . ')');
+            $msg = 'Erro ao handleSavingEntityId (' . ExceptionUtils::treatException($e) . ')';
+            $this->syslog->err($msg);
+            throw new \RuntimeException($msg);
         }
     }
 
+    
     /**
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -292,6 +303,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
+    
     /**
      * @param $entityId
      */
@@ -310,10 +322,13 @@ abstract class EntityHandler implements EntityHandlerInterface
             }
         } catch (\ReflectionException $e) {
             $msg = ExceptionUtils::treatException($e);
-            throw new \RuntimeException('Erro em handleUppercaseFields (' . $msg . ')', 0, $e);
+            $msg = 'Erro em handleUppercaseFields (' . $msg . ')';
+            $this->syslog->err($msg);
+            throw new \RuntimeException($msg, 0, $e);
         }
     }
 
+    
     /**
      * Para ser sobreescrito.
      *
@@ -325,6 +340,7 @@ abstract class EntityHandler implements EntityHandlerInterface
 
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -334,6 +350,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
+    
     /**
      * Implementação vazia pois não é obrigatório.
      *

@@ -19,13 +19,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"entity"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"},
- *          "put"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ENTITY_CHANGES')"},
+ *          "put"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ENTITY_CHANGES')"},
  *          "delete"={"path"="/core/config/entityChange/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ADMIN')"},
- *          "post"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ADMIN')"}
+ *          "get"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ENTITY_CHANGES')"},
+ *          "post"={"path"="/core/config/entityChange", "security"="is_granted('ROLE_ENTITY_CHANGES')"}
  *     },
  *
  *     attributes={
@@ -35,8 +35,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
- * @ApiFilter(SearchFilter::class, properties={"app": "partial", "component": "partial", "act": "partial", "username": "partial", "obs": "partial"})
- * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
+ * 
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "entityClass": "partial", 
+ *     "component": "partial", 
+ *     "act": "partial", 
+ *     "username": "partial", 
+ *     "obs": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={
+ *     "id", 
+ *     "app", 
+ *     "component", 
+ *     "moment", 
+ *     "updated"
+ * }, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntityChangeHandler")
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Config\EntityChangeRepository")
@@ -52,53 +65,56 @@ class EntityChange
      * @ORM\GeneratedValue()
      * @ORM\Column(type="bigint")
      * @Groups("entityId")
-     *
      * @var null|int
      */
     public ?int $id = null;
-
 
     /**
      * @ORM\Column(name="entity_class", type="string", nullable=false)
      * @NotUppercase()
      * @Groups("entity")
-     *
      * @var null|string
      */
     public ?string $entityClass = null;
 
     /**
-     *
      * @ORM\Column(name="entity_id", type="bigint", nullable=false)
      * @Groups("entity")
-     *
      * @var int|null
      */
     public ?int $entityId = null;
 
     /**
-     *
      * @ORM\Column(name="changing_user_id", type="bigint", nullable=false)
      * @Groups("entity")
-     *
      * @var int|null
      */
     public ?int $changingUserId = null;
 
     /**
-     *
+     * @ORM\Column(name="changing_user_username", type="string", nullable=false)
+     * @Groups("entity")
+     * @var string|null
+     */
+    public ?string $changingUserUsername = null;
+
+    /**
+     * @ORM\Column(name="changing_user_nome", type="string", nullable=false)
+     * @Groups("entity")
+     * @var string|null
+     */
+    public ?string $changingUserNome = null;
+
+    /**
      * @ORM\Column(name="changed_at", type="datetime", nullable=false)
      * @Groups("entity")
-     *
      * @var null|\DateTime
      */
     public ?\DateTime $changedAt = null;
 
     /**
-     *
      * @ORM\Column(name="changes", type="string", nullable=false)
      * @Groups("entity")
-     *
      * @var string|null
      */
     public ?string $obs = null;
