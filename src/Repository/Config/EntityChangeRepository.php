@@ -2,7 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Repository\Config;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Config\EntityChange;
+use CrosierSource\CrosierLibBaseBundle\Entity\Logs\EntityChange;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 
 /**
