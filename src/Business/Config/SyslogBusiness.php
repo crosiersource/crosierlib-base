@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -12,10 +13,8 @@ use Symfony\Component\Security\Core\Security;
  */
 class SyslogBusiness
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $doctrine;
+
+    private ManagerRegistry $doctrine;
 
     private Security $security;
 
@@ -24,21 +23,16 @@ class SyslogBusiness
     private ?string $app = null;
 
     private ?string $component = null;
-    
+
     private ?bool $echo = false;
-    
+
     private ?bool $logToo = false;
-    
+
     // para marcar todas as chamadas dentro de uma mesma "sessão"
     public ?string $uuidSess = null;
 
-    /**
-     * SyslogBusiness constructor.
-     * @param EntityManagerInterface $doctrine
-     * @param Security $security
-     * @param LoggerInterface $logger
-     */
-    public function __construct(EntityManagerInterface $doctrine, Security $security, LoggerInterface $logger)
+    
+    public function __construct(ManagerRegistry $doctrine, Security $security, LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
@@ -79,7 +73,7 @@ class SyslogBusiness
         $this->logToo = $logToo;
         return $this;
     }
-    
+
 
     /**
      * @param string $app
@@ -142,15 +136,21 @@ class SyslogBusiness
                 $msg .= '[' . $component . '] ';
                 $msg .= '[username: ' . $username . '] ';
                 switch ($tipo) {
-                    case 'info': $this->logger->info($msg); break;
-                    case 'err': $this->logger->error($msg); break;
-                    case 'debug': $this->logger->debug($msg); break;
+                    case 'info':
+                        $this->logger->info($msg);
+                        break;
+                    case 'err':
+                        $this->logger->error($msg);
+                        break;
+                    case 'debug':
+                        $this->logger->debug($msg);
+                        break;
                 }
             }
             $app = $app ?? $this->getApp();
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
-            $this->doctrine->getConnection()->insert('cfg_syslog', [
+            $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
                 'uuid_sess' => $this->uuidSess,
                 'tipo' => $tipo,
                 'app' => $app,
