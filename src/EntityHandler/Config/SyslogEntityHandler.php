@@ -2,7 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler\Config;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Config\Syslog;
+use CrosierSource\CrosierLibBaseBundle\Entity\Logs\Syslog;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
