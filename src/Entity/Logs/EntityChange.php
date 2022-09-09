@@ -38,6 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * 
  * @ApiFilter(SearchFilter::class, properties={
  *     "entityClass": "partial", 
+ *     "entityId": "exact", 
  *     "component": "partial", 
  *     "act": "partial", 
  *     "username": "partial", 
