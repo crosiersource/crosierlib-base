@@ -15,9 +15,6 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Class PreUpdateListener
- *
- * @package CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners
  * @author Carlos Eduardo Pauluk
  */
 class PreUpdateListener

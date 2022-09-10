@@ -8,7 +8,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -22,17 +22,11 @@ class UserEntityHandler extends EntityHandler
     /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
 
-    /**
-     * @param EntityManagerInterface $doctrine
-     * @param Security $security
-     * @param ParameterBagInterface $parameterBag
-     * @param SyslogBusiness $syslog
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     */
-    public function __construct(EntityManagerInterface $doctrine,
-                                Security $security,
-                                ParameterBagInterface $parameterBag,
-                                SyslogBusiness $syslog,
+
+    public function __construct(ManagerRegistry              $doctrine,
+                                Security                     $security,
+                                ParameterBagInterface        $parameterBag,
+                                SyslogBusiness               $syslog,
                                 UserPasswordEncoderInterface $passwordEncoder)
     {
         parent::__construct($doctrine, $security, $parameterBag, $syslog->setApp('core')->setComponent(self::class));
@@ -99,7 +93,7 @@ class UserEntityHandler extends EntityHandler
         $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
         $rolesNotForTheAdmin = [];
         /** @var AppConfig $appConfig */
-        $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave','EQ','ROLES_NOT_FOR_THE_ADMIN']]);
+        $appConfig = $repoAppConfig->findOneByFiltersSimpl([['chave', 'EQ', 'ROLES_NOT_FOR_THE_ADMIN']]);
         if ($appConfig) {
             $rolesNotForTheAdmin = explode(',', $appConfig->valor);
         }

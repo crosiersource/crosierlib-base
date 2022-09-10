@@ -10,6 +10,7 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Security;
@@ -22,6 +23,8 @@ use Symfony\Component\Security\Core\Security;
 abstract class EntityHandler implements EntityHandlerInterface
 {
 
+    protected ManagerRegistry $managerRegistry;
+    
     protected EntityManagerInterface $doctrine;
 
     protected Security $security;
@@ -34,38 +37,34 @@ abstract class EntityHandler implements EntityHandlerInterface
 
     protected bool $willFlush = true;
 
-    /**
-     * @param EntityManagerInterface $doctrine
-     * @param Security $security
-     * @param ParameterBagInterface $parameterBag
-     * @param SyslogBusiness $syslog
-     */
-    public function __construct(EntityManagerInterface $doctrine,
-                                Security               $security,
-                                ParameterBagInterface  $parameterBag,
-                                SyslogBusiness         $syslog)
+    protected bool $salvouLogInsert = false;
+
+
+    public function __construct(ManagerRegistry       $managerRegistry,
+                                Security              $security,
+                                ParameterBagInterface $parameterBag,
+                                SyslogBusiness        $syslog)
     {
-        $this->doctrine = $doctrine;
+        $this->managerRegistry = $managerRegistry;
+        $this->doctrine = $managerRegistry->getManager();
         $this->security = $security;
         $this->parameterBag = $parameterBag;
         $this->syslog = $syslog;
     }
 
-    /**
-     * @return EntityManagerInterface
-     */
     public function getDoctrine(): EntityManagerInterface
     {
         return $this->doctrine;
     }
-    
+
+
     /**
      *
      * @return mixed
      */
     abstract public function getEntityClass();
 
-    
+
     /**
      * Executa o DELETE e o flush.
      *
@@ -94,7 +93,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -104,7 +103,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -132,7 +131,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         return $newE;
     }
 
-    
+
     /**
      * Copia o objeto removendo informações específicas.
      *
@@ -150,7 +149,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         return $newE;
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -160,7 +159,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -190,18 +189,47 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->handleSavingEntityId($entityId);
             $this->willFlush = $flush;
             $this->beforeSave($entityId);
+            $inserting = false;
             if ($entityId->getId()) {
                 $this->syslog->info('Alteração de ' . get_class($entityId) . ' (id: ' . $entityId->getId() . ')');
                 $entityId = $this->doctrine->merge($entityId);
             } else {
-                $this->syslog->info('Inserção de ' . get_class($entityId));
+                $inserting = true;
                 $this->doctrine->persist($entityId);
+                $this->syslog->info('Inserção de ' . get_class($entityId));
             }
 
             if ($flush) {
                 $this->doctrine->flush();
             }
+            
+            try {
+                if (!$this->salvouLogInsert && $inserting) {
+                    /** @var User $user */
+                    $user = $this->security->getUser();
+                    $class = str_replace("\\", ":", get_class($entityId));
+                    if (!$user) {
+                        $user->username = 'n/d';
+                        $user->nome = 'n/d';
+                    }
+                    $entityChange = [
+                        'entity_class' => $class,
+                        'entity_id' => $entityId->getId(),
+                        'changing_user_id' => $user->getUserInsertedId(),
+                        'changing_user_username' => $user->username,
+                        'changing_user_nome' => $user->nome,
+                        'changed_at' => $entityId->getUpdated()->format('Y-m-d H:i:s'),
+                        'changes' => 'INSERINDO',
+                    ];
+                    $this->managerRegistry->getManager('logs')->getConnection()->insert('cfg_entity_change', $entityChange);
+                    $this->salvouLogInsert = true;
+                }
+            } catch (\Throwable $e) {
+                $this->syslog->err('Erro ao inserir em cfg_entity_change', $e->getMessage());
+            }
+            
             $this->afterSave($entityId);
+            
             $this->handleJsonMetadata();
             if ($this->isTransacionalSave) {
                 $this->doctrine->commit();
@@ -218,7 +246,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         return $entityId;
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -261,7 +289,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
-    
+
     /**
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -303,7 +331,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
-    
+
     /**
      * @param $entityId
      */
@@ -328,7 +356,7 @@ abstract class EntityHandler implements EntityHandlerInterface
         }
     }
 
-    
+
     /**
      * Para ser sobreescrito.
      *
@@ -340,7 +368,7 @@ abstract class EntityHandler implements EntityHandlerInterface
 
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
@@ -350,7 +378,7 @@ abstract class EntityHandler implements EntityHandlerInterface
     {
     }
 
-    
+
     /**
      * Implementação vazia pois não é obrigatório.
      *
