@@ -4,14 +4,12 @@
 namespace CrosierSource\CrosierLibBaseBundle\Controller\Base;
 
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\DiaUtil;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\DiaUtilRepository;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @author Carlos Eduardo Pauluk
@@ -30,12 +28,33 @@ class SecurityController extends AbstractController
         $user = $this->getUser();
         return new JsonResponse(
             [
-                'id' => $user->getId(), 
+                'id' => $user->getId(),
                 'username' => $user->username,
                 'nome' => $user->nome,
                 'roles' => $user->getRoles()
             ]
         );
     }
-    
+
+    public function getUserById(int $id): JsonResponse
+    {
+        $cache = new FilesystemAdapter('crosier-core', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        return $cache->get('getUserById_' . $id, function (ItemInterface $item) use ($id) {
+            $doctrine = $this->container->get('doctrine');
+            $repoUser = $doctrine->getRepository(User::class);
+            $user = $repoUser->find($id);
+            if ($user) {
+                return new JsonResponse(
+                    [
+                        'id' => $user->getId(),
+                        'username' => $user->username,
+                        'nome' => $user->nome,
+                    ]
+                );
+            } else {
+                return new JsonResponse();
+            }
+        });
+    }
+
 }

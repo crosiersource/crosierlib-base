@@ -51,6 +51,12 @@
          path="/api/whoami">
   </route>
 
+  <route id="api_getUserById"
+         controller="crosier_source.crosier_lib_base_bundle.controller.base.security_controller::getUserById"
+         path="/api/getUserById/{id}">
+    <requirement key="id">\d+</requirement>
+  </route>
+
   
   <!-- PushMessageController -->
   <route id="api_cfg_pushMessage_getNewMessages"
