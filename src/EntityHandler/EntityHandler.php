@@ -24,7 +24,7 @@ abstract class EntityHandler implements EntityHandlerInterface
 {
 
     protected ManagerRegistry $managerRegistry;
-    
+
     protected EntityManagerInterface $doctrine;
 
     protected Security $security;
@@ -202,34 +202,41 @@ abstract class EntityHandler implements EntityHandlerInterface
             if ($flush) {
                 $this->doctrine->flush();
             }
-            
+
             try {
-                if (!$this->salvouLogInsert && $inserting) {
-                    /** @var User $user */
-                    $user = $this->security->getUser();
+                if (!$this->salvouLogInsert && $inserting && $entityId->getId()) {
+
                     $class = str_replace("\\", ":", get_class($entityId));
-                    if (!$user) {
-                        $user->username = 'n/d';
-                        $user->nome = 'n/d';
-                    }
+                    
                     $entityChange = [
                         'entity_class' => $class,
                         'entity_id' => $entityId->getId(),
-                        'changing_user_id' => $user->getUserInsertedId(),
-                        'changing_user_username' => $user->username,
-                        'changing_user_nome' => $user->nome,
                         'changed_at' => $entityId->getUpdated()->format('Y-m-d H:i:s'),
                         'changes' => 'INSERINDO',
                     ];
+
+                    /** @var User $user */
+                    $user = $this->security->getUser();
+                    
+                    if (!$user) {
+                        $entityChange['changing_user_id'] = 0;
+                        $entityChange['changing_user_username'] = 'n/d';
+                        $entityChange['changing_user_nome'] = 'n/d';
+                    } else {
+                        $entityChange['changing_user_id'] = $user->getUserInsertedId();
+                        $entityChange['changing_user_username'] = $user->username;
+                        $entityChange['changing_user_nome'] = $user->nome;
+                    }
+
                     $this->managerRegistry->getManager('logs')->getConnection()->insert('cfg_entity_change', $entityChange);
                     $this->salvouLogInsert = true;
                 }
             } catch (\Throwable $e) {
                 $this->syslog->err('Erro ao inserir em cfg_entity_change', $e->getMessage());
             }
-            
+
             $this->afterSave($entityId);
-            
+
             $this->handleJsonMetadata();
             if ($this->isTransacionalSave) {
                 $this->doctrine->commit();
