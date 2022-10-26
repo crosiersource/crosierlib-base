@@ -25,7 +25,9 @@ class ExceptionUtils
      */
     public static function treatException(\Throwable $e, ?string $preMsg = null): string
     {
-        if ($e instanceof UniqueConstraintViolationException) {
+        if (strpos($e->getMessage(), 'Erro no PreUpdateListener') !== FALSE) {
+            $msgT = $e->getMessage();
+        } elseif ($e instanceof UniqueConstraintViolationException) {
             $msg = $e->getMessage();
             $pos = strpos($msg, '1062 Duplicate entry ') + 21;
             $pos2 = strpos($msg, ' for key ');

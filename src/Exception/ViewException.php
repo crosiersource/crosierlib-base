@@ -18,7 +18,7 @@ class ViewException extends \Exception
     {
         parent::__construct($message, $code, $previous);
         if ($syslog) {
-            $syslog->err($message, $previous->getMessage());
+            $syslog->err($message, $previous ? $previous->getMessage(): '');
         }
     }
 
