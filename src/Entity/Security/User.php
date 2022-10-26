@@ -42,12 +42,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     "username": "partial", 
  *     "nome": "partial"
  * })
+ * 
  * @ApiFilter(OrderFilter::class, properties={
  *     "id", 
  *     "username", 
  *     "nome", 
  *     "updated",
- *     "ativo"
+ *     "isActive"
  * }, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler")
