@@ -39,6 +39,9 @@ class ExceptionUtils
             $msgT = self::treatDriverException($e->getPrevious());
         } elseif ($e instanceof ViewException) {
             $msgT = $e->getMessage();
+            if ($e->getPrevious() instanceof ViewException) {
+                $msgT .= ' (' . $e->getPrevious()->getMessage() . ')';
+            }
         } elseif ($e->getPrevious() instanceof ViewException) {
             $msgT = $e->getPrevious()->getMessage();
         } elseif ($e instanceof ClientException) {
