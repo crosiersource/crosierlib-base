@@ -79,7 +79,7 @@ class PreUpdateListener
                 foreach ($entityChangeSet as $field => $changes) {
                     if ($field === 'updated') continue;
                     foreach ($changes as $k => $v) {
-                        if ($v instanceof \DateTime) {
+                        if ($v instanceof \DateTime || $v instanceof \DateTimeImmutable) {
                             if (in_array($field, $class['trackDateOnly'] ?? [], true)) {
                                 $changes[$k] = $v->format('d/m/Y');
                             } else {

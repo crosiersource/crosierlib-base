@@ -130,4 +130,11 @@ class EntityIdUtils
     }
 
 
+    public static function extrairIdDeUri(string $uri): ?int
+    {
+        preg_match('/^\/\w+.*\/(\d+)/', $uri, $matches);
+        return isset($matches[1]) ? $matches[1] : null;
+    }
+
+
 }

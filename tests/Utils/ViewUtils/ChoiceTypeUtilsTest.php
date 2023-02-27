@@ -21,21 +21,20 @@ class ChoiceTypeUtilsTest extends TestCase
         $array = [];
 
         $group = new Group();
-        $group->setId(1)
-            ->setGroupname('GRUPO UM')
-            ->setInserted(\DateTime::createFromFormat('Y-m-d', '2001-01-01'));
+        $group->setId(1);
+        $group->groupname = 'GRUPO UM';
+        $group->setInserted(\DateTime::createFromFormat('Y-m-d', '2001-01-01'));
         $array[] = $group;
 
         $choices = ChoiceTypeUtils::toChoiceTypeChoicesFn($array, function ($e) {
             /** @var Group $e */
-            return $e->getGroupname() . ' (' . $e->getInserted()->format('d/m/Y') . ')';
+            return $e->groupname . ' (' . $e->getInserted()->format('d/m/Y') . ')';
         });
 
         $this->assertEquals(1, count($array));
 
         $this->assertArrayHasKey('GRUPO UM (01/01/2001)', $choices);
         $this->assertEquals($choices['GRUPO UM (01/01/2001)'], 1);
-
 
 
     }
@@ -45,17 +44,16 @@ class ChoiceTypeUtilsTest extends TestCase
         $array = [];
 
         $group = new Group();
-        $group->setId(11)
-            ->setGroupname('GRUPO UMMMM')
-            ->setInserted(\DateTime::createFromFormat('Y-m-d', '2001-01-01'));
+        $group->setId(11);
+        $group->groupname = 'GRUPO UMMMM';
+        $group->setInserted(\DateTime::createFromFormat('Y-m-d', '2001-01-01'));
         $array[] = $group;
 
         $group = new Group();
-        $group->setId(22)
-            ->setGroupname('GRUPO DDOOIISS')
-            ->setInserted(\DateTime::createFromFormat('Y-m-d', '2002-02-02'));
+        $group->setId(22);
+        $group->groupname = 'GRUPO DDOOIISS';
+        $group->setInserted(\DateTime::createFromFormat('Y-m-d', '2002-02-02'));
         $array[] = $group;
-
 
 
         $choices = ChoiceTypeUtils::toChoiceTypeChoices($array, '%s --(%s)--', ['groupname', 'id']);
@@ -68,7 +66,6 @@ class ChoiceTypeUtilsTest extends TestCase
 
         $this->assertArrayHasKey('GRUPO DDOOIISS --(22)--', $choices);
         $this->assertEquals($choices['GRUPO DDOOIISS --(22)--'], 22);
-
 
 
     }
