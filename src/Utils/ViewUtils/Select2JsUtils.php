@@ -33,12 +33,19 @@ class Select2JsUtils
                     if ($e instanceof EntityId) {
                         $val = null;
                         $class = new \ReflectionClass($e);
+                        $getter = null;
                         foreach ($class->getMethods() as $method) {
                             if (strtoupper($method->getName()) === 'GET' . strtoupper($atributo)) {
                                 $getter = $class->getMethod($method->getName());
                                 $val = $getter->invoke($e);
                                 break;
                             }
+                        }
+                        if (!$getter) {
+                            $val = $e->$atributo;
+                        }
+                        if (!$val) {
+                            throw new \Exception('Impossível obter o valor de ' . $atributo);
                         }
                         $args[] = $val ?? null;
                     } else {
