@@ -20,6 +20,9 @@ class FilterData
 
     public $val;
 
+    /**
+     * decimal, date, datetime, string
+     */
     public $fieldType;
 
     public bool $jsonDataField = false;
