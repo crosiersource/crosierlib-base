@@ -11,7 +11,7 @@ use Dompdf\Options;
 class PdfUtils
 {
 
-    public static function genPdf(string $html)
+    public static function genPdf(string $html): ?string
     {
         gc_collect_cycles();
         gc_disable();
