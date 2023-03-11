@@ -1,0 +1,38 @@
+{% extends '@CrosierLibBase/base-vue.html.twig' %}
+
+{% block up_scripts %}
+    {{ encore_entry_link_tags(jsEntry) }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="wrapper d-flex flex-column min-vh-100 bg-light">
+
+        {{ include('@CrosierLibBase/header.html.twig') }}
+
+        <div class="body flex-grow-1 px-1">
+            <div class="container-fluid-lg">
+
+                <div id="app">
+                </div>
+                <div id="serverParams" style="display: none">{{ serverParams|default('') }}</div>
+
+                <div id="ulid" data-value="{{ app.user.id|default('') }}"></div>
+
+            </div>
+
+        </div>
+        {{ include('@CrosierLibBase/footer.html.twig') }}
+
+    </div>
+    
+{% endblock %}
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags(jsEntry) }}
+    {% if altJsEntries|default(false) %}
+        {% for altJsEntry in altJsEntries %}
+            {{ altJsEntry|raw }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

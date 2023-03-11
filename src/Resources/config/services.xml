@@ -158,13 +158,13 @@
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler"
              parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppEntityHandler" public="true"
              alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_entity_handler"/>
-    
+
     <!-- EstabelecimentoEntityHandler -->
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.estabelecimento_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EstabelecimentoEntityHandler"
@@ -249,8 +249,8 @@
     <!-- PreUpdateListener -->
     <service id="crosier_source.crosier_lib_base_bundle.doctrine.listeners.pre_update_listener"
              class="CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners\PreUpdateListener">
-      <argument type="service" id="doctrine" />
-      <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business" />
+      <argument type="service" id="doctrine"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
       <argument type="service" id="security.helper"/>
       <tag name="doctrine.event_listener" event="preUpdate" priority="500"/>
     </service>
@@ -279,7 +279,7 @@
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.stored_view_info_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\StoredViewInfoEntityHandler"
              parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
     </service>
@@ -301,7 +301,7 @@
     <!-- SyslogBusiness -->
     <service id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
              class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="monolog.logger"/>
     </service>
@@ -330,7 +330,7 @@
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.ent_menu_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\EntMenuEntityHandler"
              parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
     </service>
@@ -402,7 +402,7 @@
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
              parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
     </service>
@@ -412,7 +412,7 @@
     <!-- UserEntityHandler -->
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler">
-      <argument type="service" id="doctrine" />
+      <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
       <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
@@ -495,6 +495,13 @@
       <argument type="service" id="monolog.logger"/>
       <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
     </service>
-    
+
+
+    <service id="crosier_source.crosier_lib_base_bundle.api_platform.filter.secure_attribute_filter"
+             class="CrosierSource\CrosierLibBaseBundle\ApiPlatform\Filter\SecureAttributeFilter" public="true">
+      <argument type="service" id="security.helper"/>
+      <tag name="api_platform.filter"/>
+    </service>
+
   </services>
 </container>

@@ -249,12 +249,12 @@ class WhereBuilder
 
             if ($filter->jsonDataField) {
                 $field = 'JSON_UNQUOTE(JSON_EXTRACT(e.jsonData, \'$.' . substr($field, 2) . '\'))';
+            }
 
-                if ($filter->fieldType == 'date') {
-                    $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
-                } elseif ($filter->fieldType == 'datetime') {
-                    $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
-                }
+            if ($filter->fieldType == 'date') {
+                $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
+            } elseif ($filter->fieldType == 'datetime') {
+                $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
             }
 
 

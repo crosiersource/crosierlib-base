@@ -171,6 +171,9 @@ abstract class FilterRepository extends EntityRepository
                 if (isset($filterSimpl[2])) {
                     $filter->setVal($filterSimpl[2]);
                 }
+                if (isset($filterSimpl[3])) {
+                    $filter->setFieldType($filterSimpl[3]);
+                }
                 $filters[] = $filter;
             }
         }

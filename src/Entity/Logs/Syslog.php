@@ -44,7 +44,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * )
  *
  * @ApiFilter(DateFilter::class, properties={"moment"})
- * 
+ *
  * @ApiFilter(SearchFilter::class, properties={
  *     "id": "exact",
  *     "app": "exact",
@@ -55,7 +55,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *     "username": "exact",
  *     "obs": "partial"
  * })
- * 
+ *
  * @ApiFilter(OrderFilter::class, properties={"id", "app", "component", "moment", "updated"}, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\SyslogHandler")
@@ -82,7 +82,7 @@ class Syslog
      * @var string|null
      */
     public ?string $uuidSess = null;
-    
+
     /**
      * @ORM\Column(name="tipo", type="string")
      * @Groups("entity")
@@ -156,8 +156,13 @@ class Syslog
      */
     public function getObsp(): ?string
     {
-        return $this->obs ? (substr($this->obs, 0, 200) . '...') : null;
+        if ($this->obs) {
+            if (strlen($this->obs) > 200) {
+                return (substr($this->obs, 0, 200) . '...');
+            } else {
+                return $this->obs;
+            }
+        }
+        return null;
     }
-
-
 }
