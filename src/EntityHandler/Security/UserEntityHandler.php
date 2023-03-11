@@ -10,7 +10,7 @@ use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -19,15 +19,15 @@ use Symfony\Component\Security\Core\Security;
 class UserEntityHandler extends EntityHandler
 {
 
-    /** @var UserPasswordEncoderInterface */
-    private $passwordEncoder;
+    /** @var UserPasswordHasherInterface */
+    private UserPasswordHasherInterface $passwordEncoder;
 
 
-    public function __construct(ManagerRegistry              $doctrine,
-                                Security                     $security,
-                                ParameterBagInterface        $parameterBag,
-                                SyslogBusiness               $syslog,
-                                UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(ManagerRegistry             $doctrine,
+                                Security                    $security,
+                                ParameterBagInterface       $parameterBag,
+                                SyslogBusiness              $syslog,
+                                UserPasswordHasherInterface $passwordEncoder)
     {
         parent::__construct($doctrine, $security, $parameterBag, $syslog->setApp('core')->setComponent(self::class));
         $this->passwordEncoder = $passwordEncoder;

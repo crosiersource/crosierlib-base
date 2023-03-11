@@ -416,7 +416,7 @@
       <argument type="service" id="security.helper"/>
       <argument type="service" id="parameter_bag"/>
       <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
-      <argument type="service" id="security.user_password_encoder.generic"/>
+      <argument type="service" id="security.user_password_hasher"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler" public="true"
              alias="crosier_source.crosier_lib_base_bundle.entity_handler.security.user_entity_handler"/>
