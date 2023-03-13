@@ -44,7 +44,8 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "symfony/orm-pack": "^2.2",
-        "symfony/semaphore": "5.4.*"
+        "symfony/semaphore": "5.4.*",
+        "sensio/framework-extra-bundle": "^5.4"
     },
     "autoload": {
         "psr-4": {
