@@ -48,7 +48,7 @@ class UserEntityHandler extends EntityHandler
         }
         /** @var User $user */
         if ($user->password && strlen($user->password) < 53) {
-            $encoded = $this->passwordEncoder->encodePassword($user, $user->password);
+            $encoded = $this->passwordEncoder->hashPassword($user, $user->password);
             $user->password = $encoded;
         } elseif ($user->getId() && !$user->password) {
             $savedPassword = $this->doctrine->getRepository(User::class)->getPassword($user);
