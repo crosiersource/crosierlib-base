@@ -84,14 +84,30 @@ class EntityIdUtils
             }
             $groups = array_merge(['entityId', 'entity'], $groups ?? []);
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-            $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, new ReflectionExtractor());
+
+            
+
+            $normalizer = new ObjectNormalizer(
+                $classMetadataFactory,
+                null,
+                null,
+                new ReflectionExtractor(),
+            );
+
             $serializer = new Serializer([new DateTimeNormalizer(), $normalizer, new ArrayDenormalizer()]);
+
             return $serializer->normalize($entityId, 'json',
                 [
                     'groups' => $groups,
                     'circular_reference_limit' => $circularReferenceLimit,
+//                    ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+//                        return [
+//                            'id' => $object->getId()
+//                        ];
+//                    },
                     'enable_max_depth' => true
                 ]);
+
         } catch (\Throwable $e) {
             throw new \RuntimeException('Erro ao serializar', 0, $e);
         }
