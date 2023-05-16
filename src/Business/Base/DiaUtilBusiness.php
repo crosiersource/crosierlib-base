@@ -27,10 +27,9 @@ class DiaUtilBusiness
     }
 
     /**
-     * @param \DateTime $maxDia
      * @throws ViewException
      */
-    public function gerarOuCorrigirDiasUteis(\DateTime $maxDia)
+    public function gerarOuCorrigirDiasUteis(\DateTime $dtIni, \DateTime $dtFim, ?bool $corrigir = true)
     {
         try {
             $rsDiasUteisConfig = $this->conn
@@ -41,7 +40,7 @@ class DiaUtilBusiness
                 $this->conn->insert('cfg_app_config', [
                     'chave' => 'bse_dia_util.json',
                     'app_uuid' => '175bd6d3-6c29-438a-9520-47fcee653cc5',
-                    'valor' => json_encode($this->bse_dia_util_json),
+                    'valor' => $this->bse_dia_util_json,
                     'inserted' => (new \DateTime())->format('Y-m-d H:i:s'),
                     'updated' => (new \DateTime())->format('Y-m-d H:i:s'),
                     'estabelecimento_id' => 1,
@@ -58,8 +57,8 @@ class DiaUtilBusiness
             $agora = (new \DateTime())->format('Y-m-d H:i:s');
             $rsDiasUteisNaBase = $this->conn->fetchAllAssociative('SELECT * FROM bse_diautil WHERE date(dia) BETWEEN :dtIni AND :dtFim',
                 [
-                    'dtIni' => (new \DateTime())->format('Y-m-d'),
-                    'dtFim' => $maxDia->format('Y-m-d')
+                    'dtIni' => $dtIni->format('Y-m-d'),
+                    'dtFim' => $dtFim->format('Y-m-d')
                 ]);
             $diasUteisNaBase = [];
             foreach ($rsDiasUteisNaBase as $diaUtilNaBase) {
@@ -67,9 +66,14 @@ class DiaUtilBusiness
                 $diasUteisNaBase[$dti] = $diaUtilNaBase;
             }
 
-            $datesList = DateTimeUtils::getDatesList(new \DateTime(), $maxDia);
+            $datesList = DateTimeUtils::getDatesList($dtIni, $dtFim);
             foreach ($datesList as $date) {
                 $dti = $date->format('Ymd');
+                if ($diasUteisNaBase[$dti] ?? false) {
+                    if (!$corrigir) {
+                        continue;
+                    }
+                }
 
                 $comercial = 1;
                 $financeiro = 1;
@@ -110,7 +114,7 @@ class DiaUtilBusiness
 
                 $diaUtil = [
                     'dia' => $date->format('Y-m-d'),
-                    'descricao' => $descricao,
+                    'descricao' => mb_strtoupper($descricao),
                     'comercial' => $comercial,
                     'financeiro' => $financeiro,
                     'municipio_id' => null,
@@ -148,7 +152,7 @@ class DiaUtilBusiness
                 $this->feriadosPorAno[$ano][$feriado['date']] = $feriado;
             }
         }
-        return $this->feriadosPorAno[$ano][$dia->format('Y-m-d')] ?? [];
+        return $this->feriadosPorAno[$ano][$dia->format('Ymd')] ?? [];
     }
 
 }
