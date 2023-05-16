@@ -23,8 +23,10 @@ class SecureAttributeFilter implements FilterInterface
 
     public function apply(Request $request, bool $normalization, array $attributes, array &$context)
     {
-        foreach ($this->security->getUser()->getRoles() as $role) {
-            $context['groups'][] = $role;
+        if ($this->security->getUser()) {
+            foreach ($this->security->getUser()->getRoles() as $role) {
+                $context['groups'][] = $role;
+            }
         }
     }
 

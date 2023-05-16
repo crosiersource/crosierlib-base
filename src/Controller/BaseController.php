@@ -26,7 +26,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 class BaseController extends AbstractController
 {
 
-    private EntityManagerInterface $doctrine;
+    public EntityManagerInterface $doctrine;
 
     protected StoredViewInfoBusiness $storedViewInfoBusiness;
 

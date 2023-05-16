@@ -130,6 +130,9 @@ class SyslogBusiness
      */
     private function save(string $tipo, string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null): void
     {
+        if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) {
+            return;
+        }
         try {
             if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
                 $msg = $this->uuidSess . ' - ' . $action;
