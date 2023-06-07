@@ -685,4 +685,16 @@ class DateTimeUtils
     }
 
 
+    public static function ehAntesOuIgual(
+        \DateTime $dt1,
+        \DateTime $dt2,
+        ?bool     $ignoraHorario = true)
+    {
+        if ($ignoraHorario) {
+            return DateTimeUtils::diffInDias($dt1, $dt2) >= 0;
+        }
+        return ($dt1->getTimestamp() <= $dt2->getTimestamp());
+    }
+
+
 }

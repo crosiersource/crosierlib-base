@@ -137,6 +137,13 @@ class FilterData
     public function setVal($val): FilterData
     {
         if (self::$filterTypes[$this->filterType] === 2) {
+            if ($val instanceof \DateTime && $this->filterType === 'BETWEEN_MESANO') {
+                $this->val = [
+                    'mes' => $val->format('m'), 
+                    'ano' => $val->format('Y'), 
+                ];
+                return $this;
+            }
             if (isset($val[0])) {
                 $val['i'] = $val[0];
                 unset($val[0]);

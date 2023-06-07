@@ -19,8 +19,11 @@ use Doctrine\ORM\QueryBuilder;
 abstract class FilterRepository extends EntityRepository
 {
 
+    public EntityManagerInterface $doctrine;
+    
     public function __construct(EntityManagerInterface $registry)
     {
+        $this->doctrine = $registry;
         $entityClass = $this::getEntityClass();
         $classMetadata = $registry->getClassMetadata($entityClass);
         parent::__construct($registry, $classMetadata);
