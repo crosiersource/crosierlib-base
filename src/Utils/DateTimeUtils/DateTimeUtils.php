@@ -688,12 +688,57 @@ class DateTimeUtils
     public static function ehAntesOuIgual(
         \DateTime $dt1,
         \DateTime $dt2,
-        ?bool     $ignoraHorario = true)
+        ?bool     $ignoraHorario = true): bool
     {
+        $dt1 = clone($dt1);
+        $dt2 = clone($dt2);
         if ($ignoraHorario) {
-            return DateTimeUtils::diffInDias($dt1, $dt2) >= 0;
+            $dt1->setTime(0,0,0);
+            $dt2->setTime(0,0,0);
         }
         return ($dt1->getTimestamp() <= $dt2->getTimestamp());
+    }
+    
+    public static function ehAntes(
+        \DateTime $dt1,
+        \DateTime $dt2,
+        ?bool     $ignoraHorario = true): bool
+    {
+        $dt1 = clone($dt1);
+        $dt2 = clone($dt2);
+        if ($ignoraHorario) {
+            $dt1->setTime(0,0,0);
+            $dt2->setTime(0,0,0);
+        }
+        return ($dt1->getTimestamp() < $dt2->getTimestamp());
+    }
+    
+    public static function ehDepoisOuIgual(
+        \DateTime $dt1,
+        \DateTime $dt2,
+        ?bool     $ignoraHorario = true): bool
+    {
+        $dt1 = clone($dt1);
+        $dt2 = clone($dt2);
+        if ($ignoraHorario) {
+            $dt1->setTime(0,0,0);
+            $dt2->setTime(0,0,0);
+        }
+        return ($dt1->getTimestamp() >= $dt2->getTimestamp());
+    }
+    
+    public static function ehDepois(
+        \DateTime $dt1,
+        \DateTime $dt2,
+        ?bool     $ignoraHorario = true): bool
+    {
+        $dt1 = clone($dt1);
+        $dt2 = clone($dt2);
+        if ($ignoraHorario) {
+            $dt1->setTime(0,0,0);
+            $dt2->setTime(0,0,0);
+        }
+        return ($dt1->getTimestamp() > $dt2->getTimestamp());
     }
 
 

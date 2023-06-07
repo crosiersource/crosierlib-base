@@ -298,8 +298,67 @@ class DateTimeUtilsTest extends TestCase
             }
 
         }
-
-
     }
+
+
+    public function test_ehAntes_ehAntesOuIgual_ehDepois_ehDepoisOuIgual()
+    {
+        $testes = [
+            [
+                'dt1' => '01/01/2021 00:00:00',
+                'dt2' => '01/01/2021 00:00:00',
+                'ehAntesIgnorandoHorario' => false,
+                'ehAntesConsiderandoHorario' => false,
+                'ehAntesOuIgualIgnorandoHorario' => true,
+                'ehAntesOuIgualConsiderandoHorario' => true,
+                'ehDepoisIgnorandoHorario' => false,
+                'ehDepoisConsiderandoHorario' => false,
+                'ehDepoisOuIgualIgnorandoHorario' => true,
+                'ehDepoisOuIgualConsiderandoHorario' => true,
+            ],
+            [
+                'dt1' => '01/01/2021 00:00:00',
+                'dt2' => '01/01/2021 00:00:01',
+                'ehAntesIgnorandoHorario' => false,
+                'ehAntesConsiderandoHorario' => true,
+                'ehAntesOuIgualIgnorandoHorario' => true,
+                'ehAntesOuIgualConsiderandoHorario' => true,
+                'ehDepoisIgnorandoHorario' => false,
+                'ehDepoisConsiderandoHorario' => false,
+                'ehDepoisOuIgualIgnorandoHorario' => true,
+                'ehDepoisOuIgualConsiderandoHorario' => false,
+            ],
+            [
+                'dt1' => '01/01/2021 00:00:00',
+                'dt2' => '31/12/2020 23:59:00',
+                'ehAntesIgnorandoHorario' => false,
+                'ehAntesConsiderandoHorario' => false,
+                'ehAntesOuIgualIgnorandoHorario' => false,
+                'ehAntesOuIgualConsiderandoHorario' => false,
+                'ehDepoisIgnorandoHorario' => true,
+                'ehDepoisConsiderandoHorario' => true,
+                'ehDepoisOuIgualIgnorandoHorario' => true,
+                'ehDepoisOuIgualConsiderandoHorario' => true,
+            ],
+        ];
+
+        foreach ($testes as $t) {
+            $dt1 = DateTimeUtils::parseDateStr($t['dt1']);
+            $dt2 = DateTimeUtils::parseDateStr($t['dt2']);
+
+            $this->assertEquals(DateTimeUtils::ehAntes($dt1, $dt2, true), $t['ehAntesIgnorandoHorario']);
+            $this->assertEquals(DateTimeUtils::ehAntes($dt1, $dt2, false), $t['ehAntesConsiderandoHorario']);
+            
+            $this->assertEquals(DateTimeUtils::ehAntesOuIgual($dt1, $dt2, true), $t['ehAntesOuIgualIgnorandoHorario']);
+            $this->assertEquals(DateTimeUtils::ehAntesOuIgual($dt1, $dt2, false), $t['ehAntesOuIgualConsiderandoHorario']);
+            
+            $this->assertEquals(DateTimeUtils::ehDepois($dt1, $dt2, true), $t['ehDepoisIgnorandoHorario']);
+            $this->assertEquals(DateTimeUtils::ehDepois($dt1, $dt2, false), $t['ehDepoisConsiderandoHorario']);
+            
+            $this->assertEquals(DateTimeUtils::ehDepoisOuIgual($dt1, $dt2, true), $t['ehDepoisOuIgualIgnorandoHorario']);
+            $this->assertEquals(DateTimeUtils::ehDepoisOuIgual($dt1, $dt2, false), $t['ehDepoisOuIgualConsiderandoHorario']);
+        }
+    }
+
 
 }
