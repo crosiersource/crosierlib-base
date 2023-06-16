@@ -503,5 +503,14 @@
       <tag name="api_platform.filter"/>
     </service>
 
+    <!-- AppConfigBusiness -->
+    <service id="crosier_source.crosier_lib_base_bundle.business.config.app_config_business"
+             class="CrosierSource\CrosierLibBaseBundle\Business\Config\AppConfigBusiness">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\AppConfigBusiness"
+             alias="crosier_source.crosier_lib_base_bundle.business.config.app_config_business"/>
+
+
   </services>
 </container>
