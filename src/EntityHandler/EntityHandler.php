@@ -417,4 +417,12 @@ abstract class EntityHandler implements EntityHandlerInterface
     }
 
 
+    protected function getRegistroDaTabela(EntityId $entityId): ?array
+    {
+        $tableName = $this->doctrine->getClassMetadata($this->getEntityClass())->getTableName();
+        $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = :id';
+        $params = ['id' => $entityId->getId()];
+        return $this->getDoctrine()->getConnection()->fetchAssociative($sql, $params);
+    }
+
 }
