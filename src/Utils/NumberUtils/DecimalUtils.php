@@ -149,5 +149,15 @@ class DecimalUtils
         }
         return $total;
     }
+    
+    
+    public static function somarValoresMonetarios(...$valores): float
+    {
+        $total = 0.0;
+        foreach ($valores as $valor) {
+            $total = bcadd($total, $valor, 2);
+        }
+        return $total;
+    }
 
 }
