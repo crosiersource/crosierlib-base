@@ -17,6 +17,7 @@ use NumberFormatter;
 class WhereBuilder
 {
 
+    private static int $conditionCounter = 0;
 
     /**
      *
@@ -27,6 +28,7 @@ class WhereBuilder
      */
     public static function build(QueryBuilder $qb, ?array $filters): ?array
     {
+        WhereBuilder::$conditionCounter = 0;
         if (!$filters) {
             return null;
         }
@@ -74,19 +76,19 @@ class WhereBuilder
     private static function handleBetween(string $field, FilterData $filter, QueryBuilder $qb)
     {
         // Usa sempre o nome do primeiro campo como nome para o parâmetro, pois setará sempre o mesmo na lógica do "OR"
-        $fieldP = str_replace('.', '_', $filter->field[0]);
+        $fieldP = $filter->placeholder; // str_replace('.', '_', $filter->field[0]);
 
         if ($filter->filterType === 'BETWEEN_PORCENT') {
             $field = 'CAST(' . $field . ' AS DECIMAL(15,4))';
         }
 
         if ($filter->val['i'] === null || $filter->val['i'] === '') {
-            return $qb->expr()->lte($field, ':' . $fieldP . '_f');
+            return $qb->expr()->lte($field, $fieldP . '_f');
         }
         if ($filter->val['f'] === null || $filter->val['f'] === '') {
-            return $qb->expr()->gte($field, ':' . $fieldP . '_i');
+            return $qb->expr()->gte($field, $fieldP . '_i');
         }
-        return $qb->expr()->between($field, ':' . $fieldP . '_i', ':' . $fieldP . '_f');
+        return $qb->expr()->between($field, $fieldP . '_i', $fieldP . '_f');
 
     }
 
@@ -244,7 +246,8 @@ class WhereBuilder
 
         $orX = $qb->expr()->orX();
 
-        $fieldP = ':' . str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '');
+        $fieldP = ':' . str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '') . '_' . WhereBuilder::$conditionCounter++;
+        $filter->placeholder = $fieldP;
         foreach ($filter->field as $field) {
 
             if ($filter->jsonDataField) {
@@ -357,7 +360,7 @@ class WhereBuilder
      */
     public static function placeValues(QueryBuilder $qb, FilterData $filter): void
     {
-        $fieldP = str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '');
+        $fieldP = $filter->placeholder; // str_replace('.', '_', $filter->field[0]) . ($filter->isOrFilterData ? '_OFD' : '');
 
         switch ($filter->filterType) {
             case 'BETWEEN':
