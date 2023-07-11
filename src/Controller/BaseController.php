@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\Estabelecimento;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -99,6 +100,8 @@ class BaseController extends AbstractController
             try {
                 $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri, $user);
             } catch (\Exception $e) {
+                $this->logger->error('Erro ao construir o menu');
+                $this->logger->error(ExceptionUtils::treatException($e));
                 $this->addFlash('error', 'Erro ao construir o menu');
             }
             $parameters = array_merge(['menu' => $menu], $parameters);

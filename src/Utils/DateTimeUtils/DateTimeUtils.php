@@ -16,8 +16,11 @@ class DateTimeUtils
     const DATAHORACOMPLETA_PATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
 //01/02/2021 14:59:59
 
-    const DATAHORACOMPLETACOMFUSO_PATTERN = "@\d{4}-\d{2}-\d{2}(T){1}\d{2}:\d{2}:\d{2}\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}@";
-//2020-05-02T10:54:44.000-04:00
+    const DATAHORACOMPLETACOMFUSO_PATTERN1 = "@(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.(\d{3,7})([+-]{1}\d{2}:\d{2}){0,1}Z{1}@";
+    // 2023-07-03T14:38:40.0775003Z
+    
+    const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}(?!.*Z$).*@";
+    // 2020-05-02T10:54:44.000-04:00
 
     /**
      * @param $dateStr
@@ -29,9 +32,13 @@ class DateTimeUtils
         if (!$dateStr) {
             return null;
         }
-
-        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN, $dateStr)) {
-            return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);
+        
+        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN1, $dateStr, $matches)) {            
+            $dateStr = $matches[1];            
+        }
+        
+        if ($r = preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN2, $dateStr)) {
+            return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);          
         }
 
         if (strlen($dateStr) === 5) { // dd/mm

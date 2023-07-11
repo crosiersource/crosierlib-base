@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
+use CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\AppConfigEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -10,12 +11,18 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class AppConfigBusiness
 {
-    
+
     private EntityManagerInterface $doctrine;
-    
-    public function __construct(EntityManagerInterface $doctrine)
+
+    private AppConfigEntityHandler $appConfigEntityHandler;
+
+    public function __construct(
+        EntityManagerInterface $doctrine,
+        AppConfigEntityHandler $appConfigEntityHandler
+    )
     {
         $this->doctrine = $doctrine;
+        $this->appConfigEntityHandler = $appConfigEntityHandler;
     }
 
     public function getValor(string $chave)
@@ -35,5 +42,19 @@ class AppConfigBusiness
         });
         return $valor;
     }
+
+    public function setValor(string $chave, string $valor): void
+    {
+        $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
+        $appConfig = $repoAppConfig->findAppConfigByChave($chave);
+        if (!$appConfig) {
+            $appConfig = new AppConfig();
+            $appConfig->chave = $chave;
+            $appConfig->appUUID = $_SERVER['CROSIERAPP_UUID'];
+        }
+        $appConfig->valor = $valor;
+        $this->appConfigEntityHandler->save($appConfig);
+    }
+
 
 }
