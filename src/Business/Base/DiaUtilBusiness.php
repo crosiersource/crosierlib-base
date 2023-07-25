@@ -78,8 +78,8 @@ class DiaUtilBusiness
                 $comercial = 1;
                 $financeiro = 1;
 
-                if (isset($diasUteisConfig['feriados']['fixos'][$date->format('md')])) {
-                    $descricao = $diasUteisConfig['feriados']['fixos'][$date->format('md')];
+                if (isset($diasUteisConfig['feriados']['fixos'][$date->format('dm')])) {
+                    $descricao = $diasUteisConfig['feriados']['fixos'][$date->format('dm')];
                     $comercial = 0;
                     $financeiro = 0;
                 } elseif (isset($diasUteisConfig['feriados']['moveis'][$date->format('Ymd')])) {
