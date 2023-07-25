@@ -44,9 +44,8 @@ class DiaUtilRepository extends FilterRepository
      * @param bool|null $comercial
      * @return \DateTime|null
      */
-    public function findDiaUtil(\DateTime $dia, bool $prox = null, ?bool $financeiro = null, ?bool $comercial = null): ?\DateTime
+    public function findDiaUtil(\DateTime $dia, bool $prox = null, ?bool $financeiro = null, ?bool $comercial = null, ?bool $podeRetornarOMesmo = false): ?\DateTime
     {
-
         try {
             $ini = clone $dia;
             $fim = clone $dia;
@@ -61,7 +60,11 @@ class DiaUtilRepository extends FilterRepository
             } else if ($prox === false) {
                 // Deve necessatiamente ser o dia útil anterior
                 $ini->sub(new \DateInterval('P20D'));
-                $fim->sub(new \DateInterval('P1D'));
+                if ($podeRetornarOMesmo) {
+                    $fim->sub(new \DateInterval('P0D'));
+                } else {
+                    $fim->sub(new \DateInterval('P1D'));
+                }
             }
             $lista = $this->findDiasUteisBy($ini, $fim, $comercial, $financeiro);
             if ($prox === null || $prox === true) {
