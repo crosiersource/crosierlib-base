@@ -3,7 +3,6 @@
 namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -31,8 +30,11 @@ class SyslogBusiness
     // para marcar todas as chamadas dentro de uma mesma "sessão"
     public ?string $uuidSess = null;
 
-    
-    public function __construct(ManagerRegistry $doctrine, Security $security, LoggerInterface $logger)
+
+    public function __construct(
+        ManagerRegistry $doctrine,
+        Security        $security,
+        LoggerInterface $logger)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
@@ -75,60 +77,68 @@ class SyslogBusiness
     }
 
 
-    /**
-     * @param string $app
-     * @param string $component
-     * @param string $action
-     * @param string|null $obs
-     * @param string|null $username
-     * @param \DateTime|null $deleteAfter
-     * @param array|null $jsonData
-     */
-    public function info(string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null)
+    public function info(
+        string     $action,
+        ?string    $obs = null,
+        ?string    $app = null,
+        ?string    $component = null,
+        ?string    $username = null,
+        ?\DateTime $deleteAfter = null,
+        ?array     $jsonData = null): void
     {
         $this->save('info', $action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
     }
 
-    /**
-     * @param string $app
-     * @param string $component
-     * @param string $action
-     * @param string|null $obs
-     * @param string|null $username
-     * @param \DateTime|null $deleteAfter
-     * @param array|null $jsonData
-     */
-    public function err(string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null)
+
+    public function err(
+        string     $action,
+        ?string    $obs = null,
+        ?string    $app = null,
+        ?string    $component = null,
+        ?string    $username = null,
+        ?\DateTime $deleteAfter = null,
+        ?array     $jsonData = null
+    ): void
     {
         $this->save('err', $action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
     }
 
-    /**
-     * @param string $app
-     * @param string $component
-     * @param string $action
-     * @param string|null $obs
-     * @param string|null $username
-     * @param \DateTime|null $deleteAfter
-     * @param array|null $jsonData
-     */
-    public function debug(string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null)
+    public function error(
+        string     $action,
+        ?string    $obs = null,
+        ?string    $app = null,
+        ?string    $component = null,
+        ?string    $username = null,
+        ?\DateTime $deleteAfter = null,
+        ?array     $jsonData = null): void
     {
-        if ($_SERVER['APP_DEBUG']) {
+        $this->err($action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
+    }
+
+
+    public function debug(
+        string     $action,
+        ?string    $obs = null,
+        ?string    $app = null,
+        ?string    $component = null,
+        ?string    $username = null,
+        ?\DateTime $deleteAfter = null,
+        ?array     $jsonData = null): void
+    {
+        if ($_SERVER['APP_DEBUG'] ?? false) {
             $this->save('debug', $action, $obs, $app, $component, $username, $deleteAfter, $jsonData);
         }
     }
 
-    /**
-     * @param string $action
-     * @param string|null $app
-     * @param string|null $component
-     * @param string|null $obs
-     * @param string|null $username
-     * @param \DateTime|null $deleteAfter
-     * @param array|null $jsonData
-     */
-    private function save(string $tipo, string $action, ?string $obs = null, ?string $app = null, ?string $component = null, ?string $username = null, ?\DateTime $deleteAfter = null, ?array $jsonData = null): void
+    private function save(
+        string     $tipo,
+        string     $action,
+        ?string    $obs = null,
+        ?string    $app = null,
+        ?string    $component = null,
+        ?string    $username = null,
+        ?\DateTime $deleteAfter = null,
+        ?array     $jsonData = null): void
     {
         if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) {
             return;
