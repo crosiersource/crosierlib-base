@@ -4,8 +4,10 @@ namespace CrosierSource\CrosierLibBaseBundle\Controller;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\StoredViewInfoBusiness;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\Estabelecimento;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\EntMenuLocatorRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use Doctrine\ORM\EntityManagerInterface;
@@ -113,6 +115,15 @@ class BaseController extends AbstractController
                return $estabelecimento->descricao;
             });
             $parameters['estabelecimento'] = $estabelecimento;
+
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.headerOptions', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+            $headerOptions = $cache->get('estabelecimento_' . $user->getEstabelecimentoId(), function (ItemInterface $item) use ($user) {
+                /** @var AppConfigRepository $repoAppConfig */
+                $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+                $rs = $repoAppConfig->findConfigByChaveAndAppNome('headerOptions.json', 'crosier-core');
+                return $rs ? json_decode($rs->valor, true) : [];
+            });
+            $parameters['headerOptions'] = $headerOptions;
             
             return $this->render($view, $parameters, $response);
         } catch (\Exception $e) {
