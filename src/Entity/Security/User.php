@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
@@ -40,7 +41,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ApiFilter(SearchFilter::class, properties={
  *     "username": "partial", 
- *     "nome": "partial"
+ *     "nome": "partial",
+ *     "email": "partial"
+ * })
+ * 
+ * @ApiFilter(BooleanFilter::class, properties={
+ *     "isActive"
  * })
  * 
  * @ApiFilter(OrderFilter::class, properties={
@@ -50,6 +56,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     "updated",
  *     "isActive"
  * }, arguments={"orderParameterName"="order"})
+ * 
+ * 
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler")
  *
@@ -71,7 +79,6 @@ class User implements EntityId, UserInterface, \Serializable
      */
     public ?string $username = null;
 
-
     /**
      * @NotUppercase()
      * @ORM\Column(name="password", type="string", length=90, nullable=false)
@@ -79,7 +86,6 @@ class User implements EntityId, UserInterface, \Serializable
      * @var null|string
      */
     public ?string $password = null;
-
 
     /**
      * @NotUppercase()
@@ -89,7 +95,6 @@ class User implements EntityId, UserInterface, \Serializable
      */
     public ?string $email = null;
 
-
     /**
      * @ORM\Column(name="fone", type="string", length=90)
      * @Groups("user")
@@ -97,15 +102,19 @@ class User implements EntityId, UserInterface, \Serializable
      */
     public ?string $fone = null;
 
-
     /**
-     *
      * @ORM\Column(name="nome", type="string", length=90, nullable=false)
      * @Groups("user")
      * @var null|string
      */
     public ?string $nome = null;
-
+    
+    /**
+     * @ORM\Column(name="descricao", type="string", length=255, nullable=true)
+     * @Groups("user")
+     * @var null|string
+     */
+    public ?string $descricao = null;
 
     /**
      *
@@ -114,7 +123,6 @@ class User implements EntityId, UserInterface, \Serializable
      * @var null|bool
      */
     public bool $isActive = true;
-
 
     /**
      *
@@ -125,7 +133,6 @@ class User implements EntityId, UserInterface, \Serializable
      * @var null|Group
      */
     public ?Group $group = null;
-
 
     /**
      * Renomeei o atributo para poder funcionar corretamente com o security do Symfony.
@@ -139,31 +146,31 @@ class User implements EntityId, UserInterface, \Serializable
      */
     public $userRoles = null;
 
-
     /**
      * @NotUppercase()
      * @ORM\Column(name="api_token", type="string", length=255, nullable=false)
+     * @Groups("userPassword")
      * @var null|string
      */
     public ?string $apiToken = null;
 
-
     /**
      * @ORM\Column(name="api_token_expires_at", type="datetime", nullable=false)
+     * @Groups("userPassword")
      */
     public ?\DateTime $apiTokenExpiresAt = null;
-
 
     /**
      * @NotUppercase()
      * @ORM\Column(name="token_recupsenha", type="string", length=36, nullable=true)
+     * @Groups("userPassword")
      * @var null|string
      */
     public ?string $tokenRecupSenha = null;
 
-
     /**
      * @ORM\Column(name="dt_valid_token_recupsenha", type="datetime", nullable=false)
+     * @Groups("userPassword")
      */
     public ?\DateTime $dtValidadeTokenRecupSenha = null;
 
@@ -233,4 +240,19 @@ class User implements EntityId, UserInterface, \Serializable
         return $this->password;
     }
 
+
+    /**
+     * @Groups("user")
+     * @return string|null
+     */
+    public function getDescricaoMontada(): ?string
+    {
+        $d = $this->username . ' - ' . $this->nome;
+        if ($this->descricao) {
+            $d .= ' (' . $this->descricao . ')';
+        }
+        return $d;
+    }
+
 }
+
