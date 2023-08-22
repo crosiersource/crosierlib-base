@@ -22,7 +22,9 @@ class DateTimeUtils
     const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@\A(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}(?!.*Z$).*\z@";
     // 2020-05-02T10:54:44.000-04:00
 
-    const DATASQL_PATTERN2 = "@\A(\d{4}-\d{1,2}-\d{2})\z@";
+    const DATA_PATTERN1 = "@\A(\d{1,2}/\d{1,2}/\d{4})\z@";
+    
+    const DATASQL_PATTERN2 = "@\A(\d{4}-\d{1,2}-\d{1,2})\z@";
 
     /**
      * @param $dateStr
@@ -43,6 +45,13 @@ class DateTimeUtils
             return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);          
         }
 
+        if (preg_match(self::DATA_PATTERN1, $dateStr, $matches)) {
+            $dateStr = $matches[1];
+            $dt = \DateTime::createFromFormat('d/m/Y', $dateStr);
+            $dt->setTime(12, 0);
+            return $dt;
+        }
+        
         if (preg_match(self::DATASQL_PATTERN2, $dateStr, $matches)) {
             $dateStr = $matches[1];
             $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
