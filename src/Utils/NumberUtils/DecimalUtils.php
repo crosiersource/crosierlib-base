@@ -116,13 +116,8 @@ class DecimalUtils
 
     /**
      * Gera parcelas jogando a diferença para a primeira ou a última.
-     *
-     * @param float $total
-     * @param int $qtdeParcelas
-     * @param bool|null $primeiraMaior
-     * @return array
      */
-    public static function gerarParcelas(float $total, int $qtdeParcelas, ?bool $primeiraMaior = true)
+    public static function gerarParcelas(float $total, int $qtdeParcelas, ?bool $primeiraMaior = true): array
     {
         $div = bcdiv($total, $qtdeParcelas, 2);
         $totDiv = bcmul($div, $qtdeParcelas, 2);
@@ -149,15 +144,42 @@ class DecimalUtils
         }
         return $total;
     }
-    
-    
+
+
     public static function somarValoresMonetarios(...$valores): float
     {
+        $valores = is_array($valores[0]) ? $valores[0] : $valores;
         $total = 0.0;
         foreach ($valores as $valor) {
             $total = bcadd($total, $valor, 2);
         }
         return $total;
+    }
+
+    public static function dividirValorProporcionalmente(float $valor, array $valores, ?bool $restoNaPrimeira = true): array
+    {
+        // somar todos os itens contidos em $valores
+        $total = 0.0;
+        foreach ($valores as $v) {
+            $total = bcadd($total, $v, 2);
+        }
+        $rs = [];
+        $partesSomadas = 0.0;
+        foreach ($valores as $v) {
+            $proporcao = ((float)$total !== 0.0) ? bcdiv($valor, $total, 4) : 0;
+            $parte = bcmul($v, $proporcao, 2);
+            $partesSomadas = bcadd($partesSomadas, $parte, 2);
+            $rs[] = $parte;
+        }
+        if ($partesSomadas !== $valor) {
+            $diff = bcsub($valor, $partesSomadas, 2);
+            if ($restoNaPrimeira) {
+                $rs[0] = bcadd($rs[0], $diff, 2);
+            } else {
+                $rs[count($rs) - 1] = bcadd($rs[count($rs) - 1], $diff, 2);
+            }
+        }
+        return $rs;
     }
 
 }
