@@ -14,6 +14,38 @@ use PHPUnit\Framework\TestCase;
 class DateTimeUtilsTest extends TestCase
 {
 
+    public function testParseDateStr()
+    {
+        $testes = [
+            '01/02/2021 14:59:59' => '01/02/2021 14:59:59',
+            '2023-07-03T14:38:40.0775003Z' => '03/07/2023 14:38:40',
+            '2020-05-02T10:54:44.000-04:00' => '02/05/2020 10:54:44',
+            '29/11' => '29/11/' . date('Y') . ' 12:00:00',
+            date('Y') . '-11' => '01/11/' . date('Y') . ' 12:00:00',
+            '29/11/84' => '29/11/1984 12:00:00',
+            '29/11/1984' => '29/11/1984 12:00:00',
+            '29/8/1984' => '29/08/1984 12:00:00',
+            '7/8/1984' => '07/08/1984 12:00:00',
+            '1984-11-29' => '29/11/1984 12:00:00',
+            '1984-8-29' => '29/08/1984 12:00:00',
+            '1984-8-2' => '02/08/1984 12:00:00',
+            '29/11/1984 12:34' => '29/11/1984 12:34:00',
+            '29/11/1984 12:34:56' => '29/11/1984 12:34:56',
+            '2019-04-30T18:15:02-03:00' => '30/04/2019 18:15:02',
+            'Sun Aug 01 2021 21:22:23 GMT-0300 (Horário Padrão de Brasília)' => '01/08/2021 21:22:23',
+        ];
+
+        $strDateFormat = 'd/m/Y H:i:s';
+
+        foreach ($testes as $t => $expected) {
+            $date = DateTimeUtils::parseDateStr($t);
+            $this->assertEquals($date->format($strDateFormat), $expected);
+        }
+
+
+    }
+
+
     public function testPeriodos()
     {
 
@@ -348,13 +380,13 @@ class DateTimeUtilsTest extends TestCase
 
             $this->assertEquals(DateTimeUtils::ehAntes($dt1, $dt2, true), $t['ehAntesIgnorandoHorario']);
             $this->assertEquals(DateTimeUtils::ehAntes($dt1, $dt2, false), $t['ehAntesConsiderandoHorario']);
-            
+
             $this->assertEquals(DateTimeUtils::ehAntesOuIgual($dt1, $dt2, true), $t['ehAntesOuIgualIgnorandoHorario']);
             $this->assertEquals(DateTimeUtils::ehAntesOuIgual($dt1, $dt2, false), $t['ehAntesOuIgualConsiderandoHorario']);
-            
+
             $this->assertEquals(DateTimeUtils::ehDepois($dt1, $dt2, true), $t['ehDepoisIgnorandoHorario']);
             $this->assertEquals(DateTimeUtils::ehDepois($dt1, $dt2, false), $t['ehDepoisConsiderandoHorario']);
-            
+
             $this->assertEquals(DateTimeUtils::ehDepoisOuIgual($dt1, $dt2, true), $t['ehDepoisOuIgualIgnorandoHorario']);
             $this->assertEquals(DateTimeUtils::ehDepoisOuIgual($dt1, $dt2, false), $t['ehDepoisOuIgualConsiderandoHorario']);
         }

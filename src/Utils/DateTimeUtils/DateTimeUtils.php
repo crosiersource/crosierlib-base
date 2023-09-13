@@ -13,14 +13,18 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 class DateTimeUtils
 {
 
-    const DATAHORACOMPLETA_PATTERN = "@(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?@";
-//01/02/2021 14:59:59
+    const DATAHORACOMPLETA_PATTERN = "@\A(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?\z@";
+    // 01/02/2021 14:59:59
 
-    const DATAHORACOMPLETACOMFUSO_PATTERN1 = "@(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.(\d{3,7})([+-]{1}\d{2}:\d{2}){0,1}Z{1}@";
+    const DATAHORACOMPLETACOMFUSO_PATTERN1 = "@\A(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.(\d{3,7})([+-]{1}\d{2}:\d{2}){0,1}Z{1}\z@";
     // 2023-07-03T14:38:40.0775003Z
     
-    const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}(?!.*Z$).*@";
+    const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@\A(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}(?!.*Z$).*\z@";
     // 2020-05-02T10:54:44.000-04:00
+
+    const DATA_PATTERN1 = "@\A(\d{1,2}/\d{1,2}/\d{4})\z@";
+    
+    const DATASQL_PATTERN2 = "@\A(\d{4}-\d{1,2}-\d{1,2})\z@";
 
     /**
      * @param $dateStr
@@ -39,6 +43,20 @@ class DateTimeUtils
         
         if ($r = preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN2, $dateStr)) {
             return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);          
+        }
+
+        if (preg_match(self::DATA_PATTERN1, $dateStr, $matches)) {
+            $dateStr = $matches[1];
+            $dt = \DateTime::createFromFormat('d/m/Y', $dateStr);
+            $dt->setTime(12, 0);
+            return $dt;
+        }
+        
+        if (preg_match(self::DATASQL_PATTERN2, $dateStr, $matches)) {
+            $dateStr = $matches[1];
+            $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
+            $dt->setTime(12, 0);
+            return $dt;
         }
 
         if (strlen($dateStr) === 5) { // dd/mm
@@ -74,7 +92,11 @@ class DateTimeUtils
             $pattern .= strlen($matches['Y']) === 2 ? 'y' : 'Y';
             $pattern .= isset($matches['H']) ? ' H:i' : '';
             $pattern .= isset($matches['s']) ? ':s' : '';
-            return \DateTime::createFromFormat($pattern, $dateStr);
+            $dt = \DateTime::createFromFormat($pattern, $dateStr);
+            if ($pattern === 'd/m/Y') {
+                $dt->setTime(12, 0);
+            }
+            return $dt;
         }
 
         if (strlen($dateStr) === 16) { // dd/mm/YYYY 12:34
