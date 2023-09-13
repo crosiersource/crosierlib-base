@@ -2,6 +2,7 @@
 
 namespace CrosierSource\CrosierLibBaseBundle\Utils\APIUtils;
 
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -34,6 +35,22 @@ class CrosierApiResponse
             'DATA' => $data,
         ];
         return new JsonResponse($r, 418);
-
+    }
+    
+    
+    public static function viewExceptionError(?\Throwable $t = null, ?string $msg2 = null): JsonResponse
+    {
+        if ($t instanceof ViewException) {
+            $msg = ExceptionUtils::treatException($t);
+        } else {
+            $msg = 'Ocorreu um erro';
+        }
+        $r = [
+            'RESULT' => 'ERRO',
+            'MSG' => $msg2,
+            'EXCEPTION_MSG' => $msg,
+            'DATA' => null,
+        ];
+        return new JsonResponse($r, 418);
     }
 }
