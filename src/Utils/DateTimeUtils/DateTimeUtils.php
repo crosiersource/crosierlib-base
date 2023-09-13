@@ -158,7 +158,7 @@ class DateTimeUtils
      * @param \DateTime $dtIni
      * @param \DateTime $dtFim
      * @return float|int
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     public static function monthDiff(\DateTime $dtIni, \DateTime $dtFim)
     {
