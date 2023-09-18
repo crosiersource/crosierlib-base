@@ -493,7 +493,8 @@
              class="CrosierSource\CrosierLibBaseBundle\Controller\Config\API\PushMessageController" public="true">
       <argument type="service" id="service_container"/>
       <argument type="service" id="monolog.logger"/>
-      <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
+      <argument type="service"
+                id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
     </service>
 
 
@@ -507,10 +508,21 @@
     <service id="crosier_source.crosier_lib_base_bundle.business.config.app_config_business"
              class="CrosierSource\CrosierLibBaseBundle\Business\Config\AppConfigBusiness">
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
-      <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"/>
+      <argument type="service"
+                id="crosier_source.crosier_lib_base_bundle.entity_handler.config.app_config_entity_handler"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\AppConfigBusiness"
              alias="crosier_source.crosier_lib_base_bundle.business.config.app_config_business"/>
+
+
+    <service id="crosier_source.crosier_lib_base_bundle.messenger.crosier_queue_handler"
+             class="CrosierSource\CrosierLibBaseBundle\Messenger\CrosierQueueHandler">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="messenger.default_bus"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Messenger\CrosierQueueHandler"
+             public="true" alias="crosier_source.crosier_lib_base_bundle.messenger.crosier_queue_handler"/>
 
 
   </services>

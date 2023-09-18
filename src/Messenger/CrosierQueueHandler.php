@@ -16,13 +16,13 @@ class CrosierQueueHandler
     private EntityManagerInterface $doctrine;
 
     private MessageBusInterface $bus;
-    
+
     private SyslogBusiness $logger;
-    
+
     public function __construct(
         EntityManagerInterface $doctrine,
         MessageBusInterface    $bus,
-        SyslogBusiness $logger
+        SyslogBusiness         $logger
     )
     {
         $this->doctrine = $doctrine;
@@ -38,7 +38,7 @@ class CrosierQueueHandler
             $this->postToQueue($queue, $content);
         }
     }
-    
+
     private function hasQueueConsumers(string $queue): bool
     {
         $chave = 'crosier_queue_consumer';
@@ -46,7 +46,7 @@ class CrosierQueueHandler
         $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
         return (bool)($repoAppConfig->findAllByFiltersSimpl([['chave', 'EQ', $chave]]));
     }
-    
+
     private function postToQueue(string $queue, string $content): void
     {
         $this->bus->dispatch(new CrosierQueueMessage($queue, $content));
