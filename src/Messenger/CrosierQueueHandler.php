@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Messenger;
 
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
