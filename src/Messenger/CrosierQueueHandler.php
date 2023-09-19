@@ -37,6 +37,8 @@ class CrosierQueueHandler
             $jsonEncoded = json_encode($content);
             $this->logger->debug('CrosierQueue: Enviando para a fila ' . $queue, $jsonEncoded);
             $this->postToQueue($queue, $jsonEncoded);
+        } else {
+            $this->logger->debug('CrosierQueue: nenhum queue consumer encontrado.');
         }
     }
 
