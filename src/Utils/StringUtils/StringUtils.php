@@ -277,5 +277,26 @@ class StringUtils
         return filter_var($bool, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 
+
+    public static function ucFirstNomes($name): string
+    {
+        $smallWords = ['da', 'de', 'do', 'das', 'dos'];
+
+        $nameParts = explode(' ', $name);
+        $formattedName = [];
+
+        foreach ($nameParts as $part) {
+            $formattedPart = strtolower($part);
+
+            if (!in_array($formattedPart, $smallWords)) {
+                $formattedPart = ucfirst($formattedPart);
+            }
+
+            $formattedName[] = $formattedPart;
+        }
+
+        return implode(' ', $formattedName);
+    }
+
 }
 
