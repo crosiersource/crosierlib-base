@@ -190,6 +190,10 @@ class StringUtils
 
     public static function formataTelefone(string $numero)
     {
+        $numero = trim($numero);
+        if (!$numero) {
+            return '';
+        }
         $numero = preg_replace("/[^0-9]/", "", $numero);
         $arrNumeros = str_split($numero);
         $numero = (strlen($numero) == 11) ?
