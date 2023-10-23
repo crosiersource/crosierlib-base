@@ -44,10 +44,16 @@ class CrosierQueueHandler
 
     private function hasQueueConsumers(string $queue): bool
     {
-        $chave = 'crosier_queue_consumer';
+        $chave = 'crosier_queue_consumer_to';
         /** @var AppConfigRepository $repoAppConfig */
         $repoAppConfig = $this->doctrine->getRepository(AppConfig::class);
-        return (bool)($repoAppConfig->findAllByFiltersSimpl([['chave', 'EQ', $chave]]));
+        $consumers = $repoAppConfig->findAllByFiltersSimpl([['chave', 'EQ', $chave]]);
+        if ($consumers) {
+            foreach ($consumers as $consumer) {
+                $queues = json_decode($consumer->valor, true);
+                return in_array($queue, $queues);
+            }
+        }
     }
 
     private function postToQueue(string $queue, string $content): void

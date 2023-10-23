@@ -220,9 +220,9 @@ class StringUtils
     }
 
 
-    public static function removeNonAlfanumerics(string $str): string
+    public static function removeNonAlfanumerics(?string $str): string
     {
-        return preg_replace('/[\W]/', '', $str);
+        return preg_replace('/[\W]/', '', $str ?? '');
     }
 
 
