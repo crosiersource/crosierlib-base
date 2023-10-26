@@ -302,5 +302,17 @@ class StringUtils
         return implode(' ', $formattedName);
     }
 
+
+    public static function getFirstNonEmpty(): ?string
+    {
+        $args = func_get_args();
+        foreach ($args as $arg) {
+            if ($arg !== null && $arg !== '') {
+                return $arg;
+            }
+        }
+        return null;
+    }
+
 }
 
