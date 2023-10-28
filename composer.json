@@ -34,7 +34,6 @@
         "phpdocumentor/reflection-docblock":"^5.3",
         "php-http/guzzle6-adapter":"^2.0",
         "scienta/doctrine-json-functions":"~4.1",
-        "sensio/framework-extra-bundle":"^5.4",
         "symfony/asset":"5.4.*",
         "symfony/cache":"5.4.*",
         "symfony/console":"5.4.*",
