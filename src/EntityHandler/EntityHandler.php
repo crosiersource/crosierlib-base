@@ -191,12 +191,10 @@ abstract class EntityHandler implements EntityHandlerInterface
             $this->beforeSave($entityId);
             $inserting = false;
             if ($entityId->getId()) {
-                $this->syslog->info('Alteração de ' . get_class($entityId) . ' (id: ' . $entityId->getId() . ')');
                 $entityId = $this->doctrine->merge($entityId);
             } else {
                 $inserting = true;
                 $this->doctrine->persist($entityId);
-                $this->syslog->info('Inserção de ' . get_class($entityId));
             }
 
             if ($flush) {

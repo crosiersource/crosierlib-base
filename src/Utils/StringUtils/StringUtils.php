@@ -190,6 +190,10 @@ class StringUtils
 
     public static function formataTelefone(string $numero)
     {
+        $numero = trim($numero);
+        if (!$numero) {
+            return '';
+        }
         $numero = preg_replace("/[^0-9]/", "", $numero);
         $arrNumeros = str_split($numero);
         $numero = (strlen($numero) == 11) ?
@@ -216,9 +220,9 @@ class StringUtils
     }
 
 
-    public static function removeNonAlfanumerics(string $str): string
+    public static function removeNonAlfanumerics(?string $str): string
     {
-        return preg_replace('/[\W]/', '', $str);
+        return preg_replace('/[\W]/', '', $str ?? '');
     }
 
 
@@ -275,6 +279,39 @@ class StringUtils
     public static function parseBoolStr(?string $bool): ?bool
     {
         return filter_var($bool, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+
+
+    public static function ucFirstNomes($name): string
+    {
+        $smallWords = ['da', 'de', 'do', 'das', 'dos'];
+
+        $nameParts = explode(' ', $name);
+        $formattedName = [];
+
+        foreach ($nameParts as $part) {
+            $formattedPart = strtolower($part);
+
+            if (!in_array($formattedPart, $smallWords)) {
+                $formattedPart = ucfirst($formattedPart);
+            }
+
+            $formattedName[] = $formattedPart;
+        }
+
+        return implode(' ', $formattedName);
+    }
+
+
+    public static function getFirstNonEmpty(): ?string
+    {
+        $args = func_get_args();
+        foreach ($args as $arg) {
+            if ($arg !== null && $arg !== '') {
+                return $arg;
+            }
+        }
+        return null;
     }
 
 }
