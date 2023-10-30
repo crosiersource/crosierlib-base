@@ -102,7 +102,7 @@ class BaseController extends AbstractController
             try {
                 $menu = $this->entMenuLocatorRepository->getMenuByUrl($uri, $user);
             } catch (\Exception $e) {
-                $this->logger->error('Erro ao construir o menu');
+                $this->logger->error('Erro ao construir o menu: ' . $e->getMessage());
                 $this->logger->error(ExceptionUtils::treatException($e));
                 $this->addFlash('error', 'Erro ao construir o menu');
             }

@@ -100,7 +100,7 @@ class EntMenuLocatorRepository extends FilterRepository
 
                 return $repoEntMenu->buildMenuByEntMenuPai($entMenu, $user);
             } catch (\Exception $e) {
-                throw new ViewException('Erro ao buscar menu');
+                throw new ViewException('Erro ao buscar menu: ' . $e->getMessage());
             }
         }
         );
