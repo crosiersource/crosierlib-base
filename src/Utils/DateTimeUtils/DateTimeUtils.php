@@ -3,8 +3,6 @@
 namespace CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils;
 
 
-use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
-
 /**
  * Class DateTimeUtils.
  *
@@ -16,14 +14,14 @@ class DateTimeUtils
     const DATAHORACOMPLETA_PATTERN = "@\A(?<d>\d{1,2})/(?<m>\d{1,2})/(?<Y>\d{1,4})(\s(?<H>\d{1,2}):(?<i>\d{2})(:(?<s>\d{2}))?)?\z@";
     // 01/02/2021 14:59:59
 
-    const DATAHORACOMPLETACOMFUSO_PATTERN1 = "@\A(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.(\d{3,7})([+-]{1}\d{2}:\d{2}){0,1}Z{1}\z@";
+    const DATAHORACOMPLETACOMFUSO_PATTERN1 = "@\A(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.(\d{3,7})([+-]\d{2}:\d{2}){0,1}Z\z@";
     // 2023-07-03T14:38:40.0775003Z
-    
-    const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@\A(\d{4}-\d{2}-\d{2}T{1}\d{2}:\d{2}:\d{2})\.\d{3}([+-]{1}\d{2}:\d{2}){0,1}(?!.*Z$).*\z@";
+
+    const DATAHORACOMPLETACOMFUSO_PATTERN2 = "@\A(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.\d{3}([+-]\d{2}:\d{2}){0,1}(?!.*Z$).*\z@";
     // 2020-05-02T10:54:44.000-04:00
 
     const DATA_PATTERN1 = "@\A(\d{1,2}/\d{1,2}/\d{4})\z@";
-    
+
     const DATASQL_PATTERN2 = "@\A(\d{4}-\d{1,2}-\d{1,2})\z@";
 
     /**
@@ -36,13 +34,13 @@ class DateTimeUtils
         if (!$dateStr) {
             return null;
         }
-        
-        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN1, $dateStr, $matches)) {            
-            $dateStr = $matches[1];            
+
+        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN1, $dateStr, $matches)) {
+            $dateStr = $matches[1];
         }
-        
-        if ($r = preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN2, $dateStr)) {
-            return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);          
+
+        if (preg_match(self::DATAHORACOMPLETACOMFUSO_PATTERN2, $dateStr)) {
+            return \DateTime::createFromFormat('Y-m-d\TH:i:s\.uP', $dateStr);
         }
 
         if (preg_match(self::DATA_PATTERN1, $dateStr, $matches)) {
@@ -51,7 +49,7 @@ class DateTimeUtils
             $dt->setTime(12, 0);
             return $dt;
         }
-        
+
         if (preg_match(self::DATASQL_PATTERN2, $dateStr, $matches)) {
             $dateStr = $matches[1];
             $dt = \DateTime::createFromFormat('Y-m-d', $dateStr);
@@ -104,9 +102,9 @@ class DateTimeUtils
         }
 
         if (strlen($dateStr) === 19) { // dd/mm/YYYY 12:34:00
-            if (preg_match('/\d{4}-\d{2}-\d{2} \d{2}\:\d{2}\:\d{2}/', $dateStr)) {
+            if (preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $dateStr)) {
                 $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $dateStr);
-            } else if (preg_match('/\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}/', $dateStr)) {
+            } else if (preg_match('/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/', $dateStr)) {
                 $dt = \DateTime::createFromFormat('Y-m-d\TH:i:s', $dateStr);
             } else {
                 $dt = \DateTime::createFromFormat('d/m/Y H:i:s', $dateStr);
@@ -143,7 +141,7 @@ class DateTimeUtils
             $val['f'] = DateTimeUtils::parseDateStr($fim);
             return $val;
         }
-        if (strlen($concatDates) > 23 && strpos($concatDates, ',') !== FALSE) {
+        if (strlen($concatDates) > 23 && str_contains($concatDates, ',')) {
             $split = explode(',', $concatDates);
             $val['i'] = DateTimeUtils::parseDateStr($split[0]);
             $val['f'] = DateTimeUtils::parseDateStr($split[1]);
@@ -154,13 +152,9 @@ class DateTimeUtils
 
     /**
      * Calcula a diferença em meses.
-     *
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @return float|int
      * @throws \RuntimeException
      */
-    public static function monthDiff(\DateTime $dtIni, \DateTime $dtFim)
+    public static function monthDiff(\DateTime $dtIni, \DateTime $dtFim): int
     {
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
             throw new \RuntimeException('dtIni deve ser menor ou igual a dtFim');
@@ -208,14 +202,9 @@ class DateTimeUtils
 
     /**
      * Incrementa o período relatorial.
-     *
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @param bool $strict Se deve verificar se o período realmente é um período relatorial.
-     * @return false|string
      * @throws \Exception
      */
-    public static function incPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false)
+    public static function incPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false): array
     {
         $dtIni = clone $dtIni;
         $dtFim = clone $dtFim;
@@ -280,14 +269,9 @@ class DateTimeUtils
 
     /**
      * Decrementa um período relatorial.
-     *
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @param bool $strict Se deve verificar se o período realmente é um período relatorial.
-     * @return mixed
      * @throws \Exception
      */
-    public static function decPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false)
+    public static function decPeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $strict = false): array
     {
         $dtIni = clone $dtIni;
         $dtFim = clone $dtFim;
@@ -353,13 +337,9 @@ class DateTimeUtils
     }
 
     /**
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @param $proFuturo
-     * @return false|string
      * @throws \Exception
      */
-    public static function iteratePeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $proFuturo = true)
+    public static function iteratePeriodoRelatorial(\DateTime $dtIni, \DateTime $dtFim, $proFuturo = true): array
     {
         if ($proFuturo) {
             return self::incPeriodoRelatorial($dtIni, $dtFim);
@@ -370,13 +350,10 @@ class DateTimeUtils
 
 
     /**
-     * Incrementa ou decrementa em 1 mês levando em consideração a possibilidade do dia ser o último do mês (e nesse caso, seta como último dia do mês ajustado).
-     *
-     * @param \DateTime $dt
-     * @param int $inc
-     * @return bool|\DateTime
+     * Incrementa ou decrementa em 1 mês levando em consideração a possibilidade do dia ser
+     * o último do mês (e nesse caso, seta como último dia do mês ajustado).
      */
-    public static function incMes(\DateTime $dt, $inc = 1)
+    public static function incMes(\DateTime $dt, $inc = 1): \DateTime
     {
         $dt = clone $dt;
         $ehUltimoDiaDoMes = $dt->format('Y-m-d') === $dt->format('Y-m-t');
@@ -393,11 +370,8 @@ class DateTimeUtils
 
     /**
      * Retorna o primeiro dia do mês a partir de uma data.
-     *
-     * @param \DateTime|null $dt
-     * @return bool|\DateTime
      */
-    public static function getPrimeiroDiaMes(\DateTime $dt = null)
+    public static function getPrimeiroDiaMes(\DateTime $dt = null): \DateTime
     {
         $dt = $dt ?: new \DateTime();
         $primeiroDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . '01');
@@ -408,11 +382,8 @@ class DateTimeUtils
 
     /**
      * Retorna o último dia do mês a partir de uma data.
-     *
-     * @param \DateTime $dt
-     * @return bool|\DateTime
      */
-    public static function getUltimoDiaMes(\DateTime $dt = null)
+    public static function getUltimoDiaMes(\DateTime $dt = null): \DateTime
     {
         $dt = $dt ?: new \DateTime();
         $ultimoDiaMes = \DateTime::createFromFormat('Ymd', $dt->format('Y') . $dt->format('m') . $dt->format('t'));
@@ -424,15 +395,12 @@ class DateTimeUtils
 
     /**
      * Retorna um array com todos os Datetime para o mês/ano passado.
-     *
-     * @param string $mesano
-     * @return array
      */
     public static function getDiasMesAno(string $mesano): array
     {
         try {
             $dt = \DateTime::createFromFormat('Ymd', $mesano . '01');
-            $dt->setTime(0, 0, 0, 0);
+            $dt->setTime(0, 0);
             $ultimoDia = self::getUltimoDiaMes($dt)->format('d/m/Y');
             $dts = [];
             $aux = clone $dt;
@@ -446,20 +414,17 @@ class DateTimeUtils
             }
             return $dts;
         } catch (\Exception $e) {
-            throw new \RuntimeException('Erro ao gerar dias para o mesano "' . $mesano . '"');
+            throw new \RuntimeException('Erro ao gerar dias para o mesano "' . $mesano . '"', 0, $e);
         }
     }
 
     /**
      * Retorna um array com todos os Datetime para o mês/ano passado.
-     *
-     * @param string $mesano
-     * @return array
      */
     public static function getDatasMesAno(string $mesano): array
     {
         $dtIni = \DateTime::createFromFormat('Ymd', $mesano . '01');
-        $dtIni->setTime(0, 0, 0, 0);
+        $dtIni->setTime(0, 0);
 
         $dtFim = \DateTime::createFromFormat('Ymd', $dtIni->format('Ymt'));
         $dtFim->setTime(23, 59, 59, 99999);
@@ -467,12 +432,6 @@ class DateTimeUtils
         return ['i' => $dtIni, 'f' => $dtFim];
     }
 
-    /**
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @return array
-     * @throws ViewException
-     */
     public static function getDatesList(\DateTime $dtIni, \DateTime $dtFim): array
     {
         $list = [];
@@ -482,8 +441,8 @@ class DateTimeUtils
         }
 
         $dtAux = clone($dtIni);
-        $dtAux->setTime(12, 0, 0, 0);
-        $dtFim->setTime(12, 0, 0, 0);
+        $dtAux->setTime(12, 0);
+        $dtFim->setTime(12, 0);
         $list[] = clone($dtAux);
 
         if ($invert) {
@@ -509,10 +468,6 @@ class DateTimeUtils
 
     /**
      * Retorna uma lista de "meses" (sendo representados sempre pelo primeiro dia de cada mês).
-     *
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @return array
      */
     public static function getMonthsList(\DateTime $dtIni, \DateTime $dtFim): array
     {
@@ -526,8 +481,8 @@ class DateTimeUtils
         }
 
         $dtAux = clone($dtIni);
-        $dtAux->setTime(12, 0, 0, 0);
-        $dtFim->setTime(12, 0, 0, 0);
+        $dtAux->setTime(12, 0);
+        $dtFim->setTime(12, 0);
 
         $list[] = clone($dtAux);
 
@@ -555,32 +510,27 @@ class DateTimeUtils
 
     /**
      * Retorna uma lista de "semanas" (sendo que o domingo é considerado o primeiro dia).
-     *
-     * @param \DateTime $dtIni
-     * @param \DateTime $dtFim
-     * @return array
      */
     public static function getWeeksList(\DateTime $dtIni, \DateTime $dtFim): array
     {
         // Mudo a dtIni para o domingo da mesma semana
         $dtIni_diaDaSemana = $dtIni->format('w');
-        $dtIni->setDate($dtIni->format('Y'), $dtIni->format('m'), $dtIni->format('d') - $dtIni_diaDaSemana);
+        $dtIni->setDate($dtIni->format('Y'), $dtIni->format('m'), (int)$dtIni->format('d') - $dtIni_diaDaSemana);
 
         // Mudo a dtFim para o sábado da mesma semana
         $dtFim_diaDaSemana = $dtFim->format('w');
-        $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m'), $dtFim->format('d') + (6 - $dtFim_diaDaSemana));
+        $dtFim->setDate($dtFim->format('Y'), $dtFim->format('m'), (int)$dtFim->format('d') + (6 - $dtFim_diaDaSemana));
 
-        $list = [];
         $invert = false;
         if ($dtIni->getTimestamp() > $dtFim->getTimestamp()) {
             $invert = true;
         }
 
         $dtAuxIni = clone($dtIni);
-        $dtAuxIni->setTime(12, 0, 0, 0);
+        $dtAuxIni->setTime(12, 0);
         $dtAuxFim = clone($dtAuxIni);
 
-        $dtFim->setTime(12, 0, 0, 0);
+        $dtFim->setTime(12, 0);
 
         $list = [];
 
@@ -597,11 +547,7 @@ class DateTimeUtils
         return $invert ? array_reverse($list) : $list;
     }
 
-    /**
-     * @param \DateTime $dt
-     * @return string
-     */
-    public static function getDiaDaSemana(\DateTime $dt)
+    public static function getDiaDaSemana(\DateTime $dt): string
     {
         $d = $dt->format('w');
         $dias = [
@@ -616,11 +562,6 @@ class DateTimeUtils
         return $dias[(int)$d];
     }
 
-    /**
-     * @param \DateTime $dtFim
-     * @param \DateTime $dtIni
-     * @return int
-     */
     public static function diffInMinutes(\DateTime $dtFim, \DateTime $dtIni): int
     {
         $diff = $dtFim->diff($dtIni);
@@ -628,11 +569,6 @@ class DateTimeUtils
         return ($diff->invert) ? $minTotal : ($minTotal * -1);
     }
 
-    /**
-     * @param \DateTime $dtFim
-     * @param \DateTime $dtIni
-     * @return int
-     */
     public static function diffInDias(\DateTime $dtFim, \DateTime $dtIni): int
     {
         $diff = $dtFim->diff($dtIni);
@@ -640,11 +576,6 @@ class DateTimeUtils
         return ($diff->invert) ? $total : ($total * -1);
     }
 
-    /**
-     * @param \DateTime $esta
-     * @param \DateTime $aquela
-     * @return bool
-     */
     public static function dataMaiorQue(\DateTime $esta, \DateTime $aquela): bool
     {
         return ($esta->diff($aquela)->invert === 1);
@@ -652,9 +583,6 @@ class DateTimeUtils
 
     /**
      * Adiciona $days em $dt.
-     * @param \DateTime $dt
-     * @param int $days
-     * @return \DateTime
      */
     public static function addDays(\DateTime $dt, int $days): \DateTime
     {
@@ -664,35 +592,22 @@ class DateTimeUtils
     }
 
 
-    /**
-     * @param \DateTime|null $dt
-     * @param bool $datetime
-     * @return string
-     */
-    public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true)
+    public static function getSQLFormatted(?\DateTime $dt = null, bool $datetime = true): string
     {
         $dt = $dt ? clone $dt : new \DateTime();
         return $dt->format('Y-m-d' . ($datetime ? ' H:i:s' : ''));
     }
 
     /**
-     * @param \DateTime|null $dt
-     * @param int $minutes
-     * @return \DateTime
      * @throws \Exception
      */
-    public static function addMinutes(?\DateTime $dt = null, int $minutes)
+    public static function addMinutes(?\DateTime $dt = null, ?int $minutes = 0): \DateTime
     {
         $dt = $dt ? clone $dt : new \DateTime();
         return $dt->add(new \DateInterval('PT' . $minutes . 'M'));
     }
 
-    /**
-     * @param \DateTime|null $dt1
-     * @param \DateTime|null $dt2
-     * @return bool
-     */
-    public static function ehMesmoDia(?\DateTime $dt1, ?\DateTime $dt2)
+    public static function ehMesmoDia(?\DateTime $dt1, ?\DateTime $dt2): bool
     {
         $dtUm = (clone $dt1);
         $dtUm->setTimezone($dt2->getTimezone());
@@ -702,12 +617,8 @@ class DateTimeUtils
 
     /**
      * Altera apenas o dia de uma data.
-     *
-     * @param \DateTime|null $dt
-     * @param int $dia
-     * @return \DateTime
      */
-    public static function setDay(?\DateTime $dt, int $dia)
+    public static function setDay(?\DateTime $dt, int $dia): \DateTime
     {
         $dt = clone $dt;
         return $dt->setDate($dt->format('Y'), $dt->format('m'), $dia);
@@ -722,12 +633,12 @@ class DateTimeUtils
         $dt1 = clone($dt1);
         $dt2 = clone($dt2);
         if ($ignoraHorario) {
-            $dt1->setTime(0,0,0);
-            $dt2->setTime(0,0,0);
+            $dt1->setTime(0, 0);
+            $dt2->setTime(0, 0);
         }
         return ($dt1->getTimestamp() <= $dt2->getTimestamp());
     }
-    
+
     public static function ehAntes(
         \DateTime $dt1,
         \DateTime $dt2,
@@ -736,12 +647,12 @@ class DateTimeUtils
         $dt1 = clone($dt1);
         $dt2 = clone($dt2);
         if ($ignoraHorario) {
-            $dt1->setTime(0,0,0);
-            $dt2->setTime(0,0,0);
+            $dt1->setTime(0, 0);
+            $dt2->setTime(0, 0);
         }
         return ($dt1->getTimestamp() < $dt2->getTimestamp());
     }
-    
+
     public static function ehDepoisOuIgual(
         \DateTime $dt1,
         \DateTime $dt2,
@@ -750,12 +661,12 @@ class DateTimeUtils
         $dt1 = clone($dt1);
         $dt2 = clone($dt2);
         if ($ignoraHorario) {
-            $dt1->setTime(0,0,0);
-            $dt2->setTime(0,0,0);
+            $dt1->setTime(0, 0);
+            $dt2->setTime(0, 0);
         }
         return ($dt1->getTimestamp() >= $dt2->getTimestamp());
     }
-    
+
     public static function ehDepois(
         \DateTime $dt1,
         \DateTime $dt2,
@@ -764,8 +675,8 @@ class DateTimeUtils
         $dt1 = clone($dt1);
         $dt2 = clone($dt2);
         if ($ignoraHorario) {
-            $dt1->setTime(0,0,0);
-            $dt2->setTime(0,0,0);
+            $dt1->setTime(0, 0);
+            $dt2->setTime(0, 0);
         }
         return ($dt1->getTimestamp() > $dt2->getTimestamp());
     }
