@@ -45,10 +45,7 @@ class DecimalUtils
      */
     public static function formatFloat($float, $decimals = 2)
     {
-        if ((float)$float === 0.0) {
-            return '0';
-        }
-        if (!$float) {
+        if ($float === null) {
             return null;
         }
         $fmt = new \NumberFormatter('pt_BR', \NumberFormatter::DECIMAL);
