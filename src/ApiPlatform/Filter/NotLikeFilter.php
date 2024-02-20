@@ -13,14 +13,21 @@ use Symfony\Component\PropertyInfo\Type;
  */
 final class NotLikeFilter extends AbstractContextAwareFilter
 {
-    
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
+
+    protected function filterProperty(
+        string                      $property,
+                                    $value,
+        QueryBuilder                $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string                      $resourceClass,
+        string                      $operationName = null)
     {
+        $mappedValues = [];
         if ($property === 'notLike') {
             foreach ($value as $campo => $valor) {
                 // otherwise filter is applied to order and page as well
-                if (!$this->isPropertyEnabled($campo, $resourceClass) || !$this->isPropertyMapped($campo, $resourceClass)) {
-                    return;
+                if ($this->isPropertyEnabled($campo, $resourceClass) && $this->isPropertyMapped($campo, $resourceClass)) {
+                    $mappedValues[$campo] = $valor;
                 }
             }
         } else {
@@ -28,15 +35,15 @@ final class NotLikeFilter extends AbstractContextAwareFilter
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        foreach ($value as $campo => $valor) {
+        foreach ($mappedValues as $campo => $valor) {
             // otherwise filter is applied to order and page as well
             $parameterName = $queryNameGenerator->generateParameterName($campo); // Generate a unique parameter name to avoid collisions with other filters
             $queryBuilder
                 ->andWhere(sprintf($rootAlias . '.%s NOT LIKE :%s', $campo, $parameterName))
                 ->setParameter($parameterName, $valor);
         }
-        
-        
+
+
     }
 
     // This function is only used to hook in documentation generators (supported by Swagger and Hydra)
