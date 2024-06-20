@@ -153,29 +153,81 @@ class DecimalUtils
         return $total;
     }
 
-    public static function dividirValorProporcionalmente(float $valor, array $valores, ?bool $restoNaPrimeira = true): array
+    public static function dividirValorProporcionalmente(float $valor, array $partes, ?bool $restoNaPrimeira = true): array
     {
-        // somar todos os itens contidos em $valores
-        $total = 0.0;
-        foreach ($valores as $v) {
-            $total = bcadd($total, $v, 2);
+        $valorEmCentados = (int)bcmul($valor, 100, 2);
+        $qtdePartesNaoZero = 0;
+        foreach ($partes as $v) {
+            if ((float)$v !== 0.0) {
+                $qtdePartesNaoZero++;
+            }
+        }
+
+        $totalPartes = 0.0;
+        foreach ($partes as $v) {
+            $totalPartes = bcadd($totalPartes, $v, 2);
         }
         $rs = [];
         $partesSomadas = 0.0;
-        foreach ($valores as $v) {
-            $proporcao = ((float)$total !== 0.0) ? bcdiv($valor, $total, 4) : 0;
-            $parte = bcmul($v, $proporcao, 2);
-            $partesSomadas = bcadd($partesSomadas, $parte, 2);
+        foreach ($partes as $v) {
+            $proporcao = ((float)$totalPartes !== 0.0) ? bcdiv($v, $totalPartes, 20) : 0;
+            $parte = self::round(bcmul($valor, $proporcao, 20));
+            $partesSomadas = (float)bcadd($partesSomadas, $parte, 2);
             $rs[] = $parte;
         }
-        if ($partesSomadas !== $valor) {
-            $diff = bcsub($valor, $partesSomadas, 2);
-            if ($restoNaPrimeira) {
-                $rs[0] = bcadd($rs[0], $diff, 2);
-            } else {
-                $rs[count($rs) - 1] = bcadd($rs[count($rs) - 1], $diff, 2);
+
+        $algumResultadoNaoZero = false;
+        foreach ($rs as $v) {
+            if ($v !== 0.0) {
+                $algumResultadoNaoZero = true;
+                break;
             }
         }
+
+        $reverteu = false;
+        if (!$restoNaPrimeira) {
+            $rs = array_reverse($rs);
+            $reverteu = true;
+        }
+
+        if (!$algumResultadoNaoZero) {
+            $rs[0] = $valor;
+            return $rs;
+        }
+
+        if ($valorEmCentados < $qtdePartesNaoZero) {
+
+            foreach ($rs as $i => $r) {
+                if ($qtdePartesNaoZero === 0) {
+                    $rs[$i] = $valor;
+                    break;
+                } else {
+                    if ($r !== 0.00) {
+                        $rs[$i] = $valor;
+                        break;
+                    }
+                }
+            }
+            return $rs;
+
+        }
+
+
+        if ($partesSomadas !== $valor) {
+            $diff = bcsub($valor, $partesSomadas, 2);
+
+            foreach ($rs as $i => $r) {
+                if ($r !== 0.00) {
+                    $rs[$i] = bcadd($rs[0], $diff, 2);
+                    break;
+                }
+            }
+        }
+
+        if ($reverteu) {
+            $rs = array_reverse($rs);
+        }
+
         return $rs;
     }
 
