@@ -351,7 +351,9 @@ abstract class EntityHandler implements EntityHandlerInterface
             foreach ($campos as $field) {
                 $property = $reflectionClass->getProperty($field);
                 $property->setAccessible(true);
-                $property->setValue($entityId, trim(mb_strtoupper($property->getValue($entityId))));
+                if ($property->getValue($entityId)) {
+                    $property->setValue($entityId, trim(mb_strtoupper($property->getValue($entityId))));
+                }
             }
         } catch (\ReflectionException $e) {
             $msg = ExceptionUtils::treatException($e);

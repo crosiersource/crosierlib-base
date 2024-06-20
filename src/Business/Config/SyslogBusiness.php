@@ -5,11 +5,9 @@ namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Security;
 
-/**
- * @author Carlos Eduardo Pauluk
- */
 class SyslogBusiness
 {
 

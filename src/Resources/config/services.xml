@@ -300,13 +300,14 @@
 
     <!-- SyslogBusiness -->
     <service id="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
-             class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness">
+             class="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness" shared="false">
       <argument type="service" id="doctrine"/>
       <argument type="service" id="security.helper"/>
       <argument type="service" id="monolog.logger"/>
     </service>
     <service id="CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness"
-             alias="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"/>
+             alias="crosier_source.crosier_lib_base_bundle.business.config.syslog_business"
+    />
 
 
     <!-- EntityIdUtils -->
