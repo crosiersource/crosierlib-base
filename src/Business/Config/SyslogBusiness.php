@@ -142,9 +142,15 @@ class SyslogBusiness
             return;
         }
         try {
+            $component = $component ?? $this->getComponent();
+            $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
+            
             if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
                 $msg = $this->uuidSess . ' - ' . $action;
-                $msg .= '[' . $component . '] ';
+                $msg .= '[COMPO:' . $component . '] ';
+                if ($obs) {
+                    $msg .= '[OBS:' . $obs . '] ';
+                }
                 $msg .= '[username: ' . $username . '] ';
                 switch ($tipo) {
                     case 'info':
@@ -158,21 +164,23 @@ class SyslogBusiness
                         break;
                 }
             }
+             
             $app = $app ?? $this->getApp();
-            $component = $component ?? $this->getComponent();
-            $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
-            $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
-                'uuid_sess' => $this->uuidSess,
-                'tipo' => $tipo,
-                'app' => $app,
-                'component' => $component,
-                'act' => $action,
-                'obs' => $obs,
-                'username' => $username,
-                'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
-                'json_data' => $jsonData ? json_encode($jsonData) : null
-            ]);
+            
+            if (!($_SERVER['SYSLOG_DESABILITADO_EM_TABELA'] ?? false)) {
+                $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
+                    'uuid_sess' => $this->uuidSess,
+                    'tipo' => $tipo,
+                    'app' => $app,
+                    'component' => $component,
+                    'act' => $action,
+                    'obs' => $obs,
+                    'username' => $username,
+                    'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
+                    'json_data' => $jsonData ? json_encode($jsonData) : null
+                ]);
+            }
             if ($this->echo) {
                 echo $tipo . ": " . $action . PHP_EOL;
                 if ($obs) {
