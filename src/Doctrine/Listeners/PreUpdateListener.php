@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\ManagerRegistry;
+use InfluxDB2\Model\WritePrecision;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Security\Core\Security;
 
@@ -26,11 +27,28 @@ class PreUpdateListener
 
     private Security $security;
 
+    private \InfluxDB2\WriteApi $influx;
+
     public function __construct(ManagerRegistry $doctrine, SyslogBusiness $syslog, Security $security)
     {
         $this->doctrine = $doctrine;
         $this->syslog = $syslog->setApp('libbase')->setComponent(self::class);
         $this->security = $security;
+    }
+
+    private function getInflux(): \InfluxDB2\WriteApi
+    {
+        if (!isset($this->influx)) {
+            $client = new \InfluxDB2\Client([
+                "url" => $_SERVER['INFLUXDB_URL'],
+                "token" => $_SERVER['INFLUXDB_TOKEN'],
+                "bucket" => $_SERVER['INFLUXDB_BUCKET'],
+                "org" => $_SERVER['INFLUXDB_ORG'],
+                "precision" => WritePrecision::NS,
+            ]);
+            $this->influx = $client->createWriteApi();
+        }
+        return $this->influx;
     }
 
 
@@ -128,24 +146,22 @@ class PreUpdateListener
                     }
 
                     $class = str_replace("\\", ":", get_class($entity));
-                    
-                    $entityChange = [
-                        'entity_class' => $class,
-                        'entity_id' => $entity->getId(),
-                        'changing_user_id' => $changingUserId,
-                        'changing_user_username' => $user->username,
-                        'changing_user_nome' => $user->nome,
-                        'changed_at' => $entity->getUpdated()->format('Y-m-d H:i:s'),
-                        'changes' => $strChanges,
-                    ];
 
                     try {
-                        $entityManagerLogs = $this->doctrine->getManager('logs');
-                        $conn = $entityManagerLogs->getConnection();
-                        $conn->insert('cfg_entity_change', $entityChange);
+                        $point = \InfluxDB2\Point::measurement('entity_changes')
+                            ->addTag('entity_class', $class)
+                            ->addTag('entity_id', $entity->getId())
+                            ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
+                            ->addTag('changing_user_id', $changingUserId)
+                            ->addTag('changing_user_username', $user->username)
+                            ->addTag('changing_user_nome', $user->nome)
+                            ->addTag('changed_at', $entity->getUpdated()->format('Y-m-d H:i:s'))
+                            ->addField('changes', $strChanges);
+
+                        $this->getInflux()->write($point);
                         $this->syslog->info('Alteração em ' . get_class($entity) . ' id: (' . $entity->getId() . ')');
                     } catch (\Exception $e) {
-                        throw new \RuntimeException('Erro ao salvar na cfg_entity_change para ' . get_class($entity));
+                        throw new \RuntimeException('Erro ao logar entity_change para ' . get_class($entity));
                     }
                 }
             }
@@ -176,5 +192,5 @@ class PreUpdateListener
         }
         return !isset($difference) ? [] : $difference;
     }
-    
+
 }
