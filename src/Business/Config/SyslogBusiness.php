@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Persistence\ManagerRegistry;
 use InfluxDB2\Model\WritePrecision;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Security;
 
 class SyslogBusiness
@@ -184,11 +183,11 @@ class SyslogBusiness
                 $point = \InfluxDB2\Point::measurement('logs')
                     ->addTag('app', $app)
                     ->addTag('tipo', $tipo)
-                    ->addField('ip', $_SERVER['REMOTE_ADDR'])
-                    ->addField('username', $username)
-                    ->addField('component', $component)
+                    ->addTag('ip', $_SERVER['REMOTE_ADDR'])
+                    ->addTag('username', $username)
+                    ->addTag('component', $component)
+                    ->addTag('uuid', $this->uuidSess)
                     ->addField('action', $action)
-                    ->addField('uuid', $this->uuidSess)
                     ->addField('obs', $obs);
 
                 $this->getInflux()->write($point);
