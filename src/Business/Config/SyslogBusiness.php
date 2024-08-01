@@ -6,7 +6,6 @@ use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Persistence\ManagerRegistry;
 use InfluxDB2\Model\WritePrecision;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Security;
 
 class SyslogBusiness
