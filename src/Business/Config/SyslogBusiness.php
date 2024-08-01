@@ -4,6 +4,7 @@ namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Persistence\ManagerRegistry;
+use InfluxDB2\Model\WritePrecision;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Security;
@@ -144,14 +145,14 @@ class SyslogBusiness
         try {
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
-            
+
             if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
-                $msg = $this->uuidSess . ' - ' . $action;
-                $msg .= '[COMPO:' . $component . '] ';
+                $msg = '[COMPO:' . $component . '] ';
                 if ($obs) {
                     $msg .= '[OBS:' . $obs . '] ';
                 }
                 $msg .= '[username: ' . $username . '] ';
+                $msg .= $this->uuidSess . ' - ' . $action;
                 switch ($tipo) {
                     case 'info':
                         $this->logger->info($msg);
@@ -164,22 +165,33 @@ class SyslogBusiness
                         break;
                 }
             }
-             
+
             $app = $app ?? $this->getApp();
-            
-            if (!($_SERVER['SYSLOG_DESABILITADO_EM_TABELA'] ?? false)) {
-                $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
-                    'uuid_sess' => $this->uuidSess,
-                    'tipo' => $tipo,
-                    'app' => $app,
-                    'component' => $component,
-                    'act' => $action,
-                    'obs' => $obs,
-                    'username' => $username,
-                    'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
-                    'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
-                    'json_data' => $jsonData ? json_encode($jsonData) : null
-                ]);
+
+            if (false or !($_SERVER['SYSLOG_DESABILITADO_EM_TABELA'] ?? false)) {
+//                $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
+//                    'uuid_sess' => $this->uuidSess,
+//                    'tipo' => $tipo,
+//                    'app' => $app,
+//                    'component' => $component,
+//                    'act' => $action,
+//                    'obs' => $obs,
+//                    'username' => $username,
+//                    'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
+//                    'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
+//                    'json_data' => $jsonData ? json_encode($jsonData) : null
+//                ]);
+                $point = \InfluxDB2\Point::measurement('logs')
+                    ->addTag('app', $app)
+                    ->addTag('tipo', $tipo)
+                    ->addField('ip', $_SERVER['REMOTE_ADDR'])
+                    ->addField('username', $username)
+                    ->addField('component', $component)
+                    ->addField('action', $action)
+                    ->addField('uuid', $this->uuidSess)
+                    ->addField('obs', $obs);
+
+                $this->getInflux()->write($point);
             }
             if ($this->echo) {
                 echo $tipo . ": " . $action . PHP_EOL;
@@ -191,6 +203,24 @@ class SyslogBusiness
             $this->logger->error('erro ao gravar em cfg_syslog');
             $this->logger->error($e->getMessage());
         }
+    }
+
+
+    private \InfluxDB2\WriteApi $influx;
+
+    private function getInflux(): \InfluxDB2\WriteApi
+    {
+        if (!isset($this->influx)) {
+            $client = new \InfluxDB2\Client([
+                "url" => $_SERVER['INFLUXDB_URL'],
+                "token" => $_SERVER['INFLUXDB_TOKEN'],
+                "bucket" => $_SERVER['INFLUXDB_BUCKET'],
+                "org" => $_SERVER['INFLUXDB_ORG'],
+                "precision" => WritePrecision::NS,
+            ]);
+            $this->influx = $client->createWriteApi();
+        }
+        return $this->influx;
     }
 
 
