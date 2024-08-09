@@ -54,7 +54,7 @@ class PreUpdateListener
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        if (!($_SERVER['DATABASE_LOGS_URL'] ?? false)) return;
+        if (!($_SERVER['INFLUXDB_URL'] ?? false)) return;
         /** @var EntityId $entity */
         $entity = $args->getObject();
 

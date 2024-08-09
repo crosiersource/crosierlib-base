@@ -138,9 +138,6 @@ class SyslogBusiness
         ?\DateTime $deleteAfter = null,
         ?array     $jsonData = null): void
     {
-        if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) {
-            return;
-        }
         try {
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
@@ -167,19 +164,7 @@ class SyslogBusiness
 
             $app = $app ?? $this->getApp();
 
-            if (false or !($_SERVER['SYSLOG_DESABILITADO_EM_TABELA'] ?? false)) {
-//                $this->doctrine->getManager('logs')->getConnection()->insert('cfg_syslog', [
-//                    'uuid_sess' => $this->uuidSess,
-//                    'tipo' => $tipo,
-//                    'app' => $app,
-//                    'component' => $component,
-//                    'act' => $action,
-//                    'obs' => $obs,
-//                    'username' => $username,
-//                    'moment' => (new \DateTime())->format('Y-m-d H:i:s'),
-//                    'delete_after' => $deleteAfter ? $deleteAfter->format('Y-m-d H:i:s') : null,
-//                    'json_data' => $jsonData ? json_encode($jsonData) : null
-//                ]);
+            if ($_SERVER['INFLUXDB_URL'] ?? false) {
                 $point = \InfluxDB2\Point::measurement('logs')
                     ->addTag('app', $app)
                     ->addTag('tipo', $tipo)
@@ -189,9 +174,9 @@ class SyslogBusiness
                     ->addTag('uuid', $this->uuidSess)
                     ->addField('action', $action)
                     ->addField('obs', $obs);
-
                 $this->getInflux()->write($point);
             }
+
             if ($this->echo) {
                 echo $tipo . ": " . $action . PHP_EOL;
                 if ($obs) {
