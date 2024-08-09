@@ -183,7 +183,7 @@ class SyslogBusiness
                 $point = \InfluxDB2\Point::measurement('logs')
                     ->addTag('app', $app)
                     ->addTag('tipo', $tipo)
-                    ->addTag('ip', $_SERVER['REMOTE_ADDR'])
+                    ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
                     ->addTag('username', $username)
                     ->addTag('component', $component)
                     ->addTag('uuid', $this->uuidSess)
