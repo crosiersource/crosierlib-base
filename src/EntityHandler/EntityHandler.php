@@ -226,7 +226,8 @@ abstract class EntityHandler implements EntityHandlerInterface
                         $entityChange['changing_user_nome'] = $user->nome;
                     }
 
-                    $this->managerRegistry->getManager('logs')->getConnection()->insert('cfg_entity_change', $entityChange);
+                    // TODO: implementar via INFLUX
+                    // $this->managerRegistry->getManager('logs')->getConnection()->insert('cfg_entity_change', $entityChange);
                     $this->salvouLogInsert = true;
                 }
             } catch (\Throwable $e) {
