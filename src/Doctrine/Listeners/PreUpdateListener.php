@@ -148,18 +148,20 @@ class PreUpdateListener
                     $class = str_replace("\\", ":", get_class($entity));
 
                     try {
-                        $point = \InfluxDB2\Point::measurement('entity_changes')
-                            ->addTag('entity_class', $class)
-                            ->addTag('entity_id', $entity->getId())
-                            ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
-                            ->addTag('changing_user_id', $changingUserId)
-                            ->addTag('changing_user_username', $user->username)
-                            ->addTag('changing_user_nome', $user->nome)
-                            ->addTag('changed_at', $entity->getUpdated()->format('Y-m-d H:i:s'))
-                            ->addField('changes', $strChanges);
+                        if ($_SERVER['INFLUXDB_URL'] ?? false) {
+                            $point = \InfluxDB2\Point::measurement('entity_changes')
+                                ->addTag('entity_class', $class)
+                                ->addTag('entity_id', $entity->getId())
+                                ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
+                                ->addTag('changing_user_id', $changingUserId)
+                                ->addTag('changing_user_username', $user->username)
+                                ->addTag('changing_user_nome', $user->nome)
+                                ->addTag('changed_at', $entity->getUpdated()->format('Y-m-d H:i:s'))
+                                ->addField('changes', $strChanges);
 
-                        $this->getInflux()->write($point);
-                        $this->syslog->info('Alteração em ' . get_class($entity) . ' id: (' . $entity->getId() . ')');
+                            $this->getInflux()->write($point);
+                            $this->syslog->info('Alteração em ' . get_class($entity) . ' id: (' . $entity->getId() . ')');
+                        }
                     } catch (\Exception $e) {
                         throw new \RuntimeException('Erro ao logar entity_change para ' . get_class($entity));
                     }
