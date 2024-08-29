@@ -142,40 +142,36 @@ class SyslogBusiness
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
 
-            if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
-                $msg = '[COMPO:' . $component . '] ';
-                $msg .= '[username: ' . $username . '] ';
-                $msg .= $this->uuidSess . ' - ' . $action;
-                if ($obs) {
-                    $msg .= '[OBS:' . $obs . '] ';
-                }
-                switch ($tipo) {
-                    case 'info':
-                        $this->logger->info($msg);
-                        break;
-                    case 'err':
-                        $this->logger->error($msg);
-                        break;
-                    case 'debug':
-                        $this->logger->debug($msg);
-                        break;
-                }
+
+            $msg = '[[[' . $this->ipReal() . ']]] [[[' . $username . ']]] [[[' . $component . ']]] [[[' . $this->uuidSess . ']]] ' . $action . ' [[[' . $obs . ']]]';
+            
+            switch ($tipo) {
+                case 'info':
+                    $this->logger->info($msg);
+                    break;
+                case 'err':
+                    $this->logger->error($msg);
+                    break;
+                case 'debug':
+                    $this->logger->debug($msg);
+                    break;
             }
+            
 
             $app = $app ?? $this->getApp();
 
-            if ($_SERVER['INFLUXDB_URL'] ?? false) {
-                $point = \InfluxDB2\Point::measurement('logs')
-                    ->addTag('app', $app)
-                    ->addTag('tipo', $tipo)
-                    ->addTag('ip', $this->ipReal())
-                    ->addTag('username', $username)
-                    ->addTag('component', $component)
-                    ->addTag('uuid', $this->uuidSess)
-                    ->addField('action', $action)
-                    ->addField('obs', $obs);
-                $this->getInflux()->write($point);
-            }
+//            if ($_SERVER['INFLUXDB_URL'] ?? false) {
+//                $point = \InfluxDB2\Point::measurement('logs')
+//                    ->addTag('app', $app)
+//                    ->addTag('tipo', $tipo)
+//                    ->addTag('ip', $this->ipReal())
+//                    ->addTag('username', $username)
+//                    ->addTag('component', $component)
+//                    ->addTag('uuid', $this->uuidSess)
+//                    ->addField('action', $action)
+//                    ->addField('obs', $obs);
+//                $this->getInflux()->write($point);
+//            }
 
             if ($this->echo) {
                 echo $tipo . ": " . $action . PHP_EOL;
@@ -190,22 +186,22 @@ class SyslogBusiness
     }
 
 
-    private \InfluxDB2\WriteApi $influx;
-
-    private function getInflux(): \InfluxDB2\WriteApi
-    {
-        if (!isset($this->influx)) {
-            $client = new \InfluxDB2\Client([
-                "url" => $_SERVER['INFLUXDB_URL'],
-                "token" => $_SERVER['INFLUXDB_TOKEN'],
-                "bucket" => $_SERVER['INFLUXDB_BUCKET'],
-                "org" => $_SERVER['INFLUXDB_ORG'],
-                "precision" => WritePrecision::NS,
-            ]);
-            $this->influx = $client->createWriteApi();
-        }
-        return $this->influx;
-    }
+//    private \InfluxDB2\WriteApi $influx;
+//
+//    private function getInflux(): \InfluxDB2\WriteApi
+//    {
+//        if (!isset($this->influx)) {
+//            $client = new \InfluxDB2\Client([
+//                "url" => $_SERVER['INFLUXDB_URL'],
+//                "token" => $_SERVER['INFLUXDB_TOKEN'],
+//                "bucket" => $_SERVER['INFLUXDB_BUCKET'],
+//                "org" => $_SERVER['INFLUXDB_ORG'],
+//                "precision" => WritePrecision::NS,
+//            ]);
+//            $this->influx = $client->createWriteApi();
+//        }
+//        return $this->influx;
+//    }
 
     private function ipReal(): string
     {
