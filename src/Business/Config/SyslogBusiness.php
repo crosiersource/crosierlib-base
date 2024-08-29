@@ -144,11 +144,11 @@ class SyslogBusiness
 
             if ($tipo === 'err' || $this->logToo || ($_SERVER['SYSLOG_LOGTOO'] ?? false)) {
                 $msg = '[COMPO:' . $component . '] ';
+                $msg .= '[username: ' . $username . '] ';
+                $msg .= $this->uuidSess . ' - ' . $action;
                 if ($obs) {
                     $msg .= '[OBS:' . $obs . '] ';
                 }
-                $msg .= '[username: ' . $username . '] ';
-                $msg .= $this->uuidSess . ' - ' . $action;
                 switch ($tipo) {
                     case 'info':
                         $this->logger->info($msg);
@@ -168,7 +168,7 @@ class SyslogBusiness
                 $point = \InfluxDB2\Point::measurement('logs')
                     ->addTag('app', $app)
                     ->addTag('tipo', $tipo)
-                    ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
+                    ->addTag('ip', $this->ipReal())
                     ->addTag('username', $username)
                     ->addTag('component', $component)
                     ->addTag('uuid', $this->uuidSess)
@@ -205,6 +205,23 @@ class SyslogBusiness
             $this->influx = $client->createWriteApi();
         }
         return $this->influx;
+    }
+
+    private function ipReal(): string
+    {
+        if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+            return $_SERVER["HTTP_CLIENT_IP"];
+        } elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+            return $_SERVER["HTTP_X_FORWARDED_FOR"];
+        } elseif (isset($_SERVER["HTTP_X_FORWARDED"])) {
+            return $_SERVER["HTTP_X_FORWARDED"];
+        } elseif (isset($_SERVER["HTTP_FORWARDED_FOR"])) {
+            return $_SERVER["HTTP_FORWARDED_FOR"];
+        } elseif (isset($_SERVER["HTTP_FORWARDED"])) {
+            return $_SERVER["HTTP_FORWARDED"];
+        } else {
+            return $_SERVER["REMOTE_ADDR"] ?? 'n/d';
+        }
     }
 
 
