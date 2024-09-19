@@ -53,6 +53,7 @@ class FilterData
         'NOT_LIKE' => 1,
         'BETWEEN' => 2,
         'BETWEEN_DATE' => 2,
+        'BETWEEN_DATETIME' => 2,
         'BETWEEN_DATE_CONCAT' => 1, // No formato "01/01/2001 - 02/02/2002"
         'BETWEEN_MESANO' => 2,
         'BETWEEN_IDADE' => 2,

@@ -112,14 +112,21 @@ class WhereBuilder
             }
             return;
         }
-        if (in_array($filter->filterType, ['BETWEEN_DATE', 'BETWEEN_DATE_CONCAT'], true)) {
+        if (in_array($filter->filterType, ['BETWEEN_DATE', 'BETWEEN_DATE_CONCAT', 'BETWEEN_DATETIME'], true)) {
             if ($filter->val['i'] ?? false) {
                 if (!($filter->val['i'] instanceof \DateTime)) {
                     $ini = DateTimeUtils::parseDateStr($filter->val['i']);
                     $filter->val['i'] = $ini;
                 }
-                $filter->val['i'] = (clone $filter->val['i']);
-                $filter->val['i']->setTime(0, 0);
+                $dtIni = (clone $filter->val['i']);
+                $timezoneAtual = $dtIni->getTimezone()->getName();
+                if ($timezoneAtual !== 'America/Sao_Paulo') {
+                    $dtIni->setTimezone(new \DateTimeZone('America/Sao_Paulo'));
+                }
+                if ($filter->filterType !== 'BETWEEN_DATETIME') {
+                    $dtIni->setTime(0, 0);
+                }
+                $filter->val['i'] = $dtIni;
             }
 
             if ($filter->val['f'] ?? false) {
@@ -127,8 +134,15 @@ class WhereBuilder
                     $fim = DateTimeUtils::parseDateStr($filter->val['f']);
                     $filter->val['f'] = $fim;
                 }
-                $filter->val['f'] = (clone $filter->val['f']);
-                $filter->val['f']->setTime(23, 59, 59, 999999);
+                $dtFim = (clone $filter->val['f']);
+                $timezoneAtual = $dtFim->getTimezone()->getName();
+                if ($timezoneAtual !== 'America/Sao_Paulo') {
+                    $dtFim->setTimezone(new \DateTimeZone('America/Sao_Paulo'));
+                }
+                if ($filter->filterType !== 'BETWEEN_DATETIME') {
+                    $filter->val['f']->setTime(23, 59, 59, 999999);
+                }
+                $filter->val['f'] = $dtFim;
             }
 
             return;
@@ -336,6 +350,7 @@ class WhereBuilder
                     break;
                 case 'BETWEEN':
                 case 'BETWEEN_DATE':
+                case 'BETWEEN_DATETIME':
                 case 'BETWEEN_IDADE':
                 case 'BETWEEN_MESANO':
                 case 'BETWEEN_PORCENT':
@@ -365,6 +380,7 @@ class WhereBuilder
         switch ($filter->filterType) {
             case 'BETWEEN':
             case 'BETWEEN_DATE':
+            case 'BETWEEN_DATETIME':
             case 'BETWEEN_DATE_CONCAT':
             case 'BETWEEN_IDADE':
             case 'BETWEEN_MESANO':
