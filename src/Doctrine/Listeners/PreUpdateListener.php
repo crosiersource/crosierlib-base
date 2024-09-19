@@ -4,6 +4,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\Doctrine\Listeners;
 
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\EntityChangeVo;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackDateOnly;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
@@ -54,7 +55,7 @@ class PreUpdateListener
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        if (!($_SERVER['INFLUXDB_URL'] ?? false)) return;
+        if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) return;
         /** @var EntityId $entity */
         $entity = $args->getObject();
 
@@ -148,20 +149,17 @@ class PreUpdateListener
                     $class = str_replace("\\", ":", get_class($entity));
 
                     try {
-                        if ($_SERVER['INFLUXDB_URL'] ?? false) {
-                            $point = \InfluxDB2\Point::measurement('entity_changes')
-                                ->addTag('entity_class', $class)
-                                ->addTag('entity_id', $entity->getId())
-                                ->addTag('ip', $_SERVER['REMOTE_ADDR'] ?? 'n/d')
-                                ->addTag('changing_user_id', $changingUserId)
-                                ->addTag('changing_user_username', $user->username)
-                                ->addTag('changing_user_nome', $user->nome)
-                                ->addTag('changed_at', $entity->getUpdated()->format('Y-m-d H:i:s'))
-                                ->addField('changes', $strChanges);
-
-                            $this->getInflux()->write($point);
-                            $this->syslog->info('Alteração em ' . get_class($entity) . ' id: (' . $entity->getId() . ')');
-                        }
+                        $this->syslog->entityChange(
+                            new EntityChangeVo(
+                                $class,
+                                $entity->getId(),
+                                $_SERVER['REMOTE_ADDR'] ?? 'n/d',
+                                $changingUserId,
+                                $user->username,
+                                $entity->getUpdated()->format('Y-m-d H:i:s'),
+                                $strChanges
+                            )
+                        );
                     } catch (\Exception $e) {
                         throw new \RuntimeException('Erro ao logar entity_change para ' . get_class($entity));
                     }

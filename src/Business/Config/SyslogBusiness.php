@@ -4,7 +4,6 @@ namespace CrosierSource\CrosierLibBaseBundle\Business\Config;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\Persistence\ManagerRegistry;
-use InfluxDB2\Model\WritePrecision;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -138,13 +137,16 @@ class SyslogBusiness
         ?\DateTime $deleteAfter = null,
         ?array     $jsonData = null): void
     {
+        if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) {
+            return;
+        }
         try {
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
 
 
             $msg = '[[[' . $this->ipReal() . ']]] [[[' . $username . ']]] [[[' . $component . ']]] [[[' . $this->uuidSess . ']]] ' . $action . ' [[[' . $obs . ']]]';
-            
+
             switch ($tipo) {
                 case 'info':
                     $this->logger->info($msg);
@@ -156,22 +158,9 @@ class SyslogBusiness
                     $this->logger->debug($msg);
                     break;
             }
-            
+
 
             $app = $app ?? $this->getApp();
-
-//            if ($_SERVER['INFLUXDB_URL'] ?? false) {
-//                $point = \InfluxDB2\Point::measurement('logs')
-//                    ->addTag('app', $app)
-//                    ->addTag('tipo', $tipo)
-//                    ->addTag('ip', $this->ipReal())
-//                    ->addTag('username', $username)
-//                    ->addTag('component', $component)
-//                    ->addTag('uuid', $this->uuidSess)
-//                    ->addField('action', $action)
-//                    ->addField('obs', $obs);
-//                $this->getInflux()->write($point);
-//            }
 
             if ($this->echo) {
                 echo $tipo . ": " . $action . PHP_EOL;
@@ -185,23 +174,38 @@ class SyslogBusiness
         }
     }
 
+    public function entityChange(EntityChangeVo $entityChangeVo): void
+    {
+        if ($_SERVER['SYSLOG_DESABILITADO'] ?? false) {
+            return;
+        }
+        try {
+            $component = $component ?? $this->getComponent();
+            $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
 
-//    private \InfluxDB2\WriteApi $influx;
-//
-//    private function getInflux(): \InfluxDB2\WriteApi
-//    {
-//        if (!isset($this->influx)) {
-//            $client = new \InfluxDB2\Client([
-//                "url" => $_SERVER['INFLUXDB_URL'],
-//                "token" => $_SERVER['INFLUXDB_TOKEN'],
-//                "bucket" => $_SERVER['INFLUXDB_BUCKET'],
-//                "org" => $_SERVER['INFLUXDB_ORG'],
-//                "precision" => WritePrecision::NS,
-//            ]);
-//            $this->influx = $client->createWriteApi();
-//        }
-//        return $this->influx;
-//    }
+
+            $msg = 'ENTITY_CHANGE:'; //  . $this->ipReal() . ']]] [[[' . $username . ']]] [[[' . $component . ']]] [[[' . $this->uuidSess . ']]] ' . $action . ' [[[' . $obs . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->entityClass . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->entityId . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->ip . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->changingUserId . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->changingUserUsername . ']]]';
+            $msg .= ' [[[' . $entityChangeVo->changes . ']]]';
+
+
+            $this->logger->info($msg);
+
+            if ($this->echo) {
+                echo $tipo . ": " . $action . PHP_EOL;
+                if ($obs) {
+                    echo $obs . PHP_EOL . PHP_EOL;
+                }
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error('erro ao gravar em cfg_syslog');
+            $this->logger->error($e->getMessage());
+        }
+    }
 
     private function ipReal(): string
     {
