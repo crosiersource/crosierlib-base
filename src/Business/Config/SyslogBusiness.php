@@ -149,7 +149,7 @@ class SyslogBusiness
             $msg .= '[[[' . $component . ']]] ';
             $msg .= '[[[' . $this->uuidSess . ']]] ' . $action . ' ';
             $msg .= '[[[' . $obs . ']]] ';
-            $msg .= '[[[' . $_SERVER['CROSIERAPP_ID'] ?? 'n/d' . ']]]';
+            $msg .= '[[[' . ($_SERVER['CROSIERAPP_ID'] ?? 'n/d') . ']]]';
             
             switch ($tipo) {
                 case 'info':
@@ -195,7 +195,7 @@ class SyslogBusiness
             $msg .= ' [[[' . $entityChangeVo->changingUserId . ']]]';
             $msg .= ' [[[' . $entityChangeVo->changingUserUsername . ']]]';
             $msg .= ' [[[' . $entityChangeVo->changes . ']]]';
-            $msg .= ' [[[' . $_SERVER['CROSIERAPP_ID'] ?? 'n/d' . ']]]';
+            $msg .= ' [[[' . ($_SERVER['CROSIERAPP_ID'] ?? 'n/d') . ']]]';
 
 
             $this->logger->info($msg);
