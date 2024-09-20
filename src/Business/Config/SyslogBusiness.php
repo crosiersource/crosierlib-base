@@ -144,9 +144,13 @@ class SyslogBusiness
             $component = $component ?? $this->getComponent();
             $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
 
-
-            $msg = '[[[' . $this->ipReal() . ']]] [[[' . $username . ']]] [[[' . $component . ']]] [[[' . $this->uuidSess . ']]] ' . $action . ' [[[' . $obs . ']]]';
-
+            $msg = '[[[' . $this->ipReal() . ']]] ';
+            $msg .= '[[[' . $username . ']]] ';
+            $msg .= '[[[' . $component . ']]] ';
+            $msg .= '[[[' . $this->uuidSess . ']]] ' . $action . ' ';
+            $msg .= '[[[' . $obs . ']]] ';
+            $msg .= '[[[' . $_SERVER['CROSIERAPP_ID'] ?? 'n/d' . ']]]';
+            
             switch ($tipo) {
                 case 'info':
                     $this->logger->info($msg);
@@ -191,6 +195,7 @@ class SyslogBusiness
             $msg .= ' [[[' . $entityChangeVo->changingUserId . ']]]';
             $msg .= ' [[[' . $entityChangeVo->changingUserUsername . ']]]';
             $msg .= ' [[[' . $entityChangeVo->changes . ']]]';
+            $msg .= ' [[[' . $_SERVER['CROSIERAPP_ID'] ?? 'n/d' . ']]]';
 
 
             $this->logger->info($msg);
