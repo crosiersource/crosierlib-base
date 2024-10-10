@@ -150,7 +150,7 @@ class SyslogBusiness
             $msg .= '[[[' . $this->uuidSess . ']]] ' . $action . ' ';
             $msg .= '[[[' . $obs . ']]] ';
             $msg .= '[[[' . ($_SERVER['CROSIERAPP_ID'] ?? 'n/d') . ']]]';
-            
+
             switch ($tipo) {
                 case 'info':
                     $this->logger->info($msg);
@@ -184,10 +184,6 @@ class SyslogBusiness
             return;
         }
         try {
-            $component = $component ?? $this->getComponent();
-            $username = $username ?? ($this->security->getUser() ? $this->security->getUser()->getUsername() : null) ?? 'n/d';
-
-
             $msg = 'ENTITY_CHANGE:'; //  . $this->ipReal() . ']]] [[[' . $username . ']]] [[[' . $component . ']]] [[[' . $this->uuidSess . ']]] ' . $action . ' [[[' . $obs . ']]]';
             $msg .= ' [[[' . $entityChangeVo->entityClass . ']]]';
             $msg .= ' [[[' . $entityChangeVo->entityId . ']]]';
@@ -201,13 +197,10 @@ class SyslogBusiness
             $this->logger->info($msg);
 
             if ($this->echo) {
-                echo $tipo . ": " . $action . PHP_EOL;
-                if ($obs) {
-                    echo $obs . PHP_EOL . PHP_EOL;
-                }
+                echo $msg;
             }
         } catch (\Throwable $e) {
-            $this->logger->error('erro ao gravar em cfg_syslog');
+            $this->logger->error('erro ao logar o entityChange');
             $this->logger->error($e->getMessage());
         }
     }
