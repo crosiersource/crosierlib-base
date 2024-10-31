@@ -202,6 +202,22 @@ class StringUtils
         return $numero;
     }
 
+    public static function validaTelefone($numero): bool {
+        
+        if  (!$numero) return true;
+        
+        if (strlen($numero) !== 10 && strlen($numero) !== 11) {
+            return false;
+        }
+
+        // Extrai o DDD e o número42
+        $ddd = substr($numero, 0, 2);
+        $digitoNumero = substr($numero, 2, 1); // O primeiro dígito do número (após o DDD)
+
+        // Verifica as regras para o DDD
+        return preg_match('/^([1|4|6|8|9][0-9]|2[12478]|3[1-5]|3[78]|5[13-5]|7[139])$/', $ddd);
+    }
+
 
     public static function obfuscateEmail(string $email): string
     {
