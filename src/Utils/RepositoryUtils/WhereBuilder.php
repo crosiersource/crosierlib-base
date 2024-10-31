@@ -124,9 +124,10 @@ class WhereBuilder
                     $dtIni->setTimezone(new \DateTimeZone('America/Sao_Paulo'));
                 }
                 if ($filter->filterType !== 'BETWEEN_DATETIME') {
-                    $dtIni->setTime(0, 0);
+                    $filter->val['i'] = $dtIni->format('Y-m-d');
+                } else {
+                    $filter->val['i'] = $dtIni;
                 }
-                $filter->val['i'] = $dtIni;
             }
 
             if ($filter->val['f'] ?? false) {
@@ -140,9 +141,10 @@ class WhereBuilder
                     $dtFim->setTimezone(new \DateTimeZone('America/Sao_Paulo'));
                 }
                 if ($filter->filterType !== 'BETWEEN_DATETIME') {
-                    $filter->val['f']->setTime(23, 59, 59, 999999);
+                    $filter->val['f'] = $dtFim->format('Y-m-d');
+                } else {
+                    $filter->val['f'] = $dtFim;
                 }
-                $filter->val['f'] = $dtFim;
             }
 
             return;
@@ -272,6 +274,9 @@ class WhereBuilder
                 $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\')';
             } elseif ($filter->fieldType == 'datetime') {
                 $field = 'STR_TO_DATE(' . $field . ', \'%Y-%m-%d\ %H:%i:%s\')';
+            }
+            if (in_array($filter->filterType, ['BETWEEN_DATE','BETWEEN_DATE_CONCAT'], true)) {
+                $field = 'DATE(' . $field . ')';
             }
 
 
