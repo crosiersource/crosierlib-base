@@ -11,6 +11,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use InfluxDB2\Model\WritePrecision;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -90,19 +91,34 @@ class PreUpdateListener
                     break;
                 }
             }
-
+            // $entity->userRoles->getInsertDiff()
+            // $entity->userRoles->getDeleteDiff()
+            // $entity->userRoles->getSnapshot()
             if ($isTrackedClass) {
                 $strChanges = '';
                 /** @var array $entityChangeSet */
                 $entityChangeSet = $args->getEntityChangeSet();
                 foreach ($entityChangeSet as $field => $changes) {
+                    
                     if ($field === 'updated') continue;
+                    
+                    if ($changes instanceof PersistentCollection) {
+                        try {
+                            $new = $entity->$field->getInsertDiff();
+                            $old = $changes->toArray();
+                            $strChanges .= $this->getDiffInCollections($field, $new, $old);
+                        } catch (\Throwable $e) {
+                            // ...
+                        }
+                        continue;
+                    }
+                    
                     foreach ($changes as $k => $v) {
                         if ($v instanceof \DateTime || $v instanceof \DateTimeImmutable) {
                             if (in_array($field, $class['trackDateOnly'] ?? [], true)) {
                                 $changes[$k] = $v->format('d/m/Y');
                             } else {
-                                $changes[$k] = $v->format('d/m/Y H:i:s T');
+                                $changes[$k] = $v->format('d/m/Y H:i:s');
                             }
                         } elseif ($v instanceof EntityId) {
                             $changes[$k] = $v->__toString();
@@ -126,10 +142,10 @@ class PreUpdateListener
                         foreach ($arrDiff as $k => $diff) {
                             $from = is_array($diff) ? json_encode($changes[0][$k] ?? []) : ($changes[0][$k] ?? '_NULL_');
                             $to = is_array($diff) ? json_encode($changes[1][$k] ?? []) : ($changes[1][$k] ?? '_NULL_');
-                            $strChanges .= 'jsonData.' . $k . ': de "' . $from . '" para "' . $to . '"' . PHP_EOL;
+                            $strChanges .= 'jsonData.' . $k . ': de "' . $from . '" para "' . $to . '"<br/>';
                         }
                     } else if ((string)$changes[0] !== (string)$changes[1]) {
-                        $strChanges .= $field . ': de "' . $changes[0] . '" para "' . $changes[1] . '"' . PHP_EOL;
+                        $strChanges .= $field . ': de "' . $changes[0] . '" para "' . $changes[1] . '"<br/>';
                     }
 
                 }
@@ -191,6 +207,26 @@ class PreUpdateListener
             }
         }
         return !isset($difference) ? [] : $difference;
+    }
+    
+    
+    private function getDiffInCollections(string $field, array $new, array $old): string
+    {
+        $strChanges = '';
+        foreach ($new as $n) {
+            if (!in_array($n, $old, true)) {
+                $strChanges .= '** Adicionado: ' . $n->__toString() . '<br/>';
+            }
+        }
+        foreach ($old as $o) {
+            if (!in_array($o, $new, true)) {
+                $strChanges .= '** Removido: ' . $o->__toString() . '<br/>';
+            }
+        }
+        if ($strChanges) {
+            $strChanges = '* Alterações em ' . $field . ':' . '<br/>' . $strChanges;
+        }
+        return $strChanges;
     }
 
 }

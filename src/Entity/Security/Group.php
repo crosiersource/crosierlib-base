@@ -21,12 +21,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"group"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/sec/group/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/sec/group/{id}"},
  *          "put"={"path"="/sec/group/{id}", "security"="is_granted('ROLE_ADMIN')"},
  *          "delete"={"path"="/sec/group/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/sec/group", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/sec/group"},
  *          "post"={"path"="/sec/group", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *

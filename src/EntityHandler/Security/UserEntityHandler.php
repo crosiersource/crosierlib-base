@@ -39,8 +39,8 @@ class UserEntityHandler extends EntityHandler
      */
     public function beforeSave($user)
     {
-        if (is_array($user->userRoles)) {
-            $roles = $user->userRoles;
+        if ($user->group) {
+            $roles = $user->group->roles;
             $user->userRoles = new ArrayCollection();
             foreach ($roles as $role) {
                 $user->userRoles->add($role);

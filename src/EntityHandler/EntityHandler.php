@@ -3,6 +3,7 @@
 namespace CrosierSource\CrosierLibBaseBundle\EntityHandler;
 
 
+use CrosierSource\CrosierLibBaseBundle\Business\Config\EntityChangeVo;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
@@ -205,29 +206,30 @@ abstract class EntityHandler implements EntityHandlerInterface
                 if (!$this->salvouLogInsert && $inserting && $entityId->getId()) {
 
                     $class = str_replace("\\", ":", get_class($entityId));
-                    
-                    $entityChange = [
-                        'entity_class' => $class,
-                        'entity_id' => $entityId->getId(),
-                        'changed_at' => $entityId->getUpdated()->format('Y-m-d H:i:s'),
-                        'changes' => 'INSERINDO',
-                    ];
-
+                 
                     /** @var User $user */
                     $user = $this->security->getUser();
                     
                     if (!$user) {
-                        $entityChange['changing_user_id'] = 0;
-                        $entityChange['changing_user_username'] = 'n/d';
-                        $entityChange['changing_user_nome'] = 'n/d';
+                        $changingUserId = 0;
+                        $username = 'n/d';
                     } else {
-                        $entityChange['changing_user_id'] = $user->getUserInsertedId();
-                        $entityChange['changing_user_username'] = $user->username;
-                        $entityChange['changing_user_nome'] = $user->nome;
+                        $changingUserId = $user->getUserInsertedId();
+                        $username = $user->username;
                     }
 
-                    // TODO: implementar via INFLUX
-                    // $this->managerRegistry->getManager('logs')->getConnection()->insert('cfg_entity_change', $entityChange);
+                    $this->syslog->entityChange(
+                        new EntityChangeVo(
+                            $class,
+                            $entityId->getId(),
+                            $_SERVER['REMOTE_ADDR'] ?? 'n/d',
+                            $changingUserId,
+                            $username,
+                            $entityId->getInserted()->format('Y-m-d H:i:s'),
+                            'INSERIDO',
+                        )
+                    );
+
                     $this->salvouLogInsert = true;
                 }
             } catch (\Throwable $e) {

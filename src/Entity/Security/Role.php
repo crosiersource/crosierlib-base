@@ -20,12 +20,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"role"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/sec/role/{id}"},
  *          "put"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"},
  *          "delete"={"path"="/sec/role/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
- *          "get"={"path"="/sec/role", "security"="is_granted('ROLE_ADMIN')"},
+ *          "get"={"path"="/sec/role"},
  *          "post"={"path"="/sec/role", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *
@@ -85,6 +85,11 @@ class Role implements EntityId
     public function setDescricao($descricao)
     {
         $this->descricao = $descricao;
+    }
+
+    public function __toString(): string
+    {
+        return $this->role;
     }
 
 

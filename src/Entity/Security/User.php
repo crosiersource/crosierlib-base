@@ -9,6 +9,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackedEntity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,8 +25,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     denormalizationContext={"groups"={"user","userPassword","entityId"},"enable_max_depth"=true},
  *
  *     itemOperations={
- *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.owner == user"},
- *          "put"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.owner == user"},
+ *          "get"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN') or object.getId() == user.getId()"},
+ *          "put"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"},
  *          "delete"={"path"="/sec/user/{id}", "security"="is_granted('ROLE_ADMIN')"}
  *     },
  *     collectionOperations={
@@ -63,6 +64,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository")
  * @ORM\Table(name="sec_user")
+ * 
+ * @TrackedEntity
+ * 
  * @author Carlos Eduardo Pauluk
  */
 class User implements EntityId, UserInterface, \Serializable
@@ -252,6 +256,16 @@ class User implements EntityId, UserInterface, \Serializable
             $d .= ' (' . $this->descricao . ')';
         }
         return $d;
+    }
+
+    /**
+     * @Groups("user")
+     * @return string|null
+     */
+    public function getRolesSeparadasPorVirgulas(): ?string
+    {
+        $roles = $this->getRoles();
+        return implode(', ', $roles);
     }
 
 }
