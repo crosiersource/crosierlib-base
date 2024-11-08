@@ -73,6 +73,12 @@
          controller="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller::enviarMensagemParaUsers"
          path="/api/cfg/pushMessage/enviarMensagemParaUsers">
   </route>
-
+  
+  
+  <!-- EntityChangesController -->
+  <route id="api_core_config_entityChanges"
+         controller="crosier_source.crosier_lib_base_bundle.controller.config.entity_changes_controller::getEntityChanges"
+         path="/api/core/config/entityChanges/">
+  </route>
 
 </routes>
