@@ -39,13 +39,7 @@ class UserEntityHandler extends EntityHandler
      */
     public function beforeSave($user)
     {
-        if ($user->group) {
-            $roles = $user->group->roles;
-            $user->userRoles = new ArrayCollection();
-            foreach ($roles as $role) {
-                $user->userRoles->add($role);
-            }
-        }
+        $this->verificarRolesDoGrupo($user);
         /** @var User $user */
         if ($user->password && strlen($user->password) < 53) {
             $encoded = $this->passwordEncoder->hashPassword($user, $user->password);
@@ -56,6 +50,30 @@ class UserEntityHandler extends EntityHandler
         }
         $user->email = mb_strtolower($user->email);
         $user->username = mb_strtolower($user->username);
+    }
+    
+    private function verificarRolesDoGrupo(User $user): void
+    {
+        if ($user->group) {            
+            $rolesNoGroup = $user->group->roles;
+            
+            $rolesDoUser = $user->userRoles;
+            
+            /** @var Role $role */
+            foreach ($rolesNoGroup as $role) {
+                if (!$rolesDoUser->contains($role)) {
+                    $user->userRoles->add($role);
+                }                
+            }
+
+            /** @var Role $role */
+            foreach ($rolesDoUser as $role) {
+                if (!$rolesNoGroup->contains($role)) {
+                    $user->userRoles->removeElement($role);
+                }
+            }
+            
+        }
     }
 
     /**
@@ -130,4 +148,5 @@ class UserEntityHandler extends EntityHandler
     {
         return User::class;
     }
+    
 }
