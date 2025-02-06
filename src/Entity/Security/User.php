@@ -195,6 +195,14 @@ class User implements EntityId, UserInterface, \Serializable
         return $roles;
     }
 
+    public function getRolesAsArrayCollection()
+    {
+        if ($roles instanceof ArrayCollection) {
+            return $roles;
+        }
+        return new ArrayCollection($this->getRoles());
+    }
+
     public function addRole(Role $role)
     {
         if (!$this->userRoles->contains($role)) {
