@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class StringUtilsTest extends TestCase
 {
 
-    public function validaTelefone()
+    public function test_validaTelefone()
     {
 
         $validos = [
