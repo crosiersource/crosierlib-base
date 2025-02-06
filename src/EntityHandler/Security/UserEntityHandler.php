@@ -57,7 +57,7 @@ class UserEntityHandler extends EntityHandler
         if ($user->group) {            
             $rolesNoGroup = $user->group->roles;
             
-            $rolesDoUser = $user->userRoles;
+            $rolesDoUser = $user->getRoles();
             
             /** @var Role $role */
             foreach ($rolesNoGroup as $role) {
