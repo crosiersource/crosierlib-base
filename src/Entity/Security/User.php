@@ -148,7 +148,7 @@ class User implements EntityId, UserInterface, \Serializable
      *
      * @Groups("user")
      */
-    public $userRoles = null;
+    private $userRoles = null;
 
     /**
      * @NotUppercase()
@@ -185,28 +185,37 @@ class User implements EntityId, UserInterface, \Serializable
         $this->userRoles = new ArrayCollection();
     }
 
-
-    public function getRoles()
+    public function setUserRoles(ArrayCollection|array $userRoles): void
     {
-        $roles = array();
-        foreach ($this->userRoles as $role) {
+        $this->userRoles = is_array($userRoles) ? new ArrayCollection($userRoles) : $userRoles;
+    }
+    
+    public function getUserRoles(): ArrayCollection
+    {
+        return $this->userRoles;
+    }
+   
+    public function getRolesAsArray()
+    {
+        $roles = [];
+        foreach ($this->getUserRoles() as $role) {
             $roles[] = $role->getRole();
         }
         return $roles;
     }
 
-    public function getRolesAsArrayCollection()
-    {
-        if ($this->userRoles instanceof ArrayCollection) {
-            return $this->userRoles;
-        }
-        return new ArrayCollection($this->getRoles());
-    }
-
     public function addRole(Role $role)
     {
-        if (!$this->userRoles->contains($role)) {
-            $this->userRoles[] = $role;
+        if (!$this->getUserRoles()->contains($role)) {
+            $this->userRoles->add($role);
+        }
+        return $this;
+    }
+    
+    public function removeRole(Role $role)
+    {
+        if ($this->getUserRoles()->contains($role)) {
+            $this->userRoles->removeElement($role);
         }
         return $this;
     }

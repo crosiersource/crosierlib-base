@@ -62,14 +62,14 @@ class UserEntityHandler extends EntityHandler
             /** @var Role $role */
             foreach ($rolesNoGroup as $role) {
                 if (!$rolesDoUser->contains($role)) {
-                    $user->userRoles->add($role);
+                    $user->addRole($role);
                 }                
             }
 
             /** @var Role $role */
             foreach ($rolesDoUser as $role) {
                 if (!$rolesNoGroup->contains($role)) {
-                    $user->userRoles->removeElement($role);
+                    $user->removeRole($role);
                 }
             }
             
@@ -121,11 +121,11 @@ class UserEntityHandler extends EntityHandler
             foreach ($todas as $role) {
                 if (!in_array($role->role, $rolesNotForTheAdmin, true)) {
                     if (!in_array($role->role, $user->getRoles())) {
-                        $user->userRoles->add($role);
+                        $user->getUserRoles()->add($role);
                     }
                 } else {
-                    if ($user->userRoles->contains($role)) {
-                        $user->userRoles->remove($user->userRoles->indexOf($role));
+                    if ($user->getUserRoles()->contains($role)) {
+                        $user->getUserRoles()->removeElement($role);
                     }
                 }
             }
