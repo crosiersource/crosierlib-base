@@ -13,6 +13,7 @@ use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\TrackedEntity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -41,33 +42,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  *
  * @ApiFilter(SearchFilter::class, properties={
- *     "username": "partial", 
+ *     "username": "partial",
  *     "nome": "partial",
  *     "email": "partial"
  * })
- * 
+ *
  * @ApiFilter(BooleanFilter::class, properties={
  *     "isActive"
  * })
- * 
+ *
  * @ApiFilter(OrderFilter::class, properties={
- *     "id", 
- *     "username", 
- *     "nome", 
+ *     "id",
+ *     "username",
+ *     "nome",
  *     "updated",
  *     "isActive"
  * }, arguments={"orderParameterName"="order"})
- * 
- * 
+ *
+ *
  *
  * @EntityHandler(entityHandlerClass="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\UserEntityHandler")
  *
  * @ORM\Entity(repositoryClass="CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository")
  * @ORM\Table(name="sec_user")
- * 
+ *
  * @TrackedEntity
- * 
+ *
  * @author Carlos Eduardo Pauluk
+ * @method string getUserIdentifier()
  */
 class User implements EntityId, UserInterface, \Serializable
 {
@@ -112,7 +114,7 @@ class User implements EntityId, UserInterface, \Serializable
      * @var null|string
      */
     public ?string $nome = null;
-    
+
     /**
      * @ORM\Column(name="descricao", type="string", length=255, nullable=true)
      * @Groups("user")
@@ -189,12 +191,12 @@ class User implements EntityId, UserInterface, \Serializable
     {
         $this->userRoles = is_array($userRoles) ? new ArrayCollection($userRoles) : $userRoles;
     }
-    
-    public function getUserRoles(): ArrayCollection
+
+    public function getUserRoles(): Collection
     {
         return $this->userRoles;
     }
-   
+
     public function getRolesAsArray()
     {
         $roles = [];
@@ -211,7 +213,7 @@ class User implements EntityId, UserInterface, \Serializable
         }
         return $this;
     }
-    
+
     public function removeRole(Role $role)
     {
         if ($this->getUserRoles()->contains($role)) {
@@ -285,5 +287,14 @@ class User implements EntityId, UserInterface, \Serializable
         return implode(', ', $roles);
     }
 
+    public function getRoles()
+    {
+        return $this->getRolesAsArray();
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        // TODO: Implement @method string getUserIdentifier()
+    }
 }
 
