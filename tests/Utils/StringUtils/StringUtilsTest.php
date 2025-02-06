@@ -22,24 +22,26 @@ class StringUtilsTest extends TestCase
             '11 98765-4321',
             '11987654321',
             '(21) 3765-4321',
-            '3765-4321',
-            '98765-4321',
+            '423765-4321',
+            '4198765-4321',
+            '99950-02600', // seria (99) 9500-2600
         ];
 
         $invalidos = [
             '123456789',
             '(00) 98765-4321',
             '1198765',
-            '9876543211',
-            '99950-0260',
+            '2032277785', // ddd inválido
         ];
 
 
         foreach ($validos as $v) {
+            echo "Validando válido: " . $v . "\n";
             $this->assertTrue(StringUtils::validaTelefone($v));
         }
 
         foreach ($invalidos as $v) {
+            echo "Validando inválido: " . $v . "\n";
             $this->assertFalse(StringUtils::validaTelefone($v));
         }
 

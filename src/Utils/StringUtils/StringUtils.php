@@ -204,6 +204,7 @@ class StringUtils
 
     public static function validaTelefone($numero): bool
     {
+        $numero = StringUtils::removeNotNumbers($numero);
         if (!$numero) return true;
         if (strlen($numero) !== 10 && strlen($numero) !== 11) {
             return false;
@@ -234,6 +235,11 @@ class StringUtils
     public static function removeNonAlfanumerics(?string $str): string
     {
         return preg_replace('/[\W]/', '', $str ?? '');
+    }
+    
+    public static function removeNotNumbers(?string $str): string
+    {
+        return preg_replace('/[^0-9]/', '', $str ?? '');
     }
 
 
