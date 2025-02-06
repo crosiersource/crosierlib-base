@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Utils\DateTimeUtils;
+namespace Tests\Utils\StringUtils;
 
-use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @package Tests\Utils\DateTimeUtils
  * @author Carlos Eduardo Pauluk
  */
-class DecimalUtilsTest extends TestCase
+class StringUtilsTest extends TestCase
 {
 
     public function validaTelefone()
@@ -25,21 +25,22 @@ class DecimalUtilsTest extends TestCase
             '3765-4321',
             '98765-4321',
         ];
-        
+
         $invalidos = [
             '123456789',
             '(00) 98765-4321',
             '1198765',
             '9876543211',
+            '99950-0260',
         ];
 
 
         foreach ($validos as $v) {
-            $this->assertTrue(DecimalUtils::validaTelefone($v));
+            $this->assertTrue(StringUtils::validaTelefone($v));
         }
-        
+
         foreach ($invalidos as $v) {
-            $this->assertFalse(DecimalUtils::validaTelefone($v));
+            $this->assertFalse(StringUtils::validaTelefone($v));
         }
 
     }

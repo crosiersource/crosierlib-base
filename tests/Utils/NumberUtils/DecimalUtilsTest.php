@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Utils\DateTimeUtils;
+namespace Tests\Utils\NumberUtils;
 
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use PHPUnit\Framework\TestCase;
