@@ -378,27 +378,6 @@
              alias="crosier_source.crosier_lib_base_bundle.repository.config.ent_menu_locator_repository"/>
 
 
-    <!-- PushMessageEntityHandler -->
-    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
-             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
-             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
-      <argument type="service" id="doctrine"/>
-      <argument type="service" id="security.helper"/>
-      <argument type="service" id="parameter_bag"/>
-    </service>
-    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
-             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
-
-    <!-- PushMessageRepository -->
-    <service id="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"
-             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
-             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
-      <tag name="doctrine.repository_service"/>
-    </service>
-    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
-             alias="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"/>
-
-
     <!-- RoleEntityHandler -->
     <service id="crosier_source.crosier_lib_base_bundle.entity_handler.security.role_entity_handler"
              class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Security\RoleEntityHandler"
@@ -489,13 +468,32 @@
     </service>
 
 
+    <!-- PushMessageEntityHandler -->
+    <service id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"
+             class="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
+             parent="CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler">
+      <argument type="service" id="doctrine"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="parameter_bag"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\EntityHandler\Config\PushMessageEntityHandler"
+             alias="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
+
+    <!-- PushMessageRepository -->
+    <service id="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"
+             class="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
+             parent="CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository">
+      <tag name="doctrine.repository_service"/>
+    </service>
+    <service id="CrosierSource\CrosierLibBaseBundle\Repository\Config\PushMessageRepository"
+             alias="crosier_source.crosier_lib_base_bundle.repository.config.push_message_repository"/>
+
     <!-- PushMessageController -->
-    <service id="crosier_source.crosier_lib_base_bundle.controller.config.api.push_message_controller"
-             class="CrosierSource\CrosierLibBaseBundle\Controller\Config\API\PushMessageController" public="true">
+    <service id="crosier_source.crosier_lib_base_bundle.controller.config.push_message_controller"
+             class="CrosierSource\CrosierLibBaseBundle\Controller\Config\PushMessageController" public="true">
       <argument type="service" id="service_container"/>
-      <argument type="service" id="monolog.logger"/>
-      <argument type="service"
-                id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
+      <argument type="service" id="security.helper"/>
+      <argument type="service" id="crosier_source.crosier_lib_base_bundle.entity_handler.config.push_message_entity_handler"/>
     </service>
 
 
