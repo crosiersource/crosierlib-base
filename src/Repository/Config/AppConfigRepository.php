@@ -28,6 +28,14 @@ class AppConfigRepository extends FilterRepository
             ->leftJoin(App::class, 'app', 'WITH', 'app.UUID = e.appUUID');
     }
 
+
+    public function findConfigByAppNameAndCrosierEnv(string $appName, string $chave)
+    {
+        $appRepo = $this->doctrine->getRepository(App::class);
+        $app = $appRepo->findOneBy(['nome' => $appName]);
+        return $this->findConfigByCrosierEnv($app, $chave);
+    }
+
     /**
      * @param App $app
      * @param string $chave

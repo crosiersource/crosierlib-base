@@ -24,6 +24,7 @@ class DateTimeUtils
 
     const DATASQL_PATTERN2 = "@\A(\d{4}-\d{1,2}-\d{1,2})\z@";
 
+
     /**
      * @param $dateStr
      * @return null|\DateTime
@@ -679,6 +680,12 @@ class DateTimeUtils
             $dt2->setTime(0, 0);
         }
         return ($dt1->getTimestamp() > $dt2->getTimestamp());
+    }
+
+
+    public static function formatPtBr(\DateTime $dt, string $format): string
+    {
+        return \IntlDateFormatter::formatObject($dt, $format, 'pt_BR');
     }
 
 
