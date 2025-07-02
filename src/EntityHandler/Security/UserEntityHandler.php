@@ -7,7 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\Role;
 use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
-use Doctrine\Common\Collections\ArrayCollection;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,8 +19,9 @@ use Symfony\Component\Security\Core\Security;
 class UserEntityHandler extends EntityHandler
 {
 
-    /** @var UserPasswordHasherInterface */
     private UserPasswordHasherInterface $passwordEncoder;
+
+    private bool $corrigindoRoles = false;
 
 
     public function __construct(ManagerRegistry             $doctrine,
@@ -37,9 +38,11 @@ class UserEntityHandler extends EntityHandler
      * @param User $user
      * @return mixed|void
      */
-    public function beforeSave($user)
+    public function beforeSave(/** @var User $user */ $user)
     {
-        $this->verificarRolesDoGrupo($user);
+        if (!$this->corrigindoRoles) {
+            $this->verificarRolesDoGrupo($user);
+        }
         /** @var User $user */
         if ($user->password && strlen($user->password) < 53) {
             $encoded = $this->passwordEncoder->hashPassword($user, $user->password);
@@ -51,19 +54,20 @@ class UserEntityHandler extends EntityHandler
         $user->email = mb_strtolower($user->email);
         $user->username = mb_strtolower($user->username);
     }
-    
+
     private function verificarRolesDoGrupo(User $user): void
     {
-        if ($user->group) {            
+        $this->corrigindoRoles = true;
+        if ($user->group) {
             $rolesNoGroup = $user->group->roles;
-            
+
             $rolesDoUser = $user->getUserRoles();
-            
+
             /** @var Role $role */
             foreach ($rolesNoGroup as $role) {
                 if (!$rolesDoUser->contains($role)) {
                     $user->addRole($role);
-                }                
+                }
             }
 
             /** @var Role $role */
@@ -72,7 +76,7 @@ class UserEntityHandler extends EntityHandler
                     $user->removeRole($role);
                 }
             }
-            
+
         }
     }
 
@@ -92,8 +96,7 @@ class UserEntityHandler extends EntityHandler
     }
 
     /**
-     * @param User $user
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function revogarApiToken(User $user): void
     {
@@ -103,11 +106,10 @@ class UserEntityHandler extends EntityHandler
 
     /**
      * Verifica e conserta as roles de um usuário (ex.: usuário que seja ROLE_ADMIN deve ter também todas as outras roles)
-     *
-     * @param User $user
      */
     public function fixRoles(User $user): void
     {
+        $this->corrigindoRoles = true;
         $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
         $rolesNotForTheAdmin = [];
         /** @var AppConfig $appConfig */
@@ -148,5 +150,5 @@ class UserEntityHandler extends EntityHandler
     {
         return User::class;
     }
-    
+
 }
