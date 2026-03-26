@@ -23,7 +23,7 @@
         "ext-yaml":"*",
         "ext-zip":"*",
         "ext-zlib":"*",
-        "api-platform/core":"2.7.10",
+        "api-platform/core":"^2.7.18",
         "doctrine/annotations":"^1.0",
         "doctrine/doctrine-bundle":"^2.4",
         "doctrine/doctrine-migrations-bundle":"^3.2",
@@ -102,6 +102,18 @@
         }
     },
     "config": {
+        "audit": {
+            "ignore": {
+                "PKSA-gs8r-6kz6-pp56": {
+                    "apply": "block",
+                    "reason": "API Platform 2.7 has no patched secure release; this project remains on Symfony 5.4 and does not enable GraphQL."
+                },
+                "PKSA-gnn4-pxdg-q76m": {
+                    "apply": "block",
+                    "reason": "API Platform 2.7 has no patched secure release; this project remains on Symfony 5.4 and does not enable GraphQL."
+                }
+            }
+        },
         "allow-plugins": {
             "symfony/flex": true,
             "symfony/runtime": true,
